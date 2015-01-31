@@ -1,2 +1,92 @@
 html, body {
 }
+
+body {
+  font: 10px sans-serif;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis {
+    font: 9px sans-serif;
+}
+
+.selected_site {
+  fill: #000000;
+  stroke: black;
+  stroke-opacity: 1.0;
+  stroke-width: 0.5px;
+  fill-opacity :0.5;
+}
+
+._nab_cells {
+    color : #000;
+}
+
+.bar {
+  fill: steelblue;
+  stroke-width: 0px;
+}
+
+.bar:hover {
+  stroke: black;
+  stroke-width: 1px;
+}
+
+.barlabel {
+    font: 10px sans-serif;
+    fill: black;
+    text-anchor: start;
+}
+
+.pngs {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.sequence {
+    font: 12px monospace;
+}
+
+.seq-date {
+    font: 12px monospace;
+}
+._evo_area {
+  fill: steelblue;
+}
+
+._pos_dS {
+  fill: #2E66FF;
+}
+
+._pos_dN {
+  fill: #FFB314;
+}
+
+._evo_legend {
+    font: 12px sans-serif;
+}
+
+._evo_line {
+  fill: none;
+  stroke: red;
+  stroke-width: 4px;
+}
+
+._evo_symbol {
+  fill: #EEEEEE;
+  stroke: black;
+  stroke-opacity: 1.0;
+  stroke-width: 1.5px;
+  fill-opacity :1.0;
+}

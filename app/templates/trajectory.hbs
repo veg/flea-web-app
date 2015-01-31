@@ -1,9 +1,3 @@
 <h3>Evolutionary Trajectory</h3>
 
-<ul>
-  {{#each row in model}}
-  <li>
-    {{row.Date}}, {{row.Segment}}
-  </li>
-  {{/each}}
-</ul>
+{{divergence-plot width=900 height=350 data=content}}
