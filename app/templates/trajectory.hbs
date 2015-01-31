@@ -1,2 +1,9 @@
 <h3>Evolutionary Trajectory</h3>
 
+<ul>
+  {{#each row in model}}
+  <li>
+    {{row.Date}}, {{row.Segment}}
+  </li>
+  {{/each}}
+</ul>
