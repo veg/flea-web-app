@@ -1,10 +1,10 @@
 <div class='container' id='allofit'>
   <ul class="nav nav-tabs">
-    <li><a href="#evo" data-toggle="tab">Evolutionary trajectory</a></li>
-    <li><a href="#pos" data-toggle="tab">Gene-wide information</a></li>
-    <li><a href="#seq" data-toggle="tab">Amino-acid sequences</a></li>
-    <li><a href="#trees" data-toggle="tab">Trees</a></li>
-    <li><a href="#neutralization" data-toggle="tab">Neutralization</a></li>
+    <li>{{#link-to 'trajectory' data-toggle="tab"}}Evolutionary trajectory{{/link-to}}</li>
+    <li>{{#link-to 'gene' data-toggle="tab"}}Gene-wide information{{/link-to}}</li>
+    <li>{{#link-to 'sequences' data-toggle="tab"}}Amino-acid sequences{{/link-to}}</li>
+    <li>{{#link-to 'trees' data-toggle="tab"}}Trees{{/link-to}}</li>
+    <li>{{#link-to 'neutralization' data-toggle="tab"}}Neutralization{{/link-to}}</li>
   </ul>
 
 {{outlet}}
