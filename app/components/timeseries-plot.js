@@ -145,15 +145,12 @@ export default Ember.Component.extend({
     var paths = svg.select('.lines').selectAll('path')
         .data(data, function(d) {return d.name;});
 
-    paths.attr("d", function(d) { return line(d.values); });
-
     paths.enter()
       .append("path")
-      .attr("class", "_evo_line")
-      .attr("d", function(d) { return line(d.values); })
-      .style("stroke", function(d) { return colors(d.name); });
+      .attr("class", "_evo_line");
 
-    paths.attr("d", function(d) { return line(d.values); });
+    paths.attr("d", function(d) { return line(d.values); })
+      .style("stroke", function(d) { return colors(d.name); });
 
     paths.exit().remove();
     this._updateLegend();
@@ -173,6 +170,7 @@ export default Ember.Component.extend({
     var legend_dim = {x: 0, y: 0, spacer: 25, margin: 5, font: 10};
     var svg = d3.select('#' + this.get('elementId')).select('.inner').select('.legend');
 
+    // TODO: do not remove everything
     svg.selectAll('g').remove();
 
     var legend = svg.append("g")
@@ -181,10 +179,8 @@ export default Ember.Component.extend({
         .attr("y", legend_dim.y)
         .attr("transform", "translate("+legend_dim.x+","+legend_dim.y+")");
 
-    legend.selectAll('.legend_panel').remove();
-
     var legend_parts = legend.selectAll('.legend_panel');
-    legend_parts.data(labels)
+    legend_parts.data(labels, function(d) {return d;})
       .enter()
       .append('g')
       .attr('class', 'legend_panel')
