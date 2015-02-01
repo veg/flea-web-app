@@ -10,13 +10,13 @@ export default Ember.ObjectController.extend({
   selectedRegions: ['gp160', 'signal'],
 
   evoMetrics: ['dn_divergence',
-            'dn_diversity',
-            'ds_divergence',
-            'ds_diversity',
-            'ns_divergence',
-            'ns_diversity',
-            's_divergence',
-            's_diversity'],
+               'dn_diversity',
+               'ds_divergence',
+               'ds_diversity',
+               'ns_divergence',
+               'ns_diversity',
+               's_divergence',
+               's_diversity'],
 
   selectedEvoMetrics: 'ds_divergence',
 
@@ -30,9 +30,7 @@ export default Ember.ObjectController.extend({
     var metrics = this.get('selectedEvoMetrics');
     var metric = metrics;
     return prepData(all_data, regions, metric);
-  }.property('selectedRegions',
-             'selectedRegions.@each',
-             'selectedRegions.length',
+  }.property('selectedRegions.@each',
              'selectedEvoMetrics'),
 
   phenoData: function() {
@@ -41,9 +39,7 @@ export default Ember.ObjectController.extend({
     var metrics = this.get('selectedPhenoMetrics');
     var metric = metrics;
     return prepData(all_data, regions, metric);
-  }.property('selectedRegions',
-             'selectedRegions.@each',
-             'selectedRegions.length',
+  }.property('selectedRegions.@each',
              'selectedPhenoMetrics')
 
 });
