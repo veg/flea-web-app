@@ -1,10 +1,24 @@
-<g {{bindAttr transform=transformG}}>
-  <g class="x axis" {{bindAttr transform=transformX}}></g>
-  <g class="y axis">
-    <text transform="rotate(-90)" y="6" dy=".71em" style="text-anchor:end;">
-      Expected substitutions per site
-  </text>
-  </g>
+<g {{bind-attr transform='innerGroupTransform'}}>
+
+  {{graph-axis class="x axis"
+  transform=xAxisTransform
+  scale=xScale
+  tickFormat=xAxisFormat
+  tickValues=xTickValues
+  tickSize=12
+  tickPadding=3}}
+
+  {{graph-axis class="y axis"
+  orient='left'
+  scale=yScale
+  tickFormat=yAxisFormat}}
+
+  <path {{bind-attr d='lineData'}}
+        class="_evo_line">
+  </path>
+
   <g class="lines"></g>
+
   <g class="legend"></g>
+
 </g>
