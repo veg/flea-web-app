@@ -9,7 +9,7 @@ export default Ember.ObjectController.extend({
             'gp41endo'],
   selectedRegions: ['gp160', 'signal'],
 
-  metrics: ['dn_divergence',
+  evoMetrics: ['dn_divergence',
             'dn_diversity',
             'ds_divergence',
             'ds_diversity',
@@ -18,33 +18,55 @@ export default Ember.ObjectController.extend({
             's_divergence',
             's_diversity'],
 
-  selectedMetrics: 'ds_divergence',
+  selectedEvoMetrics: 'ds_divergence',
 
-  data: function() {
+  phenoMetrics: ['Length', 'PNGS', 'IsoelectricPoint'],
+
+  selectedPhenoMetrics: 'Length',
+
+  evoData: function() {
     var all_data = this.get('model');
     var regions = this.get('selectedRegions');
-    var metrics = this.get('selectedMetrics');
+    var metrics = this.get('selectedEvoMetrics');
     var metric = metrics;
-    var result = [];
-    // TODO: do this more functionally
-    // possible with d3.nest?
-    for (var i=0; i<regions.length; i++) {
-      var series = {'name': regions[i]};
-      var values = [];
-      for (var k=0; k<all_data.length; k++) {
-        if (regions[i] === all_data[k]["Segment"]) {
-          var datum = {'x': all_data[k].Date,
-                       'y': all_data[k][metric]};
-          values.push(datum);
-        }
-      }
-      values.sort (function (a,b) {return a[0]-b[0];});
-      series['values'] = values;
-      result.push(series);
-    }
-    return result;
+    return prepData(all_data, regions, metric);
   }.property('selectedRegions',
              'selectedRegions.@each',
              'selectedRegions.length',
-             'selectedMetrics')
+             'selectedEvoMetrics'),
+
+  phenoData: function() {
+    var all_data = this.get('model');
+    var regions = this.get('selectedRegions');
+    var metrics = this.get('selectedPhenoMetrics');
+    var metric = metrics;
+    return prepData(all_data, regions, metric);
+  }.property('selectedRegions',
+             'selectedRegions.@each',
+             'selectedRegions.length',
+             'selectedPhenoMetrics')
+
 });
+
+
+function prepData(all_data, regions, metric) {
+  var result = [];
+  // TODO: do this more functionally
+  // possible with d3.nest?
+  for (var i=0; i<regions.length; i++) {
+    var series = {'name': regions[i]};
+    var values = [];
+    for (var k=0; k<all_data.length; k++) {
+      if (regions[i] === all_data[k]["Segment"]) {
+        var datum = {'x': all_data[k].Date,
+                     'y': all_data[k][metric]};
+        values.push(datum);
+      }
+    }
+    values.sort (function (a,b) {return a[0]-b[0];});
+    series['values'] = values;
+    result.push(series);
+  }
+  return result;
+}
+
