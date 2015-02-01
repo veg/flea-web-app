@@ -121,12 +121,17 @@ export default Ember.Component.extend({
     return d3.format(".00");
   }.property(),
 
+  colors: function() {
+    var colors = d3.scale.category10();
+    colors.domain(this.get('seriesNames'));
+    return colors;
+  }.property('seriesNames'),
+
   _updateChart: function() {
     var data = this.get('data');
     var line = this.get('d3Line');
     var svg = d3.select('#' + this.get('elementId')).select('.inner');
-    var colors = d3.scale.category10();
-    colors.domain(this.get('seriesNames'));
+    var colors = this.get('colors');
 
     var paths = svg.select('.lines').selectAll('path')
         .data(data, function(d) {return d.name;});
@@ -142,6 +147,7 @@ export default Ember.Component.extend({
     paths.attr("d", function(d) { return line(d.values); });
 
     paths.exit().remove();
+    this._updateLegend();
   },
 
   onChartChange: function() {
@@ -150,5 +156,45 @@ export default Ember.Component.extend({
     }
     this._updateChart();
   }.observes('data', 'd3Line', 'seriesNames'),
+
+  // TODO: make legends into seperate component?
+  _updateLegend: function() {
+    var labels = this.get('seriesNames');
+    var colors = this.get('colors');
+    var legend_dim = {x: 0, y: 0, spacer: 25, margin: 5, font: 10};
+    var svg = d3.select('#' + this.get('elementId')).select('.inner').select('.legend');
+
+    svg.selectAll('g').remove();
+
+    var legend = svg.append("g")
+        .attr("class", "_evo_legend")
+        .attr("x", legend_dim.x)
+        .attr("y", legend_dim.y)
+        .attr("transform", "translate("+legend_dim.x+","+legend_dim.y+")");
+
+    legend.selectAll('.legend_panel').remove();
+
+    var legend_parts = legend.selectAll('.legend_panel');
+    legend_parts.data(labels)
+      .enter()
+      .append('g')
+      .attr('class', 'legend_panel')
+      .each(function(d, i0) {
+        console.log(d);
+        var g = d3.select(this);
+        g.append("rect")
+          .attr("x", legend_dim.spacer)
+          .attr("y", i0*(legend_dim.spacer + legend_dim.margin))
+          .attr("width", legend_dim.spacer)
+          .attr("height", legend_dim.spacer)
+          .style("fill", function () { return colors(d);});
+        g.append("text")
+          .attr("x", 2*legend_dim.spacer + legend_dim.font/4)
+          .attr("y", (i0+1)*(legend_dim.spacer + legend_dim.margin) - legend_dim.margin
+                - (legend_dim.spacer-legend_dim.font)*2/3)
+          .style("fill", function () {return colors(d);})
+          .text(function (d) {return d;});
+      });
+  }
 
 });
