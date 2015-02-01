@@ -13,6 +13,7 @@ export default Ember.Component.extend({
   tickSize:    15,
   tickFormat:  null,
   tickPadding: 15,
+  rotate:      0,
 
   d3Axis: function() {
     return d3.svg.axis()
@@ -36,9 +37,18 @@ export default Ember.Component.extend({
     }
 
     this._updateAxis();
-  }.observes('d3Axis'),
+  }.observes('d3Axis', 'rotate'),
 
   _updateAxis: function() {
-    d3.select(this.$()[0]).call(this.get('d3Axis'));
+    var result = d3.select(this.$()[0]).call(this.get('d3Axis'));
+    // TODO: is this the best place to do this?
+    var rotate = this.get('rotate');
+    if (rotate !== 0) {
+        result.selectAll ("text")
+        .style("text-anchor", "start")
+        .attr ("transform", "rotate(" + rotate + ")")
+        .attr("dx","0.5em")
+        .attr("dy","0.5em");
+    }
   }
 });
