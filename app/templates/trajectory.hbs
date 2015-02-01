@@ -1,11 +1,33 @@
 <h3>Evolutionary Trajectory</h3>
 
-<div>
-{{view bootstrap-multiselect
-    multiple=true
-    content=regions
-    selection=selectedRegions
-}}
+<div class="form-inline">
+
+  <div class="form-group">
+    <label for="_evo_regions">Region(s) to plot</label>
+  </div>
+  <div class="form-group">
+    {{view bootstrap-multiselect
+      multiple=true
+      content=regions
+      selection=selectedRegions
+      id="_evo_regions"
+    }}
+  </div>
+
+  <div class="form-group">
+    <label for="_evo_metrics">Evolutionary metrics</label>
+  </div>
+  <div class="form-group">
+    {{view bootstrap-multiselect
+      content=metrics
+      selection=selectedMetrics
+      id="_evo_metrics"
+    }}
+  </div>
 </div>
 
-{{divergence-plot width=900 height=350 data=data}}
+<div class = 'row'>
+  <div class = 'col-md-12'>
+    {{divergence-plot width=900 height=350 data=data}}
+  </div>
+</div>

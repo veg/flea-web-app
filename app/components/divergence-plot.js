@@ -127,18 +127,20 @@ export default Ember.Component.extend({
     var colors = d3.scale.category10();
     colors.domain(this.get('seriesNames'));
 
-    var lines = svg.select('.lines').selectAll('g')
+    var paths = svg.select('.lines').selectAll('path')
         .data(data, function(d) {return d.name;});
 
-    lines.enter()
-      .append("g")
-      .attr("class", "_evo_line")
+    paths.attr("d", function(d) { return line(d.values); });
+
+    paths.enter()
       .append("path")
-      .attr("class", "line")
+      .attr("class", "_evo_line")
       .attr("d", function(d) { return line(d.values); })
       .style("stroke", function(d) { return colors(d.name); });
 
-    lines.exit().remove();
+    paths.attr("d", function(d) { return line(d.values); });
+
+    paths.exit().remove();
   },
 
   onChartChange: function() {

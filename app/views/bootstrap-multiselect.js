@@ -1,7 +1,6 @@
 import Ember from 'ember';
 
 export default Ember.Select.extend({
-  multiple:true,
   didInsertElement: function () {
     this.$().multiselect(this.get('options'));
   },
