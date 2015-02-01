@@ -30,5 +30,5 @@ export default Ember.ObjectController.extend({
       result.push(series);
     }
     return result;
-  }.property('selectedRegions.length', 'selectedMetric')
+  }.property('selectedRegions,selectedRegions.@each,selectedRegions.length','selectedMetric')
 });
