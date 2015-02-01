@@ -54,7 +54,8 @@ export default Ember.Component.extend({
 
   seriesNames: function() {
     var data = this.get('data');
-    return data.map(function (d) { return d.name; });
+    var names =  data.map(function (d) { return d.name; });
+    return names;
   }.property('data'),
 
   dates: function() {
@@ -122,20 +123,22 @@ export default Ember.Component.extend({
   _updateChart: function() {
     var data = this.get('data');
     var line = this.get('d3Line');
-    var svg = d3.select('#' + this.get('elementId'));
+    var svg = d3.select('#' + this.get('elementId')).select('.inner');
     var colors = d3.scale.category10();
     colors.domain(this.get('seriesNames'));
 
-    var series = svg.select(".series").selectAll('.series')
-        .data(data)
-        .enter()
-        .append("g")
-        .attr("class", "_evo_line");
+    var lines = svg.select('.lines').selectAll('g')
+        .data(data, function(d) {return d.name;});
 
-    series.append("path")
+    lines.enter()
+      .append("g")
+      .attr("class", "_evo_line")
+      .append("path")
       .attr("class", "line")
       .attr("d", function(d) { return line(d.values); })
       .style("stroke", function(d) { return colors(d.name); });
+
+    lines.exit().remove();
   },
 
   onChartChange: function() {
