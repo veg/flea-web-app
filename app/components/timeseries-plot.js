@@ -114,8 +114,7 @@ export default Ember.Component.extend({
   }.property(),
 
   xTickValues: function() {
-    //return this.get('dates');
-    return null;
+    return this.get('dates');
   }.property('dates'),
 
   yAxisFormat: function() {
