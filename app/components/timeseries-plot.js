@@ -33,6 +33,8 @@ export default Ember.Component.extend({
     left:   50
   },
 
+  ymin: null,
+
   didInsertElement: function() {
     // TOOD: is this necessary?
     this.set('width', this.$().width());
@@ -95,10 +97,17 @@ export default Ember.Component.extend({
     var maxValue = d3.max(data, function(d) {
       return d3.max(d.values, function(v) { return v.y; });
     });
+    var minValue = this.get('ymin');
+    if (minValue === null) {
+      minValue = d3.min(data, function(d) {
+        return d3.min(d.values, function(v) { return v.y; });
+      });
+    }
+
     return d3.scale.linear()
       .range([this.get('innerHeight'), 0])
-      .domain([0, maxValue]);
-  }.property('innerHeight', 'data'),
+      .domain([minValue, maxValue]);
+    }.property('innerHeight', 'data', 'ymin'),
 
   d3Line: function() {
     var xScale = this.get('xScale'),
