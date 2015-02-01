@@ -66,9 +66,8 @@ export default Ember.Component.extend({
         return e.x;
       });
     });
-    result = d3.merge(result);
-    result = d3.set(result).values().sort();
-    return result;
+    var result = d3.set(d3.merge(result)).values();
+    return result.map(function(d) {return new Date(d);});
   }.property('data'),
 
   xDomain: function() {
@@ -83,8 +82,8 @@ export default Ember.Component.extend({
     var domain = this.get('xDomain');
     domain = domain.map(function(d) {return new Date(d);});
     var result = d3.time.scale()
-        .range([0, this.get('innerWidth')])
-        .domain(domain);
+        .domain(domain)
+        .range([0, this.get('innerWidth')]);
     return result;
   }.property('innerWidth', 'xDomain'),
 

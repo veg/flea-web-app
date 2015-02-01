@@ -42,7 +42,6 @@ export default Ember.ObjectController.extend({
       series['values'] = values;
       result.push(series);
     }
-    console.log(result);
     return result;
   }.property('selectedRegions',
              'selectedRegions.@each',
