@@ -5,6 +5,10 @@ body {
   font: 10px sans-serif;
 }
 
+.nav {
+  font-size: 12pt;
+}
+
 .brush .extent {
   stroke: #fff;
   fill-opacity: .125;
