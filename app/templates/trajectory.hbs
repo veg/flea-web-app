@@ -1,9 +1,11 @@
 <h3>Evolutionary Trajectory</h3>
 
-{{view select
+<div>
+{{view bootstrap-multiselect
     multiple=true
     content=regions
     selection=selectedRegions
 }}
+</div>
 
 {{divergence-plot width=900 height=350 data=data}}

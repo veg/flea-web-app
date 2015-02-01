@@ -41,4 +41,7 @@ app.import('bower_components/bootstrap/dist/js/bootstrap.js');
 
 app.import('bower_components/d3/d3.js');
 
+app.import('bower_components/bootstrap-multiselect/dist/css/bootstrap-multiselect.css')
+app.import('bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect.js')
+
 module.exports = app.toTree();
