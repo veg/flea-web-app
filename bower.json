@@ -15,6 +15,7 @@
     "qunit": "~1.17.1",
     "bootstrap": "~3.3.2",
     "d3": "~3.5.3",
-    "bootstrap-multiselect": "~0.9.10"
+    "bootstrap-multiselect": "~0.9.10",
+    "font-awesome": "~4.3.0"
   }
 }
