@@ -4,6 +4,7 @@ export default Ember.ObjectController.extend({
 
   selectedSequences: [],
 
+  // TODO: maybe these should be in a View instead
   rangeStart: 160,
   rangeStop: 200,
   minCoord: 1,

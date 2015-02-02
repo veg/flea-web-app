@@ -1,5 +1,3 @@
-<h3>Amino Acid Sequences</h3>
-
 <div id="seq">
   <div class="panel-group" id="accordion">
     <div class="panel panel-default">
@@ -32,12 +30,17 @@
         <div class="panel-body">
           <div class = "row">
             <div class = "col-md-12">
-              {{sequence-range-controls rangeStart=rangeStart rangeStop=rangeStop minCoord=minCoord maxCoord=maxCoord markPositive=markPositive}}
+              {{#sequence-range-controls rangeStart=rangeStart rangeStop=rangeStop minCoord=minCoord maxCoord=maxCoord}}
+              <span class="input-group-addon">
+                Mark positively selected sites
+                {{input type="checkbox" name="markPositive" checked=markPositive}}
+              </span>
+              {{/sequence-range-controls}}
             </div>
           </div>
           <div class = "row">
             <div class = "col-md-12">
-            {{sequence-viewer inputSequences=displaySequences rangeStart=rangeStart rangeStop=rangeStop mrca=mrca}}
+              {{sequence-viewer inputSequences=displaySequences rangeStart=rangeStart rangeStop=rangeStop mrca=mrca}}
             </div>
           </div>
         </div>

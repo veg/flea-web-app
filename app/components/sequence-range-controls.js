@@ -1,11 +1,10 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  
+
   // bound to controller
   rangeStart: 1,
   rangeStop: 1,
-  markPositive: false,
 
   // updated from template
   minCoord: 1,
