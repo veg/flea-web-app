@@ -12,10 +12,6 @@ export default Ember.ObjectController.extend({
 
   markPositive: true,
 
-  selectionSaved: function(param) {
-    console.log(param);
-  },
-
   filterSequenceTypes: function(type) {
     var all_sequences = this.get('model');
     return all_sequences.filter(function(seq) {
