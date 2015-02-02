@@ -1,5 +1,20 @@
 <div class = 'row'>
   <div class = 'col-md-9'>
+    <div class="input-group input-group-sm">
+      <span class="input-group-addon">
+        Collapse
+        {{input type="checkbox" name="collapseSeqs" checked=collapseSeqs}}
+      </span>
+      <span class="input-group-addon">
+        Mask unchanged
+        {{input type="checkbox" name="maskUnchanged" checked=maskUnchanged}}
+      </span>
+      <span class="input-group-addon">
+        (TODO) Mark positively selected sites
+        {{input type="checkbox" name="markPositive" checked=markPositive}}
+      </span>
+    </div>
+    <br>
     <table class="table table-hover table-condensed">
       <thead>
         <td class="seq-data">MRCA</td>

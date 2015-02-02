@@ -11,8 +11,8 @@
 
       <div id="_select_aa_display" class="panel-collapse collapse">
         <div class="panel-body">
-        {{filter-widget content=content name="Sequence Selector" selected=selectedSequences
-               displayName="id"}}
+          {{filter-widget content=content name="Sequence Selector" selected=selectedSequences
+          displayName="id"}}
         </div>
       </div>
     </div>
@@ -43,13 +43,10 @@
           <div class = "row">
             <div class = "col-md-12">
               {{#sequence-range-controls rangeStart=rangeStart rangeStop=rangeStop minCoord=minCoord maxCoord=maxCoord}}
-              <span class="input-group-addon">
-                Mark positively selected sites
-                {{input type="checkbox" name="markPositive" checked=markPositive}}
-              </span>
               {{/sequence-range-controls}}
             </div>
           </div>
+          <br>
           <div class = "row">
             <div class = "col-md-12">
               {{sequence-viewer inputSequences=displaySequences rangeStart=rangeStart rangeStop=rangeStop mrca=mrca}}

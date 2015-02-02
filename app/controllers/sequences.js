@@ -10,8 +10,6 @@ export default Ember.ObjectController.extend({
   minCoord: 1,
   maxCoord: 800,  // TODO: fix this dynamically
 
-  markPositive: true,
-
   filterSequenceTypes: function(type) {
     var all_sequences = this.get('model');
     return all_sequences.filter(function(seq) {
