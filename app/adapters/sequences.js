@@ -63,11 +63,15 @@ var parse_date = d3.time.format("%Y%m%d");
 
 
 function make_seq(id, date, sequence, type) {
+  // FIXME: null dates are a problem everywhere!
   if (date !== null) {
     date = parse_date.parse(date);
   }
-  return {id: id,
-          date: date,
-          sequence: sequence,
-          type: type};
+  return Ember.Object.create({
+    id: id,
+    date: date,
+    sequence: sequence,
+    type: type,
+    selected: true  // used to filter sequences
+  });
 }

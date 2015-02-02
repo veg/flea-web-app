@@ -62,9 +62,14 @@ body {
     font: 12px monospace;
 }
 
-.seq-date {
+.seq-prop {
     font: 12px monospace;
 }
+
+.select-cell {
+    width: 10px;
+}
+
 ._evo_area {
   fill: steelblue;
 }
