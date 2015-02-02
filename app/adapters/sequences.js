@@ -7,7 +7,7 @@ export default Ember.Object.extend({
      [{ id: "mrca",
         date: new Date(),
         sequence: "ACGT",
-        type: "Ancestor" | "Observed" | "MRCA"
+        type: "Ancestor" | "Observed" | "MRCA" | "Combined"
       }
       { etc... }
     ]
