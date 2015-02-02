@@ -185,7 +185,6 @@ export default Ember.Component.extend({
       .append('g')
       .attr('class', 'legend_panel')
       .each(function(d, i0) {
-        console.log(d);
         var g = d3.select(this);
         g.append("rect")
           .attr("x", legend_dim.spacer)
