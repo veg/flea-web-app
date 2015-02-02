@@ -18,14 +18,8 @@ export default Ember.ObjectController.extend({
   moveRange: function(offset) {
     var start = this.get('rangeStart');
     var stop = this.get('rangeStop');
-    var minCoord = this.get('minCoord');
-    var maxCoord = this.get('maxCoord');
-    this.set('rangeStart', setInRange(start + offset,
-                                      minCoord,
-                                      maxCoord));
-    this.set('rangeStart', setInRange(stop + offset,
-                                      minCoord,
-                                      maxCoord));
+    this.set('rangeStart', start + offset);
+    this.set('rangeStart', stop + offset);
   },
 
   moveLeft: function() {

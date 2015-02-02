@@ -10,9 +10,9 @@
     </button>
   </div>
   <span class="input-group-addon">From</span>
-  {{input value=rangeStop placeholder="HXB2 coordinate (e.g. 160)"}}
+  {{input type="number" class="form-control" value=rangeStart placeholder="HXB2 coordinate (e.g. 160)"}}
   <span class="input-group-addon">To</span>
-  {{input value=rangeStop placeholder="HXB2 coordinate (e.g. 200)"}}
+  {{input type="number" class="form-control" value=rangeStop placeholder="HXB2 coordinate (e.g. 200)"}}
   <div class="input-group-btn">
     <button {{action "moveRight"}} type="button" class="btn btn-default btn-sm" title="Move right">
       <i class="fa fa-forward" ></i>
