@@ -1,0 +1,114 @@
+<div class="alert alert-info" role = "alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+  You can display the amino-acid sequences of clones, grouped by time,
+  and restricted to a particular HXB2 coordinate range. Sites matching
+  the most frequent earliest timepoint clone are shown as '.', and
+  potential N-linked glycosylation sites are displayed with shaded backgrounds.
+  Click on the count of clones matching a particular subsequence to display the list of clone IDs.
+  Hover over a particular coordinate to show its evolution over time in a separate plot.
+</div>
+<div class="input-group input-group-sm">
+  <div class="input-group-btn">
+    <button type="button" class="btn btn-default btn-sm" id = "_sequence_left5" title = "Left 5">
+      <i class="fa fa-fast-backward" ></i>
+    </button>
+  </div>
+  <div class="input-group-btn">
+    <button type="button" class="btn btn-default btn-sm" id = "_sequence_left1" title = "Left 1">
+      <i class="fa fa-backward" ></i>
+    </button>
+  </div>
+  <span class="input-group-addon">From</span>
+  <input type="text" class="form-control" id = '_seq_from' placeholder="HXB2 coordinate (e.g. 160)" value = "160">
+  <span class="input-group-addon">To</span>
+  
+  <input type="text" class="form-control" id = '_seq_to' placeholder="HXB2 coordinate (e.g. 200)" value = "200">
+  <div class="input-group-btn">
+    <button type="button" class="btn btn-default btn-sm" id = "_sequence_right1" title = "Right 1">
+      <i class="fa fa-forward" ></i>
+    </button>
+  </div>
+  <div class="input-group-btn">
+    <button type="button" class="btn btn-default btn-sm" id = "_sequence_right5" title = "Right 5">
+      <i class="fa fa-fast-forward" ></i>
+    </button>
+  </div>
+  <div class="input-group-btn">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Predefined
+      <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+      <li><a href="#" class = '_seq_predef' data-range = '131,156'>V1</a></li>
+      <li><a href="#" class = '_seq_predef' data-range = '157,196'>V2</a></li>
+      <li><a href="#" class = '_seq_predef' data-range = '296,330'>V3</a></li>
+      <li><a href="#" class = '_seq_predef' data-range = '385,418'>V4</a></li>
+      <li><a href="#" class = '_seq_predef' data-range = '461,471'>V5</a></li>
+      <li><a href="#" class = '_seq_predef' data-range = '662,683'>MPER</a></li>
+    </ul>
+  </div>
+  <span class="input-group-addon">
+    Mark positively selected sites
+    <input type="checkbox" id = '_seq_selected' checked />
+  </span>
+  <span class="input-group-btn">
+    <button class="btn btn-primary btn-sm" id = "_seq_display">
+      Display
+    </button>
+  </span>
+</div>
+</div>
+</div>
+<div class = 'row'>
+  <div class = 'col-md-9'>
+    <table class="table table-hover table-condensed">
+      <thead>
+        <tr>
+          <td class = 'seq-date'>HXB2 coord.</td>
+          <td id = '_seq_coordinates' class = 'seq-date'></td>
+        </tr>
+      </thead>
+      <tbody id = '_seq_positional_table'>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <div class = "col-md-3" id='_site_plot_div' style = 'display: none'>
+    <div class = 'row'>
+      <div class = 'row '>
+        <div class = 'col-md-3'>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" id = '_normalize_site_plot' checked /> normalize
+            </label>
+            <label>
+              <input type="checkbox" id = '_stack_site_plot' /> stack
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class = 'row'>
+        <svg id = '_seq_secondary_plot'/>
+      </div>
+    </div>
+    <div class = 'row'>
+      <div class = 'row '>
+        <div class = 'col-md-3'>
+          <div class="form-inline">
+            <div class="form-group">
+              <label>
+                Subtype
+              </label>
+            </div>
+            
+            <div class="form-group">
+              <select id = '_site_subtype_for_conservation'></select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class = 'row'>
+        <svg id = '_seq_tertiary_plot'/>
+      </div>
+    </div>
+  </div>
+</div>
