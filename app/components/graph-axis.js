@@ -26,8 +26,8 @@ export default Ember.Component.extend({
       .orient(this.get('orient'))
       .ticks(this.get('ticks'))
       .tickValues(this.get('tickValues'))
-      .tickSize(this.get('tickSize'))
       .tickFormat(this.get('tickFormat'))
+      .tickSize(this.get('tickSize'))
       .tickPadding(this.get('tickPadding'));
     this.set('_axis', axis);
     return axis;

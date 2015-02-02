@@ -54,4 +54,6 @@ app.import("bower_components/font-awesome/fonts/FontAwesome.otf", { destDir: "fo
 
 app.import('bower_components/lodash/lodash.js');
 
+app.import('bower_components/moment/moment.js');
+
 module.exports = app.toTree();

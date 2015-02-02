@@ -119,7 +119,7 @@ export default Ember.Component.extend({
   }.property('xScale', 'yScale'),
 
   xAxisFormat: function() {
-    return d3.time.format('%x');
+    return d3.time.format("%B %Y");
   }.property(),
 
   xTickValues: function() {
