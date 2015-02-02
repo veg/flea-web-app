@@ -24,17 +24,22 @@ export default Ember.Component.extend({
     var result = [];
     var start = this.get("rangeStart");
     var stop = this.get("rangeStop");
-    var slice = function(s) {
-      return s.sequence.slice(start - 1, stop);
+    var mrca = this.get('mrcaSlice');
+    var process = function(s) {
+      var result = s.sequence.slice(start - 1, stop);
+      var strarray = result.split('');
+      return strarray.map(function(aa, idx) {
+        return aa === mrca[idx] ? '.' : aa;
+      }).join('');
     };
     for (var key in grouped) {
       if (!grouped.hasOwnProperty(key)) {
         continue;
       }
       result.push({'date': key,
-                   'sequences': grouped[key].map(slice)});
+                   'sequences': grouped[key].map(process)});
     }
     result.sort();
     return result;
-  }.property('rangeStart', 'rangeStop', 'inputSequences@each')
+    }.property('rangeStart', 'rangeStop', 'mrcaSlice', 'inputSequences@each')
 });
