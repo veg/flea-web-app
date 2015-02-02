@@ -5,9 +5,9 @@ export default Ember.Component.extend({
   collapseSeqs: true,
   markPositive: true,
   maskUnchanged: true,
-  
+
   // bound to controller
-  inputSequences: null,
+  inputSequences: [],
   referenceCoords: null,
   rangeStart: 1,
   rangeStop: 1,
@@ -52,5 +52,5 @@ export default Ember.Component.extend({
     result.sort();
     return result;
   }.property('rangeStart', 'rangeStop', 'mrcaSlice',
-             'inputSequences@each', 'maskUnchanged', 'collapseSeqs')
+             'inputSequences@each', 'inputSequences.length', 'maskUnchanged', 'collapseSeqs')
 });

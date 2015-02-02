@@ -11,8 +11,7 @@
 
       <div id="_select_aa_display" class="panel-collapse collapse">
         <div class="panel-body">
-          {{filter-widget content=content name="Sequence Selector" selected=selectedSequences
-          displayName="id"}}
+          {{filter-widget content=observedSequences name="Sequence Selector" selected=selectedSequences displayName="id"}}
         </div>
       </div>
     </div>
@@ -49,7 +48,7 @@
           <br>
           <div class = "row">
             <div class = "col-md-12">
-              {{sequence-viewer inputSequences=displaySequences rangeStart=rangeStart rangeStop=rangeStop mrca=mrca}}
+              {{sequence-viewer inputSequences=selectedSequences rangeStart=rangeStart rangeStop=rangeStop mrca=mrca}}
             </div>
           </div>
         </div>

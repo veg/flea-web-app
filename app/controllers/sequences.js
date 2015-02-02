@@ -10,19 +10,20 @@ export default Ember.ObjectController.extend({
   minCoord: 1,
   maxCoord: 800,  // TODO: fix this dynamically
 
-  filterSequenceTypes: function(type) {
-    var all_sequences = this.get('model');
-    return all_sequences.filter(function(seq) {
+  filterSequenceTypes: function(seqs, type) {
+    return seqs.filter(function(seq) {
       return seq.get('type') === type;
     });
   },
 
-  displaySequences: function() {
-    return this.filterSequenceTypes('Observed');
+  observedSequences: function() {
+    var seqs = this.get('model');
+    return this.filterSequenceTypes(seqs, 'Observed');
   }.property('model@each'),
 
   mrca: function() {
-    return this.filterSequenceTypes('MRCA')[0];
-  }.property('model@each')
+    var seqs = this.get('model');
+    return this.filterSequenceTypes(seqs, 'MRCA')[0];
+  }.property('model@each'),
 
 });
