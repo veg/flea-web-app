@@ -32,12 +32,11 @@
         <div class="panel-body">
           <div class = "row">
             <div class = "col-md-12">
-              {{sequence-range-controls}}
+              {{sequence-range-controls rangeStart=rangeStart rangeStop=rangeStop minCoord=minCoord maxCoord=maxCoord markPositive=markPositive}}
             </div>
           </div>
           <div class = "row">
             <div class = "col-md-12">
-            {{rangeStart}}, {{rangeStop}}
             <ul>
               {{#each selectedSequences}}
               <li>{{id}}</li>

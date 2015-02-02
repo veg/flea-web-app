@@ -1,11 +1,11 @@
 <div class="input-group input-group-sm">
   <div class="input-group-btn">
-    <button {{action "jumpLeft"}} type="button" class="btn btn-default btn-sm" title="Jump left">
+    <button {{action "moveRange" -5}} type="button" class="btn btn-default btn-sm" title="Jump left">
       <i class="fa fa-fast-backward" ></i>
     </button>
   </div>
   <div class="input-group-btn">
-    <button {{action "moveLeft"}} type="button" class="btn btn-default btn-sm" title="Move left">
+    <button {{action "moveRange" -1}} type="button" class="btn btn-default btn-sm" title="Move left">
       <i class="fa fa-backward" ></i>
     </button>
   </div>
@@ -14,12 +14,12 @@
   <span class="input-group-addon">To</span>
   {{input type="number" class="form-control" value=rangeStop placeholder="HXB2 coordinate (e.g. 200)" autofocus="autofocus"}}
   <div class="input-group-btn">
-    <button {{action "moveRight"}} type="button" class="btn btn-default btn-sm" title="Move right">
+    <button {{action "moveRange" 1}} type="button" class="btn btn-default btn-sm" title="Move right">
       <i class="fa fa-forward" ></i>
     </button>
   </div>
   <div class="input-group-btn">
-    <button {{action "jumpRight"}} type="button" class="btn btn-default btn-sm" title="Jump right">
+    <button {{action "moveRange" 5}} type="button" class="btn btn-default btn-sm" title="Jump right">
       <i class="fa fa-fast-forward" ></i>
     </button>
   </div>

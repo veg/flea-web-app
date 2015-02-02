@@ -13,34 +13,5 @@ export default Ember.ObjectController.extend({
 
   selectionSaved: function(param) {
     console.log(param);
-  },
-
-  moveRange: function(offset) {
-    var start = this.get('rangeStart');
-    var stop = this.get('rangeStop');
-    this.set('rangeStart', start + offset);
-    this.set('rangeStart', stop + offset);
-  },
-
-  moveLeft: function() {
-    this.moveRange(-1);
-  },
-
-  moveRight: function() {
-    this.moveRange(1);
-  },
-
-  jumpLeft: function() {
-    this.moveRange(-5);
-  },
-
-  jumpRight: function() {
-    this.moveRange(5);
-  },
-
+  }
 });
-
-
-function setInRange(i, minval, maxval) {
-  return Math.min(Math.max(i, minval), maxval);
-}
