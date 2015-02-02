@@ -4,6 +4,7 @@
       <span class="input-group-addon"><span class="glyphicon glyphicon-filter"></span>Filter</span>
       {{input type="text" class="form-control" value=searchText placeholder="Type to search" autofocus="autofocus"}}
     </div>
+    <br>
     <div class="toolbar">
       <button {{action "selectAll"}} type="button" class="btn btn-default">Select All</button>
       <button {{action "deselectAll"}} type="button" class="btn btn-default">De-select All</button>
@@ -16,15 +17,19 @@
     <table class="table table-hovered table-striped">
       <thead>
         <tr>
-          <td class="select-cell seq-prop">Select</td>          
-          <td class="seq-prop">Sequence ID</td>
+          <td class="select-cell seq-head"></td>
+          <td class="seq-head">Name</td>
+          <td class="seq-head">Date</td>
+          <td class="seq-head">Type</td>
         </tr>
       </thead>
       <tbody>
         {{#each r in filteredRecords}}
         <tr style="display: table-row;">
-          <td class="select-cell">{{input type="checkbox" name="r.selected" checked=r.selected}}</td>
+          <td class="select-cell" align="center">{{input type="checkbox" name="r.selected" checked=r.selected}}</td>
           <td class="seq-prop"><span {{action "select" r}}>{{r.id}}</span></td>
+          <td class="seq-prop"><span {{action "select" r}}>{{r.date}}</span></td>
+          <td class="seq-prop"><span {{action "select" r}}>{{r.type}}</span></td>
         </tr>
         {{/each}}
       </tbody>

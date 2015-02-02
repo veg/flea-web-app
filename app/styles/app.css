@@ -62,12 +62,16 @@ body {
     font: 12px monospace;
 }
 
+.seq-head {
+    font: 14px monospace;
+}
+
 .seq-prop {
-    font: 12px monospace;
+    font: 10px monospace;
 }
 
 .select-cell {
-    width: 10px;
+    width: 12px;
 }
 
 ._evo_area {
