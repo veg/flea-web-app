@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import request from 'ic-ajax';
 
-export default Ember.Route.extend({
+export default Ember.Object.extend({
   // gets rates-pheno.json and formats it to Dates and numbers.
   find: function() {
     return request('/api/rates_pheno').then(function(result) {

@@ -9,7 +9,6 @@ export default Ember.Object.extend({
     }
 
     var adapter = this.container.lookup('adapter:' + name);
-
     return adapter.find().then(function(record) {
       cache[name] = record;
       return record;
