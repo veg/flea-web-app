@@ -34,7 +34,7 @@ export default Ember.Controller.extend({
       }
     }
     result.sort();
-    result.splice(0, 'mab');
+    result.splice(0, 0, 'mab');
     return result;
   }.property('model.dates@each'),
 
