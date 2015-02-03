@@ -99,8 +99,9 @@ export default Ember.Controller.extend({
           var susceptible = feats.filter(function(d) { return !d.value; });
           frac = resistant.length / (resistant.length + susceptible.length);
         }
+        var color = red_white(frac);
         row.push({value: format_percent(frac),
-                  style: "background-color: rgb(255, 0, 0);",
+                  style: "background-color: " + color,
                   html: "TODO"});
       }
       result.push(row);
