@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
   mabFeatures: function() {
-    var json = this.get('model');
+    var json = this.get('model')['neutralization'];
     var seq_id_to_date = this.get('seqIdToDate');
 
     var mab_table = {};
@@ -22,25 +22,21 @@ export default Ember.Controller.extend({
       }
     }
     return mab_table;
-  }.property('model@each', 'seqIdToDate'),
+  }.property('model.neutralization@each', 'seqIdToDate'),
 
   // TODO: move these to the view?
   headerNames: function() {
-    var dates = this.get('dates');
-    // FIXME: why do we get a promise here???
-    dates.then(function(d) {
-      console.log(d);
-      var result = [];
-      for (var k in d) {
-        if(d.hasOwnProperty(k)) {
-          result.push();
-        }
+    var d = this.get('model')['dates'];
+    var result = [];
+    for (var k in d) {
+      if(d.hasOwnProperty(k)) {
+        result.push(k);
       }
-      result.sort();
-      result.splice(0, 'mab');
-      return result;
-    });
-  }.property('dates@each'),
+    }
+    result.sort();
+    result.splice(0, 'mab');
+    return result;
+  }.property('model.dates@each'),
 
   tableData: function() {
     /* [[{value: v,
@@ -66,20 +62,18 @@ export default Ember.Controller.extend({
       }
       result.push(row);
     }
+    console.log(result);
     return result;
   }.property('mabFeatures@each'),
 
   seqIdToDate: function() {
     var result = [];
-    var promise = this.get('sequences');
-    promise.then(function(seqs) {
-      return seqs.reduce(function(acc, s) {
-        acc[s['id']] = s['date'];
-        return acc;
-      }, {});
-    });
-  }.property('sequences@each')
-
+    var seqs = this.get('model')['sequences'];
+    return seqs.reduce(function(acc, s) {
+      acc[s['id']] = s['date'];
+      return acc;
+    }, {});
+  }.property('model.sequences@each')
 });
 
 
