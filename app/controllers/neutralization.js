@@ -10,13 +10,21 @@ export default Ember.Controller.extend({
       if (!json.hasOwnProperty(mab_name)) {
         continue;
       }
-      for (var seq in json[mab_name]['predictions']) {
+      var predictions = json[mab_name]['predictions'];
+      var table_entry = ensureHas(mab_table, mab_name, {});
+      for (var i=0; i<predictions.length; i++) {
+        var seq = predictions[i];
+        if (!(seq.id in seq_id_to_date)) {
+          // FIXME: what to do with internal nodes?
+          continue;
+        }
         var date = seq_id_to_date[seq['id']];
         var value = +seq['value'];
-        var elt = ensureHas(mab_table, date, {});
+        var elt = ensureHas(table_entry, date, {});
         var new_feats = ensureHas(elt, 'features', []);
-        for (var f in seq['features']) {
-          new_feats.push({name: f,
+        var features = seq.features;
+        for (var j=0; j<features.length; j++) {
+          new_feats.push({name: features[j],
                           value: value > 0});
         }
       }
@@ -45,12 +53,16 @@ export default Ember.Controller.extend({
     */
     var red_white = d3.interpolateRgb("white", "red");
     var data = this.get('mabFeatures');
+    console.log(data);
     var result = [];
     for (var mname in data) {
       if (!(data.hasOwnProperty(mname))) {
         continue;
       }
       var row = [];
+      row.push({value: mname,
+                style: "",
+                html: ""});
       for (var date in data[mname]) {
         if (!(data[mname].hasOwnProperty(date))) {
           continue;
