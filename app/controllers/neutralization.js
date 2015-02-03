@@ -60,7 +60,7 @@ export default Ember.Controller.extend({
         result.push(new Date(k));
       }
     }
-    result.sort();
+    result.sort(function(a, b) {return a < b ? -1 : 1;});
     return result;
   }.property('model.dates@each'),
 
