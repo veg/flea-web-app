@@ -79,6 +79,7 @@ export default Ember.Controller.extend({
     */
     var red_white = d3.interpolateRgb("white", "red");
     var data = this.get('mabFeatures');
+    var dates = this.get('sortedDates');
     var result = [];
     for (var mname in data) {
       if (!(data.hasOwnProperty(mname))) {
@@ -88,7 +89,8 @@ export default Ember.Controller.extend({
       row.push({value: mname,
                 style: "",
                 html: ""});
-      for (var date in data[mname]) {
+      for (var i=0; i<dates.length; i++) {
+        var date = dates[i];
         if (!(data[mname].hasOwnProperty(date))) {
           continue;
         }
@@ -107,7 +109,7 @@ export default Ember.Controller.extend({
       result.push(row);
     }
     return result;
-  }.property('mabFeatures@each'),
+  }.property('mabFeatures@each', 'sortedDates@each'),
 
   seqIdToDate: function() {
     var result = [];
