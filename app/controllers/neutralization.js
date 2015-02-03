@@ -1,5 +1,11 @@
 import Ember from 'ember';
 
+var float2 = d3.format (".2f");
+
+function format_percent(frac) {
+  return float2(100 * frac) + "%";
+}
+
 export default Ember.Controller.extend({
   mabFeatures: function() {
     var json = this.get('model')['neutralization'];
@@ -38,7 +44,8 @@ export default Ember.Controller.extend({
     var result = [];
     for (var k in d) {
       if(d.hasOwnProperty(k)) {
-        result.push(k);
+        var date = new Date(k);
+        result.push(moment(date).format("MMM YYYY"));
       }
     }
     result.sort();
@@ -53,7 +60,6 @@ export default Ember.Controller.extend({
     */
     var red_white = d3.interpolateRgb("white", "red");
     var data = this.get('mabFeatures');
-    console.log(data);
     var result = [];
     for (var mname in data) {
       if (!(data.hasOwnProperty(mname))) {
@@ -67,14 +73,19 @@ export default Ember.Controller.extend({
         if (!(data[mname].hasOwnProperty(date))) {
           continue;
         }
-        var percent = "100%";
-        row.push({value: percent,
+        var feats = data[mname][date]['features'];
+        var frac = 0;
+        if (feats.length > 0) {
+          var resistant = feats.filter(function(d) { return d.value; });
+          var susceptible = feats.filter(function(d) { return !d.value; });
+          frac = resistant.length / (resistant.length + susceptible.length);
+        }
+        row.push({value: format_percent(frac),
                   style: "background-color: rgb(255, 0, 0);",
                   html: "TODO"});
       }
       result.push(row);
     }
-    console.log(result);
     return result;
   }.property('mabFeatures@each'),
 
