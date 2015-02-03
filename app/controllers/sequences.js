@@ -25,5 +25,4 @@ export default Ember.ObjectController.extend({
     var seqs = this.get('model');
     return this.filterSequenceTypes(seqs, 'MRCA')[0];
   }.property('model@each'),
-
 });

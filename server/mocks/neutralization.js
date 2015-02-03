@@ -3,10 +3,6 @@ module.exports = function(app) {
   var neutralizationRouter = express.Router();
   var fs = require('fs');
 
-  ratesPhenoRouter.get('/', function(req, res) {
-    res.send(JSON.parse(fs.readFileSync(__dirname + '/rates_pheno.json', 'ascii')));
-  });
-
   neutralizationRouter.get('/', function(req, res) {
     res.send(JSON.parse(fs.readFileSync(__dirname + '/mab.json', 'ascii')));
   });

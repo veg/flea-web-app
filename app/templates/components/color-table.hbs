@@ -1,0 +1,19 @@
+<table class="table table-hover table-condensed">
+  <thead>
+    <tr>
+      {{#each h in header}}
+      <td>{{h}}</td>
+      {{/each}}
+    </tr>
+  </thead>
+  <tbody>
+    {{#each row in data}}
+    <tr>
+      {{#each elt in row}}
+      <td style={{elt.style}}>
+        {{elt.value}}
+      </td>
+    {{/each}}
+    </tr>
+    {{/each}}
+</table>
