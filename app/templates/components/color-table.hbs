@@ -10,7 +10,7 @@
     {{#each row in data}}
     <tr>
       {{#each elt in row}}
-      <td>
+      <td {{bindAttr style=elt.style}}>
         {{elt.value}}
       </td>
     {{/each}}
