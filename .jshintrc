@@ -3,7 +3,10 @@
     "document",
     "window",
     "-Promise",
-    "d3"
+    "d3",
+    "_",
+    "Handlebars",
+    "moment"
   ],
   "browser": true,
   "boss": true,
