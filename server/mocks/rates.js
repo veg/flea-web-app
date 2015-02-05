@@ -3,7 +3,7 @@ module.exports = function(app) {
   var ratesRouter = express.Router();
   var fs = require('fs');
 
-  sequencesRouter.get('/', function(req, res) {
+  ratesRouter.get('/', function(req, res) {
     res.send(JSON.parse(fs.readFileSync(__dirname + '/rates.json', 'ascii')));
   });
 
