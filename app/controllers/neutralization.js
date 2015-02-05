@@ -2,6 +2,8 @@ import Ember from 'ember';
 
 var float2 = d3.format (".2f");
 
+// TODO: make sub route for individual cell popover
+
 function format_percent(frac) {
   return float2(100 * frac) + "%";
 }
@@ -67,7 +69,7 @@ export default Ember.Controller.extend({
   // TODO: move these to the view?
   headerNames: function() {
     var dates = this.get('sortedDates');
-    var result = dates.map(function(d) {return moment(d).format("MMM YYYY")});
+    var result = dates.map(function(d) {return moment(d).format("MMM YYYY");});
     result.splice(0, 0, 'mab');
     return result;
   }.property('sortedDates@each'),
@@ -96,15 +98,34 @@ export default Ember.Controller.extend({
         }
         var feats = data[mname][date]['features'];
         var frac = 0;
+        var resistant = [];
+        var susceptible = [];
         if (feats.length > 0) {
-          var resistant = feats.filter(function(d) { return d.value; });
-          var susceptible = feats.filter(function(d) { return !d.value; });
+          resistant = feats.filter(function(d) { return d.value; });
+          susceptible = feats.filter(function(d) { return !d.value; });
           frac = resistant.length / (resistant.length + susceptible.length);
+        }
+        var reduced = feats.reduce(function(acc, f) {
+          if (!(f.name in acc)) {
+            acc[f.name] = [0, 0];
+          }
+          if (f.value) {
+            acc[f.name][1] += 1;
+          } else {
+            acc[f.name][0] += 1;
+          }
+          return acc;
+        }, {});
+        var title = ['feature: susceptible/resistant'];
+        for (var name in reduced) {
+          if (reduced.hasOwnProperty(name)) {
+            title.push(name + ": " + reduced[name][0] + "/" + reduced[name][1]);
+          }
         }
         var color = red_white(frac);
         row.push({value: format_percent(frac),
                   style: "background-color: " + color,
-                  html: "TODO"});
+                  title: title.join('\n')});
       }
       result.push(row);
     }
@@ -112,7 +133,6 @@ export default Ember.Controller.extend({
   }.property('mabFeatures@each', 'sortedDates@each'),
 
   seqIdToDate: function() {
-    var result = [];
     var seqs = this.get('model')['sequences'];
     return seqs.reduce(function(acc, s) {
       acc[s['id']] = s['date'];
