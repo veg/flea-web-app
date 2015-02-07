@@ -3,9 +3,9 @@ import request from 'ic-ajax';
 
 var parse_date = d3.time.format("%Y%m%d");
 
-var GeneInfo = Ember.Object.extend({
-  name: null,
-  data: null,
+var RateInfo = Ember.Object.extend({
+  date: null,
+  rates: null,
 });
 
 export default Ember.Object.extend({
@@ -15,12 +15,15 @@ export default Ember.Object.extend({
       for (var name in result) {
         if (result.hasOwnProperty(name)) {
           var d = name;
-          if (name !== "Combined") {
+          var array = result[name];
+          if (name == "Combined") {
+            array = eval(array);
+          } else {
             d = parse_date.parse(name);
           }
-          new_result.push(GeneInfo.create({
-            name: d,
-            data: result[name]
+          new_result.push(RateInfo.create({
+            date: d,
+            rates: array
           }));
         }
       }
