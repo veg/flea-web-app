@@ -20,10 +20,10 @@ export default Ember.Controller.extend({
     var result = {};
     var data = this.get('positionDataIndividual');
     for (var k=0; k<data.length; k++) {
-      result[data[k].date] = check_positive_selection(data[k].rates);
+      result[data[k].date] = positive_selection_positions(data[k].rates);
     }
     var combined = this.get('positionDataCombined');
-    result['combined'] = check_positive_selection(combined.rates);
+    result['combined'] = positive_selection_positions(combined.rates);
     return result;
   }.property('positionDataIndividual@each', 'positionDataCombined'),
 
@@ -75,7 +75,8 @@ function get_site_residues(data, site) {
   return d3.keys (all_residues).sort();
 }
 
-function check_positive_selection (mx) {
+// 1-based indexing
+function positive_selection_positions (mx) {
   return mx.map (function (d, i) {
     return [i, d[2]];
   }).filter (function (d) {
