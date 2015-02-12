@@ -72,12 +72,15 @@ export default Ember.Component.extend({
     var height = this.get('innerHeight');
     var height_each = this.get('heightEach');
 
+    // necessary for clip path url
+    // FIXME: there must be a more ember-friendly way to do this
+    var url = this.get('url');
+
     // FIXME: use innerGroupTransform, so margin should be unnecessary here
     var margin = this.get('margin');
 
     var n_sites = data1[0].length;
 
-    // TODO: make self-contained
     function brushed() {
       x.domain(brush.empty() ? x_overall.domain() : brush.extent());
       for (var k = 0; k < focus_plots.length; k++) {
@@ -164,12 +167,12 @@ export default Ember.Component.extend({
       plot_svg.append("path")
         .datum(data1[plot_id])
         .attr("class", "_pos_dS")
-        .attr("clip-path", "url(#clip)")
+        .attr("clip-path", "url(" + url + "#clip)")
         .attr("d", local_areas[0]);
       if (two_d) {
         plot_svg.append("path")
           .datum(data2[plot_id])
-          .attr("clip-path", "url(#clip)")
+          .attr("clip-path", "url(" + url + "#clip)")
           .attr("class", "_pos_dN")
           .attr("d", local_areas[1]);
       }
