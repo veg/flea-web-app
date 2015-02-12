@@ -59,12 +59,10 @@ export default Ember.Controller.extend({
 
   // _positive_selection
   positiveSelection: function() {
-    var result = {};
     var data = this.get('sortedRates');
-    for (var k=0; k<data.length; k++) {
-      result[data[k].date] = positive_selection_positions(data[k].rates);
-    }
-    return result;
+    return data.map(function(d) {
+      return positive_selection_positions(d.rates);
+    });
   }.property('sortedRates'),
 
   // _hxb2_coords
