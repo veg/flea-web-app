@@ -10,9 +10,10 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   tagName: 'svg',
   attributeBindings: ['width', 'height'],
-  
+
   width:  850,
   heightEach: 80,
+  labelHeight: 25,
 
   margin: {
     top:    20,
@@ -23,8 +24,8 @@ export default Ember.Component.extend({
 
   height: function() {
     var margin = this.get('margin');
-    return margin.top + margin.bottom + this.get('names.length') * this.get('heightEach');
-  }.property('heightEach', 'margin', 'names.length'),
+    return margin.top + margin.bottom + this.get('names.length') * this.get('heightEach') + this.get('labelHeight');
+  }.property('heightEach', 'margin', 'names.length', 'labelHeight'),
 
 
   didInsertElement: function() {
@@ -52,8 +53,8 @@ export default Ember.Component.extend({
     }
     this._updateChart();
   }.observes('names@each', 'data1@each', 'data2@each', 'positions@each', 'labels@each',
-             'width', 'height', 'heightEach', 'margin', 'yMax'),
-  
+             'width', 'height', 'heightEach', 'margin', 'yMax', 'labelHeight'),
+
   yMax: function() {
     var data1 = this.get('data1');
     var data2 = this.get('data2');
@@ -66,7 +67,7 @@ export default Ember.Component.extend({
     var data2 = this.get('data2');
     var positions = this.get('positions');
     var labels = this.get('labels');
-    
+
     var width = this.get('innerWidth');
     var height = this.get('innerHeight');
     var height_each = this.get('heightEach');
@@ -89,51 +90,51 @@ export default Ember.Component.extend({
       }
       svg.select(".pos.x.axis").call(xAxis);
     }
-    
+
     var svg = d3.select('#' + this.get('elementId')).select('.inner');
-    
+
     svg.selectAll("path").remove();
-    svg.selectAll("g").remove();   
-    svg.selectAll("defs").remove();   
-    
+    svg.selectAll("g").remove();
+    svg.selectAll("defs").remove();
+
     svg.append("defs").append("clipPath")
       .attr("id", "clip")
       .append("rect")
       .attr("width", width)
-      .attr("height", height); 
-    
+      .attr("height", height);
+
     svg = svg.append("g");
-    
+
     var x = d3.scale.linear()
         .range([0, width])
         .domain([1, n_sites]);
-    
+
     var x_overall = d3.scale.linear()
         .range([0, width])
         .domain([1, n_sites]);
-    
+
     var brush = d3.svg.brush()
         .x(x_overall)
-        .on("brush", brushed);    
-    
+        .on("brush", brushed);
+
     var two_d = data2.length > 0;
-    
+
     var ymax = this.get('yMax');
     var y = d3.scale.linear()
         .range([height_each, 0])
         .domain([two_d ? -ymax[1] : 0, ymax[0]]);
-  
+
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom");
-    
+
     var xAxis_overall = d3.svg.axis()
         .scale(x_overall)
         .orient("top");
-    
-    var focus_plots  = [];  
+
+    var focus_plots  = [];
     var area_objects = [];
-    
+
     for (var plot_id = 0; plot_id < names.length; plot_id++) {
       var plot_svg = svg.append ("g")
           .attr("transform", "translate(0," + (height_each * plot_id) + ")");
@@ -143,17 +144,17 @@ export default Ember.Component.extend({
         .y0(function() {  return y(0); })
         .y1(function(d) {  return y(d); })
         .interpolate('step');
-      
-      if (two_d) {    
+
+      if (two_d) {
         local_areas[1] = d3.svg.area()
           .x(function(d,i) { return x(i+1); })
           .y0(function(d) {  return y(-d); })
           .y1(function() {  return y(0); })
           .interpolate('step');
       }
-      
+
       area_objects.push(local_areas);
-      
+
       plot_svg.append ("text")
         .attr("transform", "translate(0," + y(0) + ") rotate (-90)")
         .attr("y", "0")
@@ -195,7 +196,7 @@ export default Ember.Component.extend({
           .text (function (d) { return "Codon " + d; });
       }
     }
-    
+
     svg.append("g")
       .attr("class", "pos x_overall axis")
       .call(xAxis_overall)
@@ -204,21 +205,24 @@ export default Ember.Component.extend({
       .attr("dy", "-.4em")
       .attr("dx", ".25em")
       .style("text-anchor", "start")
-      .text("Site");    
-    
+      .text("Site");
+
+    var labelHeight = this.get('labelHeight');
+
     svg.append("g")
       .attr("class", "pos x axis")
-      .attr("transform", "translate(0," + (height) + ")")
+      .attr("transform", "translate(0," + (height - labelHeight) + ")")
       .call(xAxis)
       .append("text")
       .attr("transform", "translate(0,0)")
       .attr("dy", "+1.1em")
       .attr("dx", ".25em")
       .style("text-anchor", "start")
-      .text("Site");    
-    
+      .text("Site");
+
+    // FIXME: vertical spacing
     if (labels.length > 0) {
-      var legend_dim = {x: 20, y:height + margin.top + margin.bottom/3, spacer:15, margin:5, font: 10, x_step : 100};
+      var legend_dim = {x: 0, y:height - labelHeight + 10, spacer:15, margin:5, font: 10, x_step : 100};
       var me_colors = ['#2E66FF', '#FFB314'];
       var legend = svg.append("g")
           .attr("class", "_evo_legend")
@@ -245,4 +249,3 @@ export default Ember.Component.extend({
     }
   }
 });
-

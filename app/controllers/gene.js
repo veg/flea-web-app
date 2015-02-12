@@ -5,7 +5,7 @@ export default Ember.Controller.extend({
 
   labels: function() {
     return ['Mean dS', 'Mean dN'];
-  },
+  }.property(),
 
   sortedRates: function () {
     var rates = this.get('model.rates');
