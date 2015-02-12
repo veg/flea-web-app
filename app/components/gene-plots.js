@@ -86,7 +86,6 @@ export default Ember.Component.extend({
         }
         focus_plots[k].selectAll(".selected_site").
           attr ("cx", function (d) {return x(d);});
-        
       }
       svg.select(".pos.x.axis").call(xAxis);
     }
@@ -137,7 +136,7 @@ export default Ember.Component.extend({
     
     for (var plot_id = 0; plot_id < names.length; plot_id++) {
       var plot_svg = svg.append ("g")
-          .attr("transform", "translate(0," + (margin.top + height_each * plot_id) + ")");
+          .attr("transform", "translate(0," + (height_each * plot_id) + ")");
       var local_areas = [];
       local_areas[0] = d3.svg.area()
         .x(function(d,i) { return x(i+1); })
@@ -199,7 +198,6 @@ export default Ember.Component.extend({
     
     svg.append("g")
       .attr("class", "pos x_overall axis")
-      .attr("transform", "translate(0," + (margin.top-2) + ")")
       .call(xAxis_overall)
       .append("text")
       .attr("transform", "translate(0,0)")
@@ -210,7 +208,7 @@ export default Ember.Component.extend({
     
     svg.append("g")
       .attr("class", "pos x axis")
-      .attr("transform", "translate(0," + (margin.top+height) + ")")
+      .attr("transform", "translate(0," + (height) + ")")
       .call(xAxis)
       .append("text")
       .attr("transform", "translate(0,0)")
