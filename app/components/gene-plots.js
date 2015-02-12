@@ -12,7 +12,7 @@ export default Ember.Component.extend({
   attributeBindings: ['width', 'height'],
   
   width:  850,
-  heightEach: 55,
+  heightEach: 80,
 
   margin: {
     top:    20,
@@ -138,7 +138,7 @@ export default Ember.Component.extend({
     
     for (var plot_id = 0; plot_id < names.length; plot_id++) {
       var plot_svg = svg.append ("g")
-        .attr("transform", "translate(" + margin.left + "," + (margin.top + height_each * plot_id) + ")");
+          .attr("transform", "translate(0," + (margin.top + height_each * plot_id) + ")");
       var local_areas = [];
       local_areas[0] = d3.svg.area()
         .x(function(d,i) { return x(i+1); })
@@ -200,7 +200,7 @@ export default Ember.Component.extend({
     
     svg.append("g")
       .attr("class", "pos x_overall axis")
-      .attr("transform", "translate("+ margin.left + "," + (margin.top-2) + ")")
+      .attr("transform", "translate(0," + (margin.top-2) + ")")
       .call(xAxis_overall)
       .append("text")
       .attr("transform", "translate(0,0)")
@@ -211,7 +211,7 @@ export default Ember.Component.extend({
     
     svg.append("g")
       .attr("class", "pos x axis")
-      .attr("transform", "translate("+ margin.left + "," + (margin.top+height) + ")")
+      .attr("transform", "translate(0," + (margin.top+height) + ")")
       .call(xAxis)
       .append("text")
       .attr("transform", "translate(0,0)")
