@@ -15,10 +15,8 @@ export default Ember.Object.extend({
       for (var name in result) {
         if (result.hasOwnProperty(name)) {
           var d = name;
-          var array = result[name];
-          if (name == "Combined") {
-            array = eval(array);
-          } else {
+          var array = eval(result[name]);
+          if (name !== "Combined") {
             d = parse_date.parse(name);
           }
           new_result.push(RateInfo.create({

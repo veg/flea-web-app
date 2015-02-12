@@ -3,29 +3,60 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 
-  // _pos_data
-  positionDataCombined: function () {
-    return this.get('model.rates').filter(function(d) {return d === 'Combined';});
+  labels: function() {
+    return ['Mean dS', 'Mean dN'];
+  },
+
+  sortedRates: function () {
+    var rates = this.get('model.rates');
+    var timepoints = rates.filter(function(d) {return d.date !== 'Combined';});
+    var combined = rates.filter(function(d) {return d.date === 'Combined';});
+    timepoints.sort(function (a,b) {return a.date - b.date;});
+    timepoints.splice(0, 0, combined[0]);
+    return timepoints;
   }.property('model.rates@each'),
 
-  // _pos_overall_data
-  positionDataIndividual: function () {
-    var result = this.get('model.rates').filter(function(d) {return d !== 'Combined';});
-    result.sort(function (a,b) {return a[0]-b[0];});
+  getRate: function(data, idx) {
+    var result = data.map(function(d) {
+      return d.rates.map(function(r) {
+        return r[idx];
+      });
+    });
     return result;
-  }.property('model.rates@each'),
+  },
 
+  meanDS: function() {
+    var rates = this.get('sortedRates');
+    return this.getRate(rates, 0);
+  }.property('sortedRates@each'),
+
+
+  meanDN: function() {
+    var rates = this.get('sortedRates');
+    return this.getRate(rates, 1);
+  }.property('sortedRates@each'),
+
+
+  entropy: function() {
+    var rates = this.get('sortedRates');
+    return this.getRate(rates, 4);
+  }.property('sortedRates@each'),
+
+  names: function() {
+    var sorted = this.get('sortedRates');
+    var result = sorted.map(function(d) { return d.date; });
+    return result;
+  }.property('sortedRates@each'),
+  
   // _positive_selection
   positiveSelection: function() {
     var result = {};
-    var data = this.get('positionDataIndividual');
+    var data = this.get('sortedRates');
     for (var k=0; k<data.length; k++) {
       result[data[k].date] = positive_selection_positions(data[k].rates);
     }
-    var combined = this.get('positionDataCombined');
-    result['combined'] = positive_selection_positions(combined.rates);
     return result;
-  }.property('positionDataIndividual@each', 'positionDataCombined'),
+  }.property('sortedRates'),
 
   // _hxb2_coords
   hxb2Coords: function () {
