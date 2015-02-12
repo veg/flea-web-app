@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import request from 'ic-ajax';
-
-var parse_date = d3.time.format("%Y%m%d");
+import {parse_date} from '../utils/utils';
 
 var RateInfo = Ember.Object.extend({
   date: null,
@@ -17,7 +16,7 @@ export default Ember.Object.extend({
           var d = name;
           var array = eval(result[name]);
           if (name !== "Combined") {
-            d = parse_date.parse(name);
+            d = parse_date(name);
           }
           new_result.push(RateInfo.create({
             date: d,

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import request from 'ic-ajax';
+import {parse_date} from '../utils/utils';
 
 export default Ember.Object.extend({
   /* formats sequences to flat format:
@@ -59,13 +60,10 @@ export default Ember.Object.extend({
 });
 
 
-var parse_date = d3.time.format("%Y%m%d");
-
-
 function make_seq(id, date, sequence, type) {
   // FIXME: null dates are a problem everywhere!
   if (date !== null) {
-    date = parse_date.parse(date);
+    date = parse_date(date);
   }
   return Ember.Object.create({
     id: id,

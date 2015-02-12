@@ -23,7 +23,6 @@ export default Ember.Component.extend({
 
   height: function() {
     var margin = this.get('margin');
-    console.log(margin.top + margin.bottom + this.get('names.length') * this.get('heightEach'));
     return margin.top + margin.bottom + this.get('names.length') * this.get('heightEach');
   }.property('heightEach', 'margin', 'names.length'),
 

@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import request from 'ic-ajax';
 
-var parse_date = d3.time.format("%Y%m%d");
+import {parse_date} from '../utils/utils';
 
 export default Ember.Object.extend({
   find: function() {
@@ -11,7 +11,7 @@ export default Ember.Object.extend({
         if (!(result.hasOwnProperty(d))) {
           continue;
         }
-        var parsed_d = parse_date.parse(d);
+        var parsed_d = parse_date(d);
         new_result[parsed_d] = result[d];
       }
       return new_result;

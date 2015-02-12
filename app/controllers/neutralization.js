@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import {format_date} from '../utils/utils';
 
 var float2 = d3.format (".2f");
 
@@ -69,7 +70,7 @@ export default Ember.Controller.extend({
   // TODO: move these to the view?
   headerNames: function() {
     var dates = this.get('sortedDates');
-    var result = dates.map(function(d) {return moment(d).format("MMM YYYY");});
+    var result = dates.map(function(d) {return format_date(d);});
     result.splice(0, 0, 'mab');
     return result;
   }.property('sortedDates@each'),

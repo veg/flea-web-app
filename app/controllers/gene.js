@@ -1,5 +1,5 @@
 import Ember from 'ember';
-
+import {parse_date, format_date, isString} from '../utils/utils';
 
 export default Ember.Controller.extend({
 
@@ -44,10 +44,19 @@ export default Ember.Controller.extend({
 
   names: function() {
     var sorted = this.get('sortedRates');
-    var result = sorted.map(function(d) { return d.date; });
+    var result = sorted.map(function(d) {
+      var name = d.date;
+      if (name === 'Combined') {
+        return name;
+      }
+      if(isString(name)) {
+        name = parse_date(name);
+      }
+      return format_date(name);
+    });
     return result;
   }.property('sortedRates@each'),
-  
+
   // _positive_selection
   positiveSelection: function() {
     var result = {};
