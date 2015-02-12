@@ -71,6 +71,8 @@ export default Ember.Component.extend({
     var width = this.get('innerWidth');
     var height = this.get('innerHeight');
     var height_each = this.get('heightEach');
+
+    // FIXME: use innerGroupTransform, so margin should be unnecessary here
     var margin = this.get('margin');
 
     var n_sites = data1[0].length;
@@ -91,9 +93,6 @@ export default Ember.Component.extend({
     }
     
     var svg = d3.select('#' + this.get('elementId')).select('.inner');
-    
-    svg.attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom);
     
     svg.selectAll("path").remove();
     svg.selectAll("g").remove();   
