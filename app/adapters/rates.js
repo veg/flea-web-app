@@ -14,7 +14,7 @@ export default Ember.Object.extend({
       for (var name in result) {
         if (result.hasOwnProperty(name)) {
           var d = name;
-          var array = eval(result[name]);
+          var array = eval(result[name]);  // FIXME: remove eval
           if (name !== "Combined") {
             d = parse_date(name);
           }
