@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import format_date from '../utils/utils';
+import {format_date} from '../utils/utils';
 
 export default Ember.Component.extend({
 
@@ -47,7 +47,7 @@ export default Ember.Component.extend({
       if (this.get('collapseSeqs')) {
         final_seqs = _.unique(final_seqs);
       }
-      result.push({'date': format_date(key),
+      result.push({'date': format_date(new Date(key)),
                    'sequences': final_seqs});
     }
     result.sort();
