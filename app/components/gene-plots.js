@@ -195,6 +195,7 @@ export default Ember.Component.extend({
           .attr ("cy", function () {return y(0);})
           .attr ("r", 4)
           .attr ("class", "selected_site")
+          .attr("clip-path", "url(" + url + "#clip)")
           .append("title")
           .text (function (d) { return "Codon " + d; });
       }
