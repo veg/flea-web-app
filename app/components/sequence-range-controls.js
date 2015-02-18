@@ -40,9 +40,13 @@ export default Ember.Component.extend({
       // FIXME: why are these sometimes strings???
       var start = +this.get('rangeStart');
       var stop = +this.get('rangeStop');
-      this.set('myRangeStart', start + offset);
-      this.set('myRangeStop', stop + offset);
-      this.toController();
+      if ((this.get('minCoord') <= start + offset) &&
+          (start + offset <= stop + offset) &&
+          (stop + offset <= this.get('maxCoord'))) {
+        this.set('myRangeStart', start + offset);
+        this.set('myRangeStop', stop + offset);
+        this.toController();
+      }
     },
     display: function() {
       this.toController();
