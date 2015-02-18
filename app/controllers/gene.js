@@ -47,12 +47,9 @@ export default Ember.Controller.extend({
   }.property('sortedRates.[].[]'),
 
   data1: function() {
-    console.log('data1');
     if (this.get('useEntropy')) {
-      console.log(this.get('entropy')[0][0]);
       return this.get('entropy');
     }
-    console.log(this.get('meanDS')[0][0]);
     return this.get('meanDS');
   }.property('useEntropy', 'entropy.[].[]', 'meanDS.[].[]'),
 
