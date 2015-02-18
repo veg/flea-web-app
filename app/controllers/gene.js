@@ -3,9 +3,15 @@ import {parse_date, format_date, isString} from '../utils/utils';
 
 export default Ember.Controller.extend({
 
+  useEntropy: false,
+  markPositive: true,
+
   labels: function() {
+    if (this.get('useEntropy')) {
+      return ['Entropy'];
+    }
     return ['Mean dS', 'Mean dN'];
-  }.property(),
+  }.property('useEntropy'),
 
   sortedRates: function () {
     var rates = this.get('model.rates');
@@ -28,19 +34,34 @@ export default Ember.Controller.extend({
   meanDS: function() {
     var rates = this.get('sortedRates');
     return this.getRate(rates, 0);
-  }.property('sortedRates@each'),
-
+  }.property('sortedRates.[].[]'),
 
   meanDN: function() {
     var rates = this.get('sortedRates');
     return this.getRate(rates, 1);
-  }.property('sortedRates@each'),
-
+  }.property('sortedRates.[].[]'),
 
   entropy: function() {
     var rates = this.get('sortedRates');
     return this.getRate(rates, 4);
-  }.property('sortedRates@each'),
+  }.property('sortedRates.[].[]'),
+
+  data1: function() {
+    console.log('data1');
+    if (this.get('useEntropy')) {
+      console.log(this.get('entropy')[0][0]);
+      return this.get('entropy');
+    }
+    console.log(this.get('meanDS')[0][0]);
+    return this.get('meanDS');
+  }.property('useEntropy', 'entropy.[].[]', 'meanDS.[].[]'),
+
+  data2: function() {
+      if (this.get('useEntropy')) {
+      return [];
+    }
+    return this.get('meanDN');
+  }.property('useEntropy', 'entropy.[].[]', 'meanDN.[].[]'),
 
   names: function() {
     var sorted = this.get('sortedRates');
@@ -55,7 +76,7 @@ export default Ember.Controller.extend({
       return format_date(name);
     });
     return result;
-  }.property('sortedRates@each'),
+  }.property('sortedRates.[].[]'),
 
   // _positive_selection
   positiveSelection: function() {
@@ -64,6 +85,13 @@ export default Ember.Controller.extend({
       return positive_selection_positions(d.rates);
     });
   }.property('sortedRates'),
+
+  positions: function() {
+    if (this.get('markPositive')) {
+      return this.get('positiveSelection');
+    }
+    return [];
+  }.property('markPositive', 'positiveSelection'),
 
   // _hxb2_coords
   hxb2Coords: function () {

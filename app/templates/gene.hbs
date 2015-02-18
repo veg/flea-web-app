@@ -1,2 +1,14 @@
-{{gene-plots width=850 names=names data1=meanDS data2=meanDN positions=positiveSelection labels=labels url="/gene"}}
+<div class="input-group input-group-sm">
+  <span class="input-group-addon">
+    Use entropy
+    {{input type="checkbox" name="useEntropy" checked=useEntropy}}
+  </span>
+  <span class="input-group-addon">
+    Mark positively selected sites
+    {{input type="checkbox" name="markPositive" checked=markPositive}}
+  </span>
+</div>
+<br>
+{{gene-plots width=850 names=names data1=data1 data2=data2
+  positions=positions labels=labels url="/gene"}}
 

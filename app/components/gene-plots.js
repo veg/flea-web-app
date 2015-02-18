@@ -52,14 +52,14 @@ export default Ember.Component.extend({
       return;
     }
     this._updateChart();
-  }.observes('names@each', 'data1@each', 'data2@each', 'positions@each', 'labels@each',
-             'width', 'height', 'heightEach', 'margin', 'yMax', 'labelHeight'),
+  }.observes('names@each', 'data1.[].[]', 'data2.[].[]', 'positions.[].[]',
+             'labels.[]', 'width', 'height', 'heightEach', 'margin', 'yMax', 'labelHeight'),
 
   yMax: function() {
     var data1 = this.get('data1');
     var data2 = this.get('data2');
     return [d3.max(_.flatten(data1)), d3.max(_.flatten(data2))];
-  }.property('data1@each', 'data2@each'),
+  }.property('data1.[].[]', 'data2.[].[]'),
 
   _updateChart: function() {
     var names = this.get('names');
