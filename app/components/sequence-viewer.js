@@ -17,7 +17,7 @@ export default Ember.Component.extend({
     var start = this.get("rangeStart");
     var stop = this.get("rangeStop");
     return this.get('mrca').sequence.slice(start - 1, stop);
-  }.property('rangeStart', 'rangeStop', 'inputSequences@each'),
+  }.property('rangeStart', 'rangeStop', 'inputSequence.@each'),
 
   groupedSequences: function() {
     var self = this;
@@ -53,5 +53,5 @@ export default Ember.Component.extend({
     result.sort();
     return result;
   }.property('rangeStart', 'rangeStop', 'mrcaSlice',
-             'inputSequences@each', 'inputSequences.length', 'maskUnchanged', 'collapseSeqs')
+             'inputSequence.@each', 'inputSequences.length', 'maskUnchanged', 'collapseSeqs')
 });

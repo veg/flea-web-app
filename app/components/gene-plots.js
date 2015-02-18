@@ -52,7 +52,7 @@ export default Ember.Component.extend({
       return;
     }
     this._updateChart();
-  }.observes('names@each', 'data1.[].[]', 'data2.[].[]', 'positions.[].[]',
+  }.observes('name.@each', 'data1.[].[]', 'data2.[].[]', 'positions.[].[]',
              'labels.[]', 'width', 'height', 'heightEach', 'margin', 'yMax', 'labelHeight'),
 
   yMax: function() {

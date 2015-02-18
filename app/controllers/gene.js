@@ -20,7 +20,7 @@ export default Ember.Controller.extend({
     timepoints.sort(function (a,b) {return a.date - b.date;});
     timepoints.splice(0, 0, combined[0]);
     return timepoints;
-  }.property('model.rates@each'),
+  }.property('model.rate.@each'),
 
   getRate: function(data, idx) {
     var result = data.map(function(d) {
@@ -104,7 +104,7 @@ export default Ember.Controller.extend({
     }
     coords.sort (function (a,b) {return a[0] - b[0];});
     return coords.map (function (d) {return d[1];});
-  }.property('model.frequencies@each'),
+  }.property('model.frequencie.@each'),
 
   // TODO: code duplication
   // used for plotting only; ignored for now
@@ -121,7 +121,7 @@ export default Ember.Controller.extend({
       }
     }
     return pos_sites;
-  }.property('model.frequencies@each'),
+  }.property('model.frequencie.@each'),
 });
 
 

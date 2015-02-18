@@ -19,10 +19,10 @@ export default Ember.ObjectController.extend({
   observedSequences: function() {
     var seqs = this.get('model');
     return this.filterSequenceTypes(seqs, 'Observed');
-  }.property('model@each'),
+  }.property('mode.@each'),
 
   mrca: function() {
     var seqs = this.get('model');
     return this.filterSequenceTypes(seqs, 'MRCA')[0];
-  }.property('model@each'),
+  }.property('mode.@each'),
 });
