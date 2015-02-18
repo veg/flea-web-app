@@ -11,6 +11,7 @@ export default Ember.Component.extend({
   tagName: 'svg',
   attributeBindings: ['width', 'height'],
 
+  //TODO: make it possible to fit width of container
   width:  850,
   heightEach: 80,
   labelHeight: 25,
