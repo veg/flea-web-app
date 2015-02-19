@@ -16,7 +16,6 @@ export default Ember.Select.extend({
     if (maxSelected > 0) {
       var length = this.get('selection.length');
       if (length >= maxSelected) {
-        console.log('disabling');
         // Disable all other checkboxes.
         var nonSelectedOptions = this.$('option').filter(function() {
           return !$(this).is(':selected');
@@ -29,7 +28,6 @@ export default Ember.Select.extend({
       }
       else {
         // Enable all checkboxes.
-        console.log('enabling');
         this.$('option').each(function() {
           var input = $('input[value="' + $(this).val() + '"]');
           input.prop('disabled', false);
