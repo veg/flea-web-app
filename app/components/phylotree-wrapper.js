@@ -5,6 +5,8 @@ export default Ember.Component.extend({
   tagName: 'svg',
   attributeBindings: ['width', 'height'],
 
+  treeWidget: null,
+
   // TODO: make these parameters
   width:  800,
   height: 600,
@@ -15,7 +17,6 @@ export default Ember.Component.extend({
   do_copy_number: false,
 
   didInsertElement: function() {
-    var tree = this.get('tree');
     var seq_ids_to_dates = this.get('seq_ids_to_dates');
 
     var time_point_colors = d3.scale.category10();
@@ -50,15 +51,22 @@ export default Ember.Component.extend({
     }
     tree_widget.options ({'selectable' : false}, false);
 
-    var svg = d3.select('#' + this.get('elementId'));
+    this.set('treeWidget', tree_widget);
 
-    tree_widget(tree).svg(svg).layout();
+    this.update();
+
     //map_evolution_onto_tree();
 
     // default to deepest nodes on top; since other selectors
     // trigger this one, this should always be true for a new
     // tree.
     //sort_nodes (true);
+  },
 
-  }
+  update: function() {
+    var tree = this.get('tree');
+    var svg = d3.select('#' + this.get('elementId'));
+    var tree_widget = this.get('treeWidget');
+    tree_widget(tree).svg(svg).layout();
+  }.observes('tree', 'treeWidget')
 });
