@@ -4,15 +4,15 @@
       <span class="input-group-addon">
         Genomic region
       </span>
-      {{view "select" content=genomicRegions value=selectedGenomicRegion}}
+      {{view "select" class="form-control" content=genomicRegions value=selectedGenomicRegion}}
       <span class="input-group-addon">
         Time point
       </span>
-      {{view "select" content=timePoints value=selectedTimePoint}}
+      {{view "select" class="form-control"content=timePoints value=selectedTimePoint}}
       <span class="input-group-addon">
         Distance measure
       </span>
-      {{view "select" content=distanceMeasures value=selectedDistanceMeasure}}
+      {{view "select" class="form-control"content=distanceMeasures value=selectedDistanceMeasure}}
       <span class="input-group-addon" title = "Perform live updates of the tree when the region selected in the sequence panel changes">
         Link to selected region
         {{input type="checkbox" checked=linkeToSelection}}
