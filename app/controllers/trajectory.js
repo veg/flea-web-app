@@ -15,13 +15,33 @@ export default Ember.ObjectController.extend({
                'ds_diversity',
                'dn_diversity',
                'total_diversity'],
-  selectedEvoMetrics: ['ds_divergence'],
+  selectedEvoMetrics: ['ds_divergence',
+                       'dn_divergence',
+                       'total_divergence',
+                       'total_diversity'],
 
   phenoMetrics: ['Length',
                  'PNGS',
                  "IsoelectricPoint",],
   selectedPhenoMetrics: ['Length', 'PNGS'],
 
+  multipleRegions: function () {
+    var m = ((this.get('selectedEvoMetrics.length') > 1) ||
+             this.get('selectedPhenoMetrics.length') > 1);
+    if (m) {
+      return false;
+    }
+    return true;
+  }.property('selectedEvoMetrics.length',
+             'selectedPhenoMetrics.length'),
+
+  multipleMetrics: function () {
+    var r = (this.get('selectedRegions.length') > 1);
+    if (r) {
+      return false;
+    }
+    return true;
+  }.property('selectedRegions.length'),
 
   evoData: function() {
     var all_data = this.get('model');
