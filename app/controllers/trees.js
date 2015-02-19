@@ -33,6 +33,31 @@ export default Ember.Controller.extend({
     return Object.keys(trees);
   }.property('nestedTrees'),
 
+  timePoints: function() {
+    var trees = this.get('nestedTrees');
+    var region = this.get('selectedGenomicRegion');
+    var dates = Object.keys(trees[region]);
+    var idx = dates.indexOf("Combined");
+    if (idx > 0) {
+      // move to front
+      dates.splice(0, 0, dates.splice(idx, 1)[0]);
+    }
+    return dates.map(function(d) {
+      if (d === "Combined") {
+        return {value: d, formatted: d};
+      }
+      return {value: d, formatted: format_date(new Date(d))};
+    });
+    return dates;
+  }.property('nestedTrees', 'selectedGenomicRegion'),
+
+  distanceMeasures: function() {
+    var trees = this.get('nestedTrees');
+    var region = this.get('selectedGenomicRegion');
+    var date = this.get('selectedTimePoint');
+    return Object.keys(trees[region][date]);
+  }.property('nestedTrees', 'selectedGenomicRegion', 'selectedTimePoint'),
+
   handleSelection: function(options, hidden, key, value, oldvalue) {
     if (value === undefined) {
       if (!(_.includes(options, this.get(hidden)))) {
@@ -60,31 +85,6 @@ export default Ember.Controller.extend({
   selectedDistanceMeasure: function(key, value, oldvalue) {
     return this.handleSelection(this.get('distanceMeasures'), '_selectedDistanceMeasure', key, value, oldvalue);
   }.property('distanceMeasures'),
-
-  timePoints: function() {
-    var trees = this.get('nestedTrees');
-    var region = this.get('selectedGenomicRegion');
-    var dates = Object.keys(trees[region]);
-    var idx = dates.indexOf("Combined");
-    if (idx > 0) {
-      // move to front
-      dates.splice(0, 0, dates.splice(idx, 1)[0]);
-    }
-    return dates.map(function(d) {
-      if (d === "Combined") {
-        return {value: d, formatted: d};
-      }
-      return {value: d, formatted: format_date(new Date(d))};
-    });
-    return dates;
-  }.property('nestedTrees', 'selectedGenomicRegion'),
-
-  distanceMeasures: function() {
-    var trees = this.get('nestedTrees');
-    var region = this.get('selectedGenomicRegion');
-    var date = this.get('selectedTimePoint');
-    return Object.keys(trees[region][date]);
-  }.property('nestedTrees', 'selectedGenomicRegion', 'selectedTimePoint'),
 
   tree: function() {
     var region = this.get('selectedGenomicRegion');
