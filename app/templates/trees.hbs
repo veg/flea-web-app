@@ -8,7 +8,11 @@
       <span class="input-group-addon">
         Time point
       </span>
-      {{view "select" class="form-control"content=timePoints value=selectedTimePoint}}
+      {{view "select" class="form-control"
+          content=timePoints
+          optionValuePath="content.value"
+          optionLabelPath="content.formatted"
+          value=selectedTimePoint}}
       <span class="input-group-addon">
         Distance measure
       </span>

@@ -34,31 +34,31 @@ export default Ember.Controller.extend({
   }.property('nestedTrees'),
 
   handleSelection: function(options, hidden, key, value, oldvalue) {
-    var optionvalues = this.get(options);
     if (value === undefined) {
-      if (!(_.includes(optionvalues, this.get(hidden)))) {
-        this.set(hidden, optionvalues[0]);
+      if (!(_.includes(options, this.get(hidden)))) {
+        this.set(hidden, options[0]);
       }
     } else {
-      if (_.includes(optionvalues, value)) {
+      if (_.includes(options, value)) {
         this.set(hidden, value);
       } else {
-        this.set(hidden, optionvalues[0]);
+        this.set(hidden, options[0]);
       }
     }
     return this.get(hidden);
   },
 
   selectedGenomicRegion: function(key, value, oldvalue) {
-    return this.handleSelection('genomicRegions', '_selectedGenomicRegion', key, value, oldvalue);
+    return this.handleSelection(this.get('genomicRegions'), '_selectedGenomicRegion', key, value, oldvalue);
   }.property('genomicRegions'),
 
   selectedTimePoint: function(key, value, oldvalue) {
-    return this.handleSelection('timePoints', '_selectedTimePoint', key, value, oldvalue);
+    var options = this.get('timePoints').map(function(d) { return d.value; });
+    return this.handleSelection(options, '_selectedTimePoint', key, value, oldvalue);
   }.property('timePoints'),
 
   selectedDistanceMeasure: function(key, value, oldvalue) {
-    return this.handleSelection('distanceMeasures', '_selectedDistanceMeasure', key, value, oldvalue);
+    return this.handleSelection(this.get('distanceMeasures'), '_selectedDistanceMeasure', key, value, oldvalue);
   }.property('distanceMeasures'),
 
   timePoints: function() {
@@ -70,6 +70,12 @@ export default Ember.Controller.extend({
       // move to front
       dates.splice(0, 0, dates.splice(idx, 1)[0]);
     }
+    return dates.map(function(d) {
+      if (d === "Combined") {
+        return {value: d, formatted: d};
+      }
+      return {value: d, formatted: format_date(new Date(d))};
+    });
     return dates;
   }.property('nestedTrees', 'selectedGenomicRegion'),
 
