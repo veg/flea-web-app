@@ -6,7 +6,8 @@
     "d3",
     "_",
     "Handlebars",
-    "moment"
+    "moment",
+    "$"
   ],
   "browser": true,
   "boss": true,
