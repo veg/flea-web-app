@@ -34,6 +34,8 @@ export default Ember.Component.extend({
   },
 
   ymin: null,
+  data: [],
+  data2: [],
 
   didInsertElement: function() {
     // TOOD: is this necessary?
@@ -59,9 +61,11 @@ export default Ember.Component.extend({
 
   seriesNames: function() {
     var data = this.get('data');
-    var names =  data.map(function (d) { return d.name; });
-    return names;
-  }.property('data'),
+    var data2 = this.get('data2');
+    var names1 =  data.map(function (d) { return d.name; });
+    var names2 =  data2.map(function (d) { return d.name; });
+    return names1.concat(names2);
+  }.property('data.@each', 'data2.@each'),
 
   dates: function() {
     var data = this.get('data');
@@ -73,11 +77,11 @@ export default Ember.Component.extend({
     });
     result = d3.set(d3.merge(result)).values();
     return result.map(function(d) {return new Date(d);});
-  }.property('data'),
+  }.property('data.@each'),
 
   xDomain: function() {
     return d3.extent(this.get('dates'));
-  }.property('dates'),
+  }.property('dates.@each'),
 
   xAxisTransform: function() {
     return 'translate(0, %@)'.fmt(this.get('innerHeight'));
@@ -92,8 +96,7 @@ export default Ember.Component.extend({
     return result;
   }.property('innerWidth', 'xDomain'),
 
-  yScale: function() {
-    var data = this.get('data');
+  _yScale: function(data) {
     var maxValue = d3.max(data, function(d) {
       return d3.max(d.values, function(v) { return v.y; });
     });
@@ -107,7 +110,19 @@ export default Ember.Component.extend({
     return d3.scale.linear()
       .range([this.get('innerHeight'), 0])
       .domain([minValue, maxValue]);
-    }.property('innerHeight', 'data', 'ymin'),
+  },
+
+  yScale: function () {
+    return this._yScale(this.get('data'));
+  }.property('innerHeight', 'data.@each', 'ymin'),
+
+  yScale2: function () {
+    return this._yScale(this.get('data2'));
+  }.property('innerHeight', 'data2.@each', 'ymin'),
+
+  yAxisTransform: function() {
+    return 'translate(%@, 0)'.fmt(this.get('innerWidth'));
+  }.property('innerHeight'),
 
   d3Line: function() {
     var xScale = this.get('xScale'),
@@ -117,6 +132,15 @@ export default Ember.Component.extend({
       .y(function(d) { return yScale(d.y); })
       .interpolate('linear');
   }.property('xScale', 'yScale'),
+
+  d3Line2: function() {
+    var xScale = this.get('xScale'),
+        yScale = this.get('yScale2');
+    return d3.svg.line()
+      .x(function(d) { return xScale(d.x); })
+      .y(function(d) { return yScale(d.y); })
+      .interpolate('linear');
+  }.property('xScale', 'yScale2'),
 
   xAxisFormat: function() {
     return d3.time.format("%B %Y");
@@ -136,13 +160,11 @@ export default Ember.Component.extend({
     return colors;
   }.property('seriesNames'),
 
-  _updateChart: function() {
-    var data = this.get('data');
-    var line = this.get('d3Line');
+  _updateData: function(data, line, classname) {
     var svg = d3.select('#' + this.get('elementId')).select('.inner');
     var colors = this.get('colors');
 
-    var paths = svg.select('.lines').selectAll('path')
+    var paths = svg.select(classname).selectAll('path')
         .data(data, function(d) {return d.name;});
 
     paths.enter()
@@ -153,6 +175,11 @@ export default Ember.Component.extend({
       .style("stroke", function(d) { return colors(d.name); });
 
     paths.exit().remove();
+  },
+
+  _updateChart: function() {
+    this._updateData(this.get('data'), this.get('d3Line'), '.lines');
+    this._updateData(this.get('data2'), this.get('d3Line2'), '.lines2');
     this._updateLegend();
   },
 
