@@ -56,4 +56,7 @@ app.import('bower_components/lodash/lodash.js');
 
 app.import('bower_components/moment/moment.js');
 
+app.import('bower_components/phylotree/phylotree.js');
+app.import('bower_components/phylotree/phylotree.css');
+
 module.exports = app.toTree();

@@ -18,6 +18,7 @@
     "bootstrap-multiselect": "~0.9.10",
     "font-awesome": "~4.3.0",
     "lodash": "~3.0.1",
-    "moment": "~2.9.0"
+    "moment": "~2.9.0",
+    "phylotree": "https://github.com/kemaleren/phylotree.js.git#node_scaling"
   }
 }
