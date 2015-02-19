@@ -72,7 +72,7 @@ export default Ember.ObjectController.extend({
              'selectedPhenoMetrics.@each'),
 
   phenoData2: function() {
-    var result = []
+    var result = [];
     if (this.get('selectedPhenoMetrics.length') > 1) {
       result = this._phenoData(1);
     }
