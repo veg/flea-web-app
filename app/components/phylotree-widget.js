@@ -52,15 +52,8 @@ export default Ember.Component.extend({
     tree_widget.options ({'selectable' : false}, false);
 
     this.set('treeWidget', tree_widget);
-
     this.update();
-
-    //map_evolution_onto_tree();
-
-    // default to deepest nodes on top; since other selectors
-    // trigger this one, this should always be true for a new
-    // tree.
-    //sort_nodes (true);
+    //this.map_evolution_onto_tree();  // TODO
   },
 
   update: function() {
@@ -68,5 +61,36 @@ export default Ember.Component.extend({
     var svg = d3.select('#' + this.get('elementId'));
     var tree_widget = this.get('treeWidget');
     tree_widget(tree).svg(svg).layout();
-  }.observes('tree', 'treeWidget')
+    this.sortNodes(true);
+  }.observes('tree', 'treeWidget'),
+
+  sortNodes: function(ascending) {
+    var widget = this.get('treeWidget');
+    widget.traverse_and_compute (function (n) {
+      var d = 1;
+      if (n.children && n.children.length) {
+        d += d3.max (n.children, function (d) { return d["count_depth"];});
+      }
+      n["count_depth"] = d;
+    });
+    widget.resort_children (function (a,b) {
+      return (a["count_depth"] - b["count_depth"]) * (ascending ? 1 : -1);
+    });
+  },
+
+  sortOriginal: function() {
+    this.get('treeWidget').resort_children (function (a,b) {
+      return a["original_child_order"] - b["original_child_order"];
+    });
+  },
+
+  expandSpacing: function() {
+    var widget = this.get('treeWidget');
+    widget.spacing_x(widget.spacing_x() + 1).update(true);
+  },
+
+  compressSpacing: function() {
+    var widget = this.get('treeWidget');
+    widget.spacing_x(widget.spacing_x() - 1).update(true);
+  }
 });

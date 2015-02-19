@@ -1,5 +1,5 @@
-<div class = "row">
-  <div class = "col-md-12">
+<div class="row">
+  <div class="col-md-12">
     <div class="input-group input-group-sm">
       <span class="input-group-addon">
         Genomic region
@@ -17,7 +17,7 @@
         Distance measure
       </span>
       {{view "select" class="form-control"content=distanceMeasures value=selectedDistanceMeasure}}
-      <span class="input-group-addon" title = "Perform live updates of the tree when the region selected in the sequence panel changes">
+      <span class="input-group-addon" title="Perform live updates of the tree when the region selected in the sequence panel changes">
         Link to selected region
         {{input type="checkbox" checked=linkeToSelection}}
       </span>
@@ -26,6 +26,35 @@
         {{input type="checkbox" checked=showCloneNames}}
       </span>
     </div>
-    {{phylotree-wrapper tree=tree seq_ids_to_dates=seqIdToDate}}
+  </div>
+</div>
+
+<div class='row'>
+  <div class='col-md-12'>
+    <div class="btn-toolbar" role="toolbar">
+      <div class="btn-group">
+        <button type="button" class="btn btn-default btn-sm" id="expand_spacing" title="Expand spacing">
+          <i class="fa fa-expand" ></i>
+        </button>
+        <button type="button" class="btn btn-default btn-sm" id="compress_spacing" title="Compress spacing">
+          <i class="fa fa-compress" ></i>
+        </button>
+        <button type="button" class="btn btn-default btn-sm" id="sort_ascending" title="Sort deepest clades to the bottom">
+          <i class="fa fa-sort-amount-asc" ></i>
+        </button>
+        <button type="button" class="btn btn-default btn-sm" id="sort_descending" title="Sort deepest clades to the top">
+          <i class="fa fa-sort-amount-desc" ></i>
+        </button>
+        <button type="button" class="btn btn-default btn-sm" id="sort_original" title="Restore original order">
+          <i class="fa fa-sort" ></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class='row'>
+  <div class='col-md-12' id='_tree_enclosure'>
+    {{phylotree-widget tree=tree seq_ids_to_dates=seqIdToDate}}
   </div>
 </div>
