@@ -12,5 +12,5 @@ export var isString = function (elem) {
 
 export var parse_date = d3.time.format("%Y%m%d").parse;
 
-export var format_date = d3.time.format("%m %Y");
+export var format_date = d3.time.format("%B %Y");
 

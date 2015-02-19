@@ -116,6 +116,11 @@ a.fill-div {
     text-decoration: none;
 }
 
+.branch {
+  fill: none;
+  stroke-width: 1px;
+}
+
 .aaA {
     color: #1f77b4;
 }
