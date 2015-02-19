@@ -7,6 +7,7 @@ export default Ember.Select.extend({
   didInsertElement: function () {
     this.$().multiselect();
     this.updateDisabled();
+    this.updateMultiple();
   },
 
   updateDisabled: function() {
@@ -39,10 +40,8 @@ export default Ember.Select.extend({
 
   updateMultiple: function() {
     if (this.get('allowMultiple')) {
-      console.log('adding multiple');
       this.$().attr('multiple', 'multiple');
     } else {
-      console.log('removing multiple');
       this.$().removeAttr('multiple');
     }
     this.$().multiselect('rebuild');
