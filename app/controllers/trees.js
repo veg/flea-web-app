@@ -18,11 +18,15 @@ export default Ember.Controller.extend({
       if (!(tree.region in keys)) {
         keys[tree.region] = {};
       }
-      if (!(tree.date in keys[tree.region])) {
-        keys[tree.region][tree.date] = {};
+      var date = tree.date;
+      if (date !== "Combined") {
+        date = format_date(tree.date);
       }
-      if (!(tree.distance in keys[tree.region][tree.date])) {
-        keys[tree.region][tree.date][tree.distance] = tree.tree;
+      if (!(date in keys[tree.region])) {
+        keys[tree.region][date] = {};
+      }
+      if (!(tree.distance in keys[tree.region][date])) {
+        keys[tree.region][date][tree.distance] = tree.tree;
       }
     }
     return keys;
