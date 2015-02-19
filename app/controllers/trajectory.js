@@ -52,7 +52,6 @@ export default Ember.ObjectController.extend({
              'selectedEvoMetrics.@each'),
 
   _phenoData: function(index) {
-    console.log(index);
     var all_data = this.get('model');
     var regions = this.get('selectedRegions');
     var metrics = this.get('selectedPhenoMetrics');
@@ -67,7 +66,6 @@ export default Ember.ObjectController.extend({
 
   phenoData: function() {
     var result = this._phenoData(0);
-    console.log(result);
     return result;
   }.property('model',
              'selectedRegions.@each',
@@ -78,7 +76,6 @@ export default Ember.ObjectController.extend({
     if (this.get('selectedPhenoMetrics.length') > 1) {
       result = this._phenoData(1);
     }
-    console.log(result);
     return result;
   }.property('model',
              'selectedRegions.@each',
