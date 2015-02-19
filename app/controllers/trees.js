@@ -64,7 +64,13 @@ export default Ember.Controller.extend({
   timePoints: function() {
     var trees = this.get('nestedTrees');
     var region = this.get('selectedGenomicRegion');
-    return Object.keys(trees[region]);
+    var dates = Object.keys(trees[region]);
+    var idx = dates.indexOf("Combined");
+    if (idx > 0) {
+      // move to front
+      dates.splice(0, 0, dates.splice(idx, 1)[0]);
+    }
+    return dates;
   }.property('nestedTrees', 'selectedGenomicRegion'),
 
   distanceMeasures: function() {
