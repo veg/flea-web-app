@@ -42,12 +42,6 @@ export default Ember.Controller.extend({
       // move to front
       dates.splice(0, 0, dates.splice(idx, 1)[0]);
     }
-    return dates.map(function(d) {
-      if (d === "Combined") {
-        return {value: d, formatted: d};
-      }
-      return {value: d, formatted: format_date(new Date(d))};
-    });
     return dates;
   }.property('nestedTrees', 'selectedGenomicRegion'),
 
@@ -78,8 +72,7 @@ export default Ember.Controller.extend({
   }.property('genomicRegions'),
 
   selectedTimePoint: function(key, value, oldvalue) {
-    var options = this.get('timePoints').map(function(d) { return d.value; });
-    return this.handleSelection(options, '_selectedTimePoint', key, value, oldvalue);
+    return this.handleSelection(this.get('timePoints'), '_selectedTimePoint', key, value, oldvalue);
   }.property('timePoints'),
 
   selectedDistanceMeasure: function(key, value, oldvalue) {
