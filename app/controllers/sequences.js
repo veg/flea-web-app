@@ -61,3 +61,16 @@ export default Ember.ObjectController.extend({
   }.property('model.frequencies.@each'),
 
 });
+
+
+function get_site_residues (data, site) {
+  var all_residues = {};
+  for (var k in data[site]) {
+    if (k !== "HXB2") {
+      for (var r in data[site][k]) {
+        all_residues[r] = 1;
+      }
+    }
+  }
+  return d3.keys (all_residues).sort();
+}
