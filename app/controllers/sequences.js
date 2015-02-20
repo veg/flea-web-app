@@ -47,13 +47,14 @@ export default Ember.ObjectController.extend({
   }.property('model.frequencies.@each'),
 
   // _pos_sites
+  // used in plotting
   posSites: function () {
     var data = this.get('model.frequencies');
     var pos_sites = [];
     for (var k in data) {
       if (data.hasOwnProperty(k)) {
         if (get_site_residues(data, k).length > 1) {
-          pos_sites [+k] = data[k];
+          pos_sites[+k] = data[k];
         }
       }
     }

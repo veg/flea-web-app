@@ -41,6 +41,7 @@ export default Ember.Component.extend({
     var selected_string = "";
     var last_hs = -5;
     var ref_map = this.get('refCoords');
+    var positive_selection = this.get('positiveSelection');
     // TODO: there is surely a more elegent way of building this html
     for (var s = this.get('alnStart'); s <= this.get('alnStop'); s++) {
       var hs = ref_map[s - 1];  // convert to 0-index
@@ -54,8 +55,8 @@ export default Ember.Component.extend({
           str = "" + hs;
         }
       }
-      // if (show_selected) {
-      //   selected_string += (_positive_selection['combined'].indexOf (s)>=0) ? "+" : "&nbsp;";
+      // if (this.get('markPositive')) {
+      //   selected_string += (positive_selection['combined'].indexOf (s)>=0) ? "+" : "&nbsp;";
       // }
       if (last_hs === hs) {
         str = "INS";
@@ -67,7 +68,7 @@ export default Ember.Component.extend({
     }
     var show_selected = false;
     return coordinates[0] + "<br/>" + coordinates[1] + "<br/>" + coordinates[2] + (show_selected ? "<br/>" + selected_string : "");
-  }.property('alnStart', 'alnStop', 'refCoords'),
+    }.property('alnStart', 'alnStop', 'refCoords', 'markPositive', 'positiveSelection'),
 
   mrcaSlice: function() {
     var start = this.get("alnStart");
