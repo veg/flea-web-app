@@ -72,8 +72,9 @@ body {
 
 .seq-date {
     font: 12px monospace;
+    width:1%;
+    white-space:nowrap;
 }
-
 
 .select-cell {
     width: 12px;
