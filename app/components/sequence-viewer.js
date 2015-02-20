@@ -5,13 +5,27 @@ export default Ember.Component.extend({
 
   // bound to controller
   inputSequences: [],
-  referenceCoords: null,
+  refCoords: null,
   rangeStart: 1,
   rangeStop: 1,
 
   transformCoord: function(coord) {
-    var ref = this.get('refCoords');
-    return ref.indexOf(coord) + 1; // convert from 0-index to 1-index
+    // transform from 1-index reference coordinate to 1-index alignment coordinate
+    var refCoords = this.get('refCoords');
+    if (refCoords[refCoords.length - 1] < coord) {
+      // so we can see insertions after reference
+      return refCoords.length;
+    }
+    var idx = refCoords.indexOf(coord);
+    if (idx === -1) {
+      //find first larger index
+      for (idx = 0; idx < refCoords.length; idx++) {
+        if (refCoords[idx] > coord) {
+          break;
+        }
+      }
+    }
+    return idx + 1;  // convert from 0-index to 1-index
   },
 
   alnStart: function() {
