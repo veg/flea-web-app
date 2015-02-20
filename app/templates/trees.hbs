@@ -4,7 +4,9 @@
       <span class="input-group-addon">
         Genomic region
       </span>
-      {{view "select" class="form-control" content=genomicRegions value=selectedGenomicRegion}}
+      {{view "select" class="form-control"
+          content=genomicRegions
+          value=selectedGenomicRegion}}
       <span class="input-group-addon">
         Time point
       </span>
@@ -14,8 +16,11 @@
       <span class="input-group-addon">
         Distance measure
       </span>
-      {{view "select" class="form-control"content=distanceMeasures value=selectedDistanceMeasure}}
-      <span class="input-group-addon" title="Perform live updates of the tree when the region selected in the sequence panel changes">
+      {{view "select" class="form-control"
+          content=distanceMeasures
+          value=selectedDistanceMeasure}}
+      <span class="input-group-addon"
+            title="Update the tree when the region selected in the sequence panel changes">
         Link to selected region
         {{input type="checkbox" checked=linkeToSelection}}
       </span>
@@ -31,19 +36,24 @@
   <div class='col-md-12'>
     <div class="btn-toolbar" role="toolbar">
       <div class="btn-group">
-        <button type="button" class="btn btn-default btn-sm" id="expand_spacing" title="Expand spacing" {{action "setSpaceState" "expand"}}>
+        <button type="button" class="btn btn-default btn-sm" id="expand_spacing"
+                title="Expand spacing" {{action "setSpaceState" "expand"}}>
           <i class="fa fa-expand" ></i>
         </button>
-        <button type="button" class="btn btn-default btn-sm" id="compress_spacing" title="Compress spacing" {{action "setSpaceState" "compress"}}>
+        <button type="button" class="btn btn-default btn-sm" id="compress_spacing"
+                title="Compress spacing" {{action "setSpaceState" "compress"}}>
           <i class="fa fa-compress" ></i>
         </button>
-        <button type="button" class="btn btn-default btn-sm" id="sort_ascending" title="Sort deepest clades to the bottom" {{action "setSortState" "ascending"}}>
+        <button type="button" class="btn btn-default btn-sm" id="sort_ascending"
+                title="Sort deepest clades to the bottom" {{action "setSortState" "ascending"}}>
           <i class="fa fa-sort-amount-asc" ></i>
         </button>
-        <button type="button" class="btn btn-default btn-sm" id="sort_descending" title="Sort deepest clades to the top" {{action "setSortState" "descending"}}>
+        <button type="button" class="btn btn-default btn-sm" id="sort_descending"
+                title="Sort deepest clades to the top" {{action "setSortState" "descending"}}>
           <i class="fa fa-sort-amount-desc" ></i>
         </button>
-        <button type="button" class="btn btn-default btn-sm" id="sort_original" title="Restore original order" {{action "setSortState" "original"}}>
+        <button type="button" class="btn btn-default btn-sm" id="sort_original"
+                title="Restore original order" {{action "setSortState" "original"}}>
           <i class="fa fa-sort" ></i>
         </button>
       </div>
