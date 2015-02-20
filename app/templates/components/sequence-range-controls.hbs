@@ -10,12 +10,14 @@
 </div>
 <span class="input-group-addon">From</span>
 {{input type="number" class="form-control" value=myRangeStart
-placeholder="HXB2 coordinate (e.g. 160)"
-autofocus="autofocus" focus-out="display"}}
+  placeholder="HXB2 coordinate (e.g. 160)"
+  autofocus="autofocus" focus-out="display" insert-newline="display"
+}}
 <span class="input-group-addon">To</span>
 {{input type="number" class="form-control" value=myRangeStop
-placeholder="HXB2 coordinate (e.g. 200)"
-autofocus="autofocus" focus-out="display"}}
+  placeholder="HXB2 coordinate (e.g. 200)"
+  autofocus="autofocus" focus-out="display" insert-newline="display"
+}}
 <div class="input-group-btn">
   <button {{action "moveRange" 1}} type="button" class="btn btn-default btn-sm" title="Move right">
     <i class="fa fa-forward" ></i>
