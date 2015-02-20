@@ -9,6 +9,11 @@ body {
   font-size: 12pt;
 }
 
+canvas {
+  display: block;
+  margin: 0 auto 0 auto;
+}
+
 .brush .extent {
   stroke: #fff;
   fill-opacity: .125;
