@@ -31,10 +31,10 @@
   <div class='col-md-12'>
     <div class="btn-toolbar" role="toolbar">
       <div class="btn-group">
-        <button type="button" class="btn btn-default btn-sm" id="expand_spacing" title="Expand spacing">
+        <button type="button" class="btn btn-default btn-sm" id="expand_spacing" title="Expand spacing" {{action "setSpaceState" "expand"}}>
           <i class="fa fa-expand" ></i>
         </button>
-        <button type="button" class="btn btn-default btn-sm" id="compress_spacing" title="Compress spacing">
+        <button type="button" class="btn btn-default btn-sm" id="compress_spacing" title="Compress spacing" {{action "setSpaceState" "compress"}}>
           <i class="fa fa-compress" ></i>
         </button>
         <button type="button" class="btn btn-default btn-sm" id="sort_ascending" title="Sort deepest clades to the bottom" {{action "setSortState" "ascending"}}>
@@ -53,6 +53,6 @@
 
 <div class='row'>
   <div class='col-md-12' id='_tree_enclosure'>
-    {{phylotree-widget tree=tree seq_ids_to_dates=seqIdToDate sortState=sortState}}
+    {{phylotree-widget tree=tree seq_ids_to_dates=seqIdToDate sortState=sortState spaceState=spaceState}}
   </div>
 </div>

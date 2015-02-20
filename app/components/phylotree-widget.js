@@ -95,6 +95,19 @@ export default Ember.Component.extend({
     });
   },
 
+  space: function() {
+    var state = this.get('spaceState');
+    if (state === "neutral") {
+      return;
+    }
+    else if (state === "compress") {
+      this.compressSpacing();
+    } else if (state === "expand") {
+      this.expandSpacing();
+    }
+    this.set("spaceState", "neutral");
+  }.observes('spaceState'),
+
   expandSpacing: function() {
     var widget = this.get('treeWidget');
     widget.spacing_x(widget.spacing_x() + 1).update(true);

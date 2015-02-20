@@ -11,6 +11,7 @@ export default Ember.Controller.extend({
   showCloneNames: true,
 
   sortState: 'ascending',
+  spaceState: 0,
 
   nestedTrees: function() {
     var trees = this.get('model.trees');
@@ -109,7 +110,9 @@ export default Ember.Controller.extend({
   actions: {
     setSortState: function(state) {
       this.set('sortState', state);
+    },
+    setSpaceState: function(state) {
+      this.set('spaceState', state);
     }
   }
-
 });
