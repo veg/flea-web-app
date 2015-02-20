@@ -14,13 +14,13 @@ export default Ember.Controller.extend({
   }.property('useEntropy'),
 
   sortedRates: function () {
-    var rates = this.get('model');
+    var rates = this.get('model.rates');
     var timepoints = rates.filter(function(d) {return d.date !== 'Combined';});
     var combined = rates.filter(function(d) {return d.date === 'Combined';});
     timepoints.sort(function (a,b) {return a.date - b.date;});
     timepoints.splice(0, 0, combined[0]);
     return timepoints;
-  }.property('model.@each'),
+  }.property('model.rates.@each'),
 
   getRate: function(data, idx) {
     var result = data.map(function(d) {
