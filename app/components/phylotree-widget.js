@@ -16,23 +16,35 @@ export default Ember.Component.extend({
 
   do_copy_number: false,
 
-  didInsertElement: function() {
+  nodeNamer: function() {
     var seq_ids_to_dates = this.get('seq_ids_to_dates');
+    if (this.get('showDates')) {
+      var f = function(data) {
+        return format_date(seq_ids_to_dates[data.name.toUpperCase()]);
+      };
+      return f;
+    } else {
+      return null;
+    }
+  }.property('seq_ids_to_dates', 'showDates'),
 
+  nodeColorizer: function() {
+    var seq_ids_to_dates = this.get('seq_ids_to_dates');
     var time_point_colors = d3.scale.category10();
-    var tree_widget_node_colorizer = function(element, data) {
+    var f = function(element, data) {
       element.style ("fill", time_point_colors (seq_ids_to_dates[data.name.toUpperCase()]));
     };
+    return f;
+  }.property('seq_ids_to_dates'),
 
-    var tree_widget_show_date = function(data) {
-      return format_date(seq_ids_to_dates[data.name.toUpperCase()]);
-    };
+  didInsertElement: function() {
+    var seq_ids_to_dates = this.get('seq_ids_to_dates');
 
     var tree_widget = d3.layout.phylotree("body")
         .size([this.get('height'), this.get('width')])
         .separation (function (a,b) {return 0;})
-        .style_nodes (tree_widget_node_colorizer)
-        .branch_name (tree_widget_show_date);
+        .style_nodes (this.get('nodeColorizer'))
+        .branch_name (this.get('nodeNamer'));
 
     tree_widget.node_span ('equal');
 
@@ -116,5 +128,11 @@ export default Ember.Component.extend({
   compressSpacing: function() {
     var widget = this.get('treeWidget');
     widget.spacing_x(widget.spacing_x() - 1).update(true);
-  }
+  },
+
+  updateNames: function() {
+    var widget = this.get('treeWidget');
+    widget.branch_name(this.get('nodeNamer'));
+    widget.update(true);
+  }.observes('nodeNamer')
 });

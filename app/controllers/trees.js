@@ -8,7 +8,7 @@ export default Ember.Controller.extend({
   _selectedDistanceMeasure: '',
 
   linkeToSelection: true,
-  showCloneNames: true,
+  showDates: true,
 
   sortState: 'ascending',
   spaceState: 0,
