@@ -14,13 +14,13 @@ export default Ember.Controller.extend({
   }.property('useEntropy'),
 
   sortedRates: function () {
-    var rates = this.get('model.rates');
+    var rates = this.get('model');
     var timepoints = rates.filter(function(d) {return d.date !== 'Combined';});
     var combined = rates.filter(function(d) {return d.date === 'Combined';});
     timepoints.sort(function (a,b) {return a.date - b.date;});
     timepoints.splice(0, 0, combined[0]);
     return timepoints;
-  }.property('model.rate.@each'),
+  }.property('model.@each'),
 
   getRate: function(data, idx) {
     var result = data.map(function(d) {
@@ -88,37 +88,7 @@ export default Ember.Controller.extend({
       return this.get('positiveSelection');
     }
     return [];
-  }.property('markPositive', 'positiveSelection'),
-
-  // _hxb2_coords
-  hxb2Coords: function () {
-    var data = this.get('model.frequencies');
-    var coords = [];
-    for (var k in data) {
-      if (data.hasOwnProperty(k)) {
-        coords.push ([parseInt(k), parseInt(data[k]['HXB2'])]);
-      }
-    }
-    coords.sort (function (a,b) {return a[0] - b[0];});
-    return coords.map (function (d) {return d[1];});
-  }.property('model.frequencie.@each'),
-
-  // TODO: code duplication
-  // used for plotting only; ignored for now
-
-  // _pos_sites
-  posSites: function () {
-    var data = this.get('model.frequencies');
-    var pos_sites = [];
-    for (var k in data) {
-      if (data.hasOwnProperty(k)) {
-        if (get_site_residues(data, k).length > 1) {
-          pos_sites [+k] = data[k];
-        }
-      }
-    }
-    return pos_sites;
-  }.property('model.frequencie.@each'),
+  }.property('markPositive', 'positiveSelection')
 });
 
 

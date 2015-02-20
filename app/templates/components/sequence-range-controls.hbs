@@ -10,9 +10,13 @@
     </button>
   </div>
   <span class="input-group-addon">From</span>
-  {{input type="number" class="form-control" value=myRangeStart placeholder="HXB2 coordinate (e.g. 160)" autofocus="autofocus"}}
+  {{input type="number" class="form-control" value=myRangeStart
+      placeholder="HXB2 coordinate (e.g. 160)"
+      autofocus="autofocus" focus-out="display"}}
   <span class="input-group-addon">To</span>
-  {{input type="number" class="form-control" value=myRangeStop placeholder="HXB2 coordinate (e.g. 200)" autofocus="autofocus"}}
+  {{input type="number" class="form-control" value=myRangeStop
+      placeholder="HXB2 coordinate (e.g. 200)"
+      autofocus="autofocus" focus-out="display"}}
   <div class="input-group-btn">
     <button {{action "moveRange" 1}} type="button" class="btn btn-default btn-sm" title="Move right">
       <i class="fa fa-forward" ></i>
@@ -29,8 +33,5 @@
     <ul class="dropdown-menu">
       TODO
     </ul>
-  </div>
-  <div class="input-group-btn">
-    <button {{action "display"}} type="button" class="btn btn-default">Display</button>
   </div>
 </div>

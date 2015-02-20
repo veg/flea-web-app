@@ -27,7 +27,16 @@ export default Ember.Component.extend({
     var minCoord = +this.get('minCoord');
     var maxCoord = +this.get('maxCoord');
 
-    if ((minCoord <= mystart) && (mystart < mystop) && (mystop <= maxCoord)) {
+    if (mystart < minCoord) {
+      mystart = this.set('myRangeStart', minCoord);
+    }
+
+    if (mystop > maxCoord) {
+      this.set('myRangeStop', maxCoord);
+      mystop = maxCoord;
+    }
+
+    if ((minCoord <= mystart) && (mystart <= mystop) && (mystop <= maxCoord)) {
       this.set('rangeStart', +mystart);
       this.set('rangeStop', +mystop);
       this.set('myRangeStart', +mystart);
