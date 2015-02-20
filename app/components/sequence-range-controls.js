@@ -2,6 +2,8 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
 
+  tagName: '',
+
   // bound to controller
   rangeStart: 1,
   rangeStop: 1,

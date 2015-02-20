@@ -3,10 +3,6 @@ import {format_date} from '../utils/utils';
 
 export default Ember.Component.extend({
 
-  collapseSeqs: true,
-  markPositive: true,
-  maskUnchanged: true,
-
   // bound to controller
   inputSequences: [],
   referenceCoords: null,

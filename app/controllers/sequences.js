@@ -9,6 +9,10 @@ export default Ember.ObjectController.extend({
   rangeStop: 200,
   minCoord: 1,
 
+  collapseSeqs: true,
+  maskUnchanged: true,
+  markPositive: true,
+
   maxCoord: function() {
     return this.get('mrca').sequence.length;
   }.property('mrca'),

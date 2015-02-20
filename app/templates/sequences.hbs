@@ -29,14 +29,32 @@
         <div class="panel-body">
           <div class = "row">
             <div class = "col-md-12">
-              {{#sequence-range-controls rangeStart=rangeStart rangeStop=rangeStop minCoord=minCoord maxCoord=maxCoord}}
-              {{/sequence-range-controls}}
+              <div class="input-group input-group-sm">
+                {{sequence-range-controls rangeStart=rangeStart rangeStop=rangeStop minCoord=minCoord maxCoord=maxCoord}}
+                <span class="input-group-addon">
+                  Collapse
+                  {{input type="checkbox" name="collapseSeqs" checked=collapseSeqs}}
+                </span>
+                <span class="input-group-addon">
+                  Mask unchanged
+                  {{input type="checkbox" name="maskUnchanged" checked=maskUnchanged}}
+                </span>
+                <span class="input-group-addon">
+                  (TODO) Mark positively selected sites
+                  {{input type="checkbox" name="markPositive" checked=markPositive}}
+                </span>
+              </div>
             </div>
           </div>
           <br>
           <div class = "row">
             <div class = "col-md-12">
-              {{sequence-viewer inputSequences=selectedSequences rangeStart=rangeStart rangeStop=rangeStop mrca=mrca}}
+              {{sequence-viewer inputSequences=selectedSequences
+                  rangeStart=rangeStart rangeStop=rangeStop mrca=mrca
+                  collapseSeqs=collapseSeqs
+                  maskUnchanged=maskUnchanged
+                  markPositive=markPositive
+              }}
             </div>
           </div>
         </div>
