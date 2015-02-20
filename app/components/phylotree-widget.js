@@ -64,6 +64,17 @@ export default Ember.Component.extend({
     this.sortNodes(true);
   }.observes('tree', 'treeWidget'),
 
+  sort: function() {
+    var state = this.get('sortState');
+    if (state === "ascending") {
+      this.sortNodes(true);
+    } else if (state === "descending") {
+      this.sortNodes(false);
+    } else {
+      this.sortOriginal();
+    }
+  }.observes('sortState'),
+
   sortNodes: function(ascending) {
     var widget = this.get('treeWidget');
     widget.traverse_and_compute (function (n) {

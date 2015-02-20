@@ -10,6 +10,8 @@ export default Ember.Controller.extend({
   linkeToSelection: true,
   showCloneNames: true,
 
+  sortState: 'ascending',
+
   nestedTrees: function() {
     var trees = this.get('model.trees');
     var keys = {};
@@ -102,6 +104,12 @@ export default Ember.Controller.extend({
       acc[s['id']] = s['date'];
       return acc;
     }, {});
-  }.property('model.sequences.@each')
+  }.property('model.sequences.@each'),
+
+  actions: {
+    setSortState: function(state) {
+      this.set('sortState', state);
+    }
+  }
 
 });
