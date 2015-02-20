@@ -73,7 +73,7 @@ export default Ember.Component.extend({
     var svg = d3.select('#' + this.get('elementId'));
     var tree_widget = this.get('treeWidget');
     tree_widget(tree).svg(svg).layout();
-    this.sortNodes(true);
+    this.sort();
   }.observes('tree', 'treeWidget'),
 
   sort: function() {
