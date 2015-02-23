@@ -3,8 +3,8 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   didInsertElement: function () {
     var options = {
-      width: 1100,
-      height: 800,
+      width: 1000,
+      height: 400,
       antialias: true,
       quality : 'medium'
     };

@@ -4,7 +4,7 @@ module.exports = function(app) {
   var fs = require('fs');
 
   structureRouter.get('/', function(req, res) {
-    res.send(fs.readFileSync(__dirname + '/flatTrimer.pdb', 'ascii'));
+    res.send(fs.readFileSync(__dirname + '/secondaryStruct.pdb', 'ascii'));
   });
 
   structureRouter.post('/', function(req, res) {
