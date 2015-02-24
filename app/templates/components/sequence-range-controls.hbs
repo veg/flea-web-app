@@ -28,10 +28,18 @@
     <i class="fa fa-fast-forward" ></i>
   </button>
 </div>
+{{#if predefinedRegions}}
 <div class="input-group-btn">
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Predefined
     <span class="caret"></span></button>
   <ul class="dropdown-menu">
-    TODO
+    {{#each region in predefinedRegions}}
+    <li>
+      <a {{action "setRange" region.start region.stop}} class="seq-predef">
+        {{region.name}}
+      </a>
+    </li>
+    {{/each}}
   </ul>
 </div>
+{{/if}}

@@ -13,6 +13,16 @@ export default Ember.ObjectController.extend({
   maskUnchanged: true,
   markPositive: true,
 
+  // TODO: do not hard-code
+  predefinedRegions: [
+    {name: 'V1', start: 131, stop: 156},
+    {name: 'V2', start: 157, stop: 196},
+    {name: 'V3', start: 296, stop: 330},
+    {name: 'V4', start: 385, stop: 418},
+    {name: 'V5', start: 461, stop: 471},
+    {name: 'MPER', start: 662, stop: 683}
+  ],
+
   maxCoord: function() {
     return this.get('mrca').sequence.length;
   }.property('mrca'),

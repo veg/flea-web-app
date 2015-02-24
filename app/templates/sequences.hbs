@@ -30,7 +30,10 @@
           <div class = "row">
             <div class = "col-md-12">
               <div class="input-group input-group-sm">
-                {{sequence-range-controls rangeStart=rangeStart rangeStop=rangeStop minCoord=minCoord maxCoord=maxCoord}}
+                {{sequence-range-controls rangeStart=rangeStart rangeStop=rangeStop
+                minCoord=minCoord maxCoord=maxCoord
+                predefinedRegions=predefinedRegions
+                }}
                 <span class="input-group-addon">
                   Collapse
                   {{input type="checkbox" name="collapseSeqs" checked=collapseSeqs}}

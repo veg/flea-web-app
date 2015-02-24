@@ -81,6 +81,10 @@ canvas {
     white-space:nowrap;
 }
 
+.seq-predef {
+    cursor: pointer;
+}
+
 .select-cell {
     width: 12px;
 }
