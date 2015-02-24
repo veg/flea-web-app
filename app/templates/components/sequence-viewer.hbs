@@ -28,7 +28,7 @@
         <ul class="list-unstyled">
           {{#each seq in sequences}}
           <li>
-            {{#bootstrap-popover title="" dataContent=seq.html}}
+            {{#bootstrap-popover title="" dataContent=seq.html placement="right"}}
             {{seq.copyNumber}}
             {{/bootstrap-popover}}
           </li>

@@ -9,8 +9,17 @@ body {
   font-size: 12pt;
 }
 
-.bootstrap-popover {
+.popover-link {
     cursor: pointer;
+}
+
+#neutralization .popover-link {
+    color:black;
+    text-decoration:none;
+}
+
+.popover{
+    max-width: 100%;
 }
 
 canvas {

@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {format_date} from '../utils/utils';
+import {format_date, htmlTable} from '../utils/utils';
 
 var float2 = d3.format (".2f");
 
@@ -117,16 +117,17 @@ export default Ember.Controller.extend({
           }
           return acc;
         }, {});
-        var title = ['feature: susceptible/resistant'];
+        var header = ['feature', 'susceptible', 'resistant'];
+        var body = [];
         for (var name in reduced) {
           if (reduced.hasOwnProperty(name)) {
-            title.push(name + ": " + reduced[name][0] + "/" + reduced[name][1]);
+            body.push([name, reduced[name][0], reduced[name][1]]);
           }
         }
         var color = red_white(frac);
         row.push({value: format_percent(frac),
                   style: "background-color: " + color,
-                  title: title.join('\n')});
+                  html: htmlTable(body, header)});
       }
       result.push(row);
     }
