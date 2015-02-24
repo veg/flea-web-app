@@ -16,7 +16,7 @@
       <td class="sequence">
         <ul class="list-unstyled">
           {{#each seq in sequences}}
-          <li>{{amino-acid seq}}</li>
+          <li>{{amino-acid seq.sequence}} {{seq.copyNumber}}</li>
           {{/each}}
         </ul>
       </td>

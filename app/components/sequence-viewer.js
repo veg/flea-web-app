@@ -80,14 +80,14 @@ export default Ember.Component.extend({
   groupedSequences: function() {
     var self = this;
     var sequences = self.get('inputSequences');
-    var grouped = _.groupBy(sequences, function(s) {
-      return s.get('date');
-    });
     var result = [];
     var start = this.get("alnStart");
     var stop = this.get("alnStop");
     var mrca = this.get('mrcaSlice');
     var mask = this.get('maskUnchanged');
+    var grouped = _.groupBy(sequences, function(s) {
+      return s.get('date');
+    });
     var process = function(s) {
       // convert 1-indexed [start, stop] to 0-indexed [start, stop)
       var result = s.sequence.slice(start - 1, stop);
@@ -96,7 +96,9 @@ export default Ember.Component.extend({
           return aa === mrca[idx] ? '.' : aa;
         }).join('');
       }
-      return result;
+      return {sequence: result,
+              copyNumber: s.copyNumber,
+              ids: [s.id]};
     };
     for (var key in grouped) {
       if (!grouped.hasOwnProperty(key)) {
@@ -104,7 +106,7 @@ export default Ember.Component.extend({
       }
       var final_seqs = grouped[key].map(process);
       if (this.get('collapseSeqs')) {
-        final_seqs = _.unique(final_seqs);
+        final_seqs = collapse(final_seqs);
       }
       result.push({'date': format_date(new Date(key)),
                    'sequences': final_seqs});
@@ -112,5 +114,27 @@ export default Ember.Component.extend({
     result.sort();
     return result;
   }.property('alnStart', 'alnStop', 'mrcaSlice',
-             'inputSequence.@each', 'inputSequences.length', 'maskUnchanged', 'collapseSeqs')
+             'inputSequence.@each', 'inputSequences.length',
+             'maskUnchanged', 'collapseSeqs')
 });
+
+
+function collapse(seqs) {
+  var groups = _.groupBy(seqs, function(s) {
+    return s.sequence;
+  });
+  var result = [];
+  for (var key in groups) {
+    result.push({
+      sequence: groups[key][0].sequence,
+      ids: groups[key].map(function(s) { return s.ids[0]; }),
+      copyNumber: _.reduce(groups[key].map(function(s) { return s.copyNumber; }),
+                           function(a, b) { return a + b; },
+                          0)
+    });
+  }
+  result.sort(function(a, b) {
+    return b.copyNumber - a.copyNumber;
+  });
+  return result;
+}
