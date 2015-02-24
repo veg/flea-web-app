@@ -9,6 +9,10 @@ body {
   font-size: 12pt;
 }
 
+.bootstrap-popover {
+    cursor: pointer;
+}
+
 canvas {
   display: block;
   margin: 0 auto 0 auto;
