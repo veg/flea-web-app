@@ -108,6 +108,9 @@ export default Ember.Component.extend({
       if (this.get('collapseSeqs')) {
         final_seqs = collapse(final_seqs);
       }
+      final_seqs.sort(function(a, b) {
+        return b.copyNumber - a.copyNumber;
+      });
       result.push({'date': format_date(new Date(key)),
                    'sequences': final_seqs});
     }
@@ -143,9 +146,6 @@ function collapse(seqs) {
       copyNumber: number
     });
   }
-  result.sort(function(a, b) {
-    return b.copyNumber - a.copyNumber;
-  });
   return result;
 }
 
