@@ -13,15 +13,6 @@ export default Ember.Controller.extend({
     return ['Mean dS', 'Mean dN'];
   }.property('useEntropy'),
 
-  sortedRates: function () {
-    var rates = this.get('model.rates');
-    var timepoints = rates.filter(function(d) {return d.date !== 'Combined';});
-    var combined = rates.filter(function(d) {return d.date === 'Combined';});
-    timepoints.sort(function (a,b) {return a.date - b.date;});
-    timepoints.splice(0, 0, combined[0]);
-    return timepoints;
-  }.property('model.rates.@each'),
-
   getRate: function(data, idx) {
     var result = data.map(function(d) {
       return d.rates.map(function(r) {
@@ -32,19 +23,19 @@ export default Ember.Controller.extend({
   },
 
   meanDS: function() {
-    var rates = this.get('sortedRates');
+    var rates = this.get('model.rates.sortedRates');
     return this.getRate(rates, 0);
-  }.property('sortedRates.[].[]'),
+  }.property('model.rates.sortedRates.[].[]'),
 
   meanDN: function() {
-    var rates = this.get('sortedRates');
+    var rates = this.get('model.rates.sortedRates');
     return this.getRate(rates, 1);
-  }.property('sortedRates.[].[]'),
+  }.property('model.rates.sortedRates.[].[]'),
 
   entropy: function() {
-    var rates = this.get('sortedRates');
+    var rates = this.get('model.rates.sortedRates');
     return this.getRate(rates, 4);
-  }.property('sortedRates.[].[]'),
+  }.property('model.rates.sortedRates.[].[]'),
 
   data1: function() {
     if (this.get('useEntropy')) {
@@ -61,7 +52,7 @@ export default Ember.Controller.extend({
   }.property('useEntropy', 'entropy.[].[]', 'meanDN.[].[]'),
 
   names: function() {
-    var sorted = this.get('sortedRates');
+    var sorted = this.get('model.rates.sortedRates');
     var result = sorted.map(function(d) {
       var name = d.date;
       if (name === 'Combined') {
@@ -73,22 +64,14 @@ export default Ember.Controller.extend({
       return format_date(name);
     });
     return result;
-  }.property('sortedRates.[].[]'),
-
-  // _positive_selection
-  positiveSelection: function() {
-    var data = this.get('sortedRates');
-    return data.map(function(d) {
-      return positive_selection_positions(d.rates);
-    });
-  }.property('sortedRates'),
+  }.property('model.rates.sortedRates.[].[]'),
 
   positions: function() {
     if (this.get('markPositive')) {
-      return this.get('positiveSelection');
+      return this.get('model.rates.positiveSelection');
     }
     return [];
-  }.property('markPositive', 'positiveSelection')
+  }.property('markPositive', 'model.rates.positiveSelection')
 });
 
 
@@ -106,15 +89,4 @@ function get_site_residues(data, site) {
     }
   }
   return d3.keys (all_residues).sort();
-}
-
-// 1-based indexing
-function positive_selection_positions (mx) {
-  return mx.map (function (d, i) {
-    return [i, d[2]];
-  }).filter (function (d) {
-    return d [1] >= 0.95;
-  }).map (function (d) {
-    return d[0] + 1;
-  });
 }

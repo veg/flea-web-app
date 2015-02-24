@@ -7,6 +7,39 @@ var RateInfo = Ember.Object.extend({
   rates: null,
 });
 
+var RatesObject = Ember.Object.extend({
+  data: [],
+
+  sortedRates: function () {
+    var rates = this.get('data');
+    var timepoints = rates.filter(function(d) {return d.date !== 'Combined';});
+    var combined = rates.filter(function(d) {return d.date === 'Combined';});
+    timepoints.sort(function (a,b) {return a.date - b.date;});
+    timepoints.splice(0, 0, combined[0]);
+    return timepoints;
+  }.property('data.@each'),
+
+  // _positive_selection
+  positiveSelection: function() {
+    var data = this.get('sortedRates');
+    return data.map(function(d) {
+      return positive_selection_positions(d.rates);
+    });
+  }.property('sortedRates'),
+});
+
+
+// 1-based indexing
+function positive_selection_positions (mx) {
+  return mx.map (function (d, i) {
+    return [i, d[2]];
+  }).filter (function (d) {
+    return d [1] >= 0.95;
+  }).map (function (d) {
+    return d[0] + 1;
+  });
+}
+
 export default Ember.Object.extend({
   find: function() {
     return request('/api/rates').then(function(result) {
@@ -24,7 +57,7 @@ export default Ember.Object.extend({
           }));
         }
       }
-      return new_result;
+      return RatesObject.create({data: new_result});
     });
   }
 });
