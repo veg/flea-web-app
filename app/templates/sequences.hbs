@@ -4,14 +4,16 @@
       <div class="panel-heading">
         <h5 class="panel-title">
           <a data-toggle="collapse" data-parent="#accordion" href="#_select_aa_display" class="fill-div">
-            Select Sequences
+            Select Sequences <span class='badge'>{{selectedSequences.length}}</span> <span class='badge'>{{selectedCopyNumber}}</span>
           </a>
         </h5>
       </div>
 
       <div id="_select_aa_display" class="panel-collapse collapse">
         <div class="panel-body">
-          {{filter-widget content=observedSequences name="Sequence Selector" selected=selectedSequences displayName="id"}}
+          {{filter-widget content=observedSequences name="Sequence Selector"
+          selected=selectedSequences displayName="id" viewLimit=-1
+          }}
         </div>
       </div>
     </div>
@@ -20,7 +22,7 @@
       <div class="panel-heading">
         <h5 class="panel-title">
           <a data-toggle="collapse" data-parent="#accordion" href="#_main_aa_display" class="fill-div">
-            Display Sequences <span class='badge'>{{selectedSequences.length}}</span> <span class='badge'>{{selectedCopyNumber}}</span>
+            Display Sequences
           </a>
         </h5>
       </div>

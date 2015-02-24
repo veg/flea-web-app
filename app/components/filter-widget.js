@@ -79,8 +79,10 @@ export default Ember.Component.extend({
         return id_match || date_match;
       });
     }
-    if (fc.get('length') > this.get('viewLimit')) {
-      fc = fc.slice(0, this.get('viewLimit'));
+    if (this.get('viewLimit') > 0) {
+      if (fc.get('length') > this.get('viewLimit')) {
+        fc = fc.slice(0, this.get('viewLimit'));
+      }
     }
     return fc;
   }.property('searchText', '_content.@each'),
