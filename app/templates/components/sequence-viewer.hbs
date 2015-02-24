@@ -1,22 +1,40 @@
-<table class="table table-hover table-condensed">
+<table class="table table-hover table-condensed nostretch sequence-viewer">
   <thead>
-    <td class="seq-date">HXB2 coord.</td>
-    <td class="sequence">
+    <td class="seq-cell">HXB2 coord.</td>
+    <td class="seq-cell">
       {{{refHTML}}}
     </td>
+    <td class="seq-cell"></td>
+    <td class="seq-cell"></td>
   </thead>
   <tbody>
     <tr>
-    <td class="seq-date">MRCA</td>
-    <td class="sequence">{{amino-acid mrcaSlice}}</td>
+      <td class="seq-cell">MRCA</td>
+      <td class="seq-cell">{{amino-acid mrcaSlice}}</td>
+      <td class="seq-cell"></td>
+      <td class="seq-cell"></td>
     </tr>
     {{#each groupedSequences}}
     <tr>
-      <td class="seq-date">{{date}}</td>
-      <td class="sequence">
+      <td class="seq-cell">{{date}}</td>
+      <td class="seq-cell">
         <ul class="list-unstyled">
           {{#each seq in sequences}}
-          <li>{{amino-acid seq.sequence}} {{seq.copyNumber}}</li>
+          <li>{{amino-acid seq.sequence}}</li>
+          {{/each}}
+        </ul>
+      </td>
+      <td class="seq-cell">
+        <ul class="list-unstyled">
+          {{#each seq in sequences}}
+          <li>{{seq.copyNumber}}</li>
+          {{/each}}
+        </ul>
+      </td>
+      <td class="seq-cell">
+        <ul class="list-unstyled">
+          {{#each seq in sequences}}
+          <li>{{format-percent seq.percent}}%</li>
           {{/each}}
         </ul>
       </td>

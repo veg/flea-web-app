@@ -63,10 +63,6 @@ canvas {
     background-color: rgba(0,0,0,0.1);
 }
 
-.sequence {
-    font: 12px monospace;
-}
-
 .seq-head {
     font: 14px monospace;
 }
@@ -75,8 +71,15 @@ canvas {
     font: 10px monospace;
 }
 
-.seq-date {
+.sequence-viewer {
     font: 12px monospace;
+}
+
+.sequence-viewer tr td{
+    text-align: right;
+}
+
+.nostretch {
     width:1%;
     white-space:nowrap;
 }

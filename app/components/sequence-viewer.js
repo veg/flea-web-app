@@ -112,7 +112,7 @@ export default Ember.Component.extend({
                    'sequences': final_seqs});
     }
     result.sort();
-    return result;
+    return addPercent(result);
   }.property('alnStart', 'alnStop', 'mrcaSlice',
              'inputSequence.@each', 'inputSequences.length',
              'maskUnchanged', 'collapseSeqs')
@@ -125,16 +125,33 @@ function collapse(seqs) {
   });
   var result = [];
   for (var key in groups) {
+    if (!groups.hasOwnProperty(key)) {
+      continue;
+    }
     result.push({
       sequence: groups[key][0].sequence,
       ids: groups[key].map(function(s) { return s.ids[0]; }),
       copyNumber: _.reduce(groups[key].map(function(s) { return s.copyNumber; }),
                            function(a, b) { return a + b; },
-                          0)
+                           0)
     });
   }
   result.sort(function(a, b) {
     return b.copyNumber - a.copyNumber;
   });
   return result;
+}
+
+
+function addPercent(groups) {
+  for (var i=0; i<groups.length; i++) {
+    var seqs = groups[i].sequences;
+    var total = _.reduce(seqs.map(function(s) { return s.copyNumber; }),
+                         function(a, b) { return a + b; },
+                         0);
+    for (var j=0; j<seqs.length; j++) {
+      seqs[j].percent = 100 * seqs[j].copyNumber / total;
+    }
+  }
+  return groups;
 }
