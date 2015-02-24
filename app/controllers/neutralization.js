@@ -11,7 +11,7 @@ function format_percent(frac) {
 
 export default Ember.Controller.extend({
   mabNames: function() {
-    var json = this.get('model')['neutralization'];
+    var json = this.get('model.neutralization');
     var result = [];
     for (var mab_name in json) {
       if (json.hasOwnProperty(mab_name)) {
@@ -20,7 +20,7 @@ export default Ember.Controller.extend({
     }
     result.sort();
     return result;
-  }.property('self.model.neutralizatio.@each'),
+  }.property('self.model.neutralization.@each'),
 
   mabFeatures: function() {
     var json = this.get('model')['neutralization'];
@@ -53,7 +53,7 @@ export default Ember.Controller.extend({
       }
     }
     return mab_table;
-  }.property('mabName.@each', 'model.neutralizatio.@each', 'seqIdToDate'),
+  }.property('mabName.@each', 'model.neutralization.@each', 'seqIdToDate'),
 
   sortedDates: function() {
     var d = this.get('model')['dates'];
