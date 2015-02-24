@@ -23,6 +23,15 @@ export default Ember.ObjectController.extend({
     {name: 'MPER', start: 662, stop: 683}
   ],
 
+  selectedCopyNumber: function() {
+    var seqs = this.get('selectedSequences');
+    var result = 0;
+    for (var i=0; i<seqs.length; i++) {
+      result += seqs[i].copyNumber;
+    }
+    return result;
+  }.property('selectedSequences.@each'),
+
   maxCoord: function() {
     return this.get('mrca').sequence.length;
   }.property('mrca'),
