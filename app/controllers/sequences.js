@@ -10,6 +10,7 @@ export default Ember.ObjectController.extend({
   minCoord: 1,
 
   regexValue: 'N\\-*[^P]\\-*[ST]\\-*[^P]',
+  regexDefault: 'N\\-*[^P]\\-*[ST]\\-*[^P]',
   _regex: '',
 
   collapseSeqs: true,
@@ -22,7 +23,7 @@ export default Ember.ObjectController.extend({
       return ".^";
     }
     try {
-      var r = RegExp(value, 'g');
+      var r = new RegExp(value, 'g');
       this.set('_regex', value);
     } catch(err) {
     }
@@ -96,6 +97,11 @@ export default Ember.ObjectController.extend({
     return pos_sites;
   }.property('model.frequencies.@each'),
 
+  actions: {
+    resetRegex: function() {
+      this.set('regexValue', this.get('regexDefault'));
+    }
+  }
 });
 
 
