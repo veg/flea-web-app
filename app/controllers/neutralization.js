@@ -56,7 +56,7 @@ export default Ember.Controller.extend({
   }.property('mabName.@each', 'model.neutralization.@each', 'seqIdToDate'),
 
   sortedDates: function() {
-    var d = this.get('model.dates'];
+    var d = this.get('model.dates');
     var result = [];
     for (var k in d) {
       if(d.hasOwnProperty(k)) {
