@@ -230,7 +230,7 @@ export default Ember.Component.extend({
       var legend_dim = {x: 0, y:height - labelHeight + 10, spacer:15, margin:5, font: 10, x_step : 100};
       var me_colors = ['#2E66FF', '#FFB314'];
       var legend = svg.append("g")
-          .attr("class", "_evo_legend")
+          .attr("class", "gene_legend")
           .attr("x", legend_dim.x)
           .attr("y", legend_dim.y)
           .attr("transform", "translate("+legend_dim.x+","+legend_dim.y+")");

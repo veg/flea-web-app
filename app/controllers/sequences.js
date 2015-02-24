@@ -17,6 +17,8 @@ export default Ember.ObjectController.extend({
   maskUnchanged: true,
   markPositive: true,
 
+  selectedPositions: [170, 175, 177],
+
   regex: function() {
     var value = this.get('regexValue');
     if (value.length === 0) {
@@ -96,6 +98,49 @@ export default Ember.ObjectController.extend({
     }
     return pos_sites;
   }.property('model.frequencies.@each'),
+
+  aaTrajectories: function() {
+    var sequences = this.get('selectedSequences');
+    var positions = this.get('selectedPositions');
+    var counts = {};
+    var totals = {};
+    for (var i=0; i<sequences.length; i++ ) {
+      var seq = sequences[i];
+      var motif = positions.map(function(idx) {
+        return seq.sequence[idx - 1];  // 1-indexed
+      }).join('');
+      if (!(counts.hasOwnProperty(motif))) {
+        counts[motif] = {}
+      }
+      if (!(counts[motif].hasOwnProperty(seq.date))) {
+        counts[motif][seq.date] = 0;
+      }
+      counts[motif][seq.date] += 1;
+      if (!(totals.hasOwnProperty(seq.date))) {
+        totals[seq.date] = 0;
+      }
+      totals[seq.date] += 1;
+    }
+    var series = [];
+    for (var motif in counts) {
+      if (!(counts.hasOwnProperty(motif))) {
+        continue;
+      }
+      var points = []
+      for (var date in totals) {
+        if (!(totals.hasOwnProperty(date))) {
+          continue;
+        }
+        var frac = 0;
+        if (counts[motif].hasOwnProperty(date)) {
+          frac = counts[motif][date] / totals[date];
+        }
+        points.push({x: new Date(date), y: frac});
+      }
+      series.push({name: motif, values: points});
+    }
+    return series;
+  }.property('selectedPositions.[]', 'selectedSequences.[]'),
 
   actions: {
     resetRegex: function() {

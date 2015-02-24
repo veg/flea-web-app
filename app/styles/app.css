@@ -105,7 +105,7 @@ canvas {
     width: 12px;
 }
 
-._evo_area {
+.evo_area {
   fill: steelblue;
 }
 
@@ -117,17 +117,21 @@ canvas {
   fill: #FFB314;
 }
 
-._evo_legend {
+.gene_legend {
     font: 12px sans-serif;
 }
 
-._evo_line {
+.timeseries_legend {
+    font: 12px sans-serif;
+}
+
+.timeseries_line {
   fill: none;
   stroke: red;
   stroke-width: 4px;
 }
 
-._evo_symbol {
+.legend_symbol {
   fill: #EEEEEE;
   stroke: black;
   stroke-opacity: 1.0;

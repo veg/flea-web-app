@@ -14,7 +14,8 @@ example data:
     {x: new Date(), y: 0.15},
     {x: new Date(), y: 0.12},
   ]
- ]
+ }
+]
 */
 
 export default Ember.Component.extend({
@@ -168,7 +169,7 @@ export default Ember.Component.extend({
 
     paths.enter()
       .append("path")
-      .attr("class", "_evo_line");
+      .attr("class", "timeseries_line");
 
     paths.attr("d", function(d) { return line(d.values); })
       .style("stroke", function(d) { return colors(d.name); });
@@ -200,7 +201,7 @@ export default Ember.Component.extend({
     svg.selectAll('g').remove();
 
     var legend = svg.append("g")
-        .attr("class", "_evo_legend")
+        .attr("class", "timeseries_legend")
         .attr("x", legend_dim.x)
         .attr("y", legend_dim.y)
         .attr("transform", "translate("+legend_dim.x+","+legend_dim.y+")");
