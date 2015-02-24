@@ -100,7 +100,7 @@ export default Ember.Controller.extend({
   // FIXME: code duplication. Same function used in neutralization controller.
   // Where to put this to share it?
   seqIdToDate: function() {
-    var seqs = this.get('model')['sequences'];
+    var seqs = this.get('model.sequences');
     return seqs.reduce(function(acc, s) {
       acc[s['id']] = s['date'];
       return acc;
