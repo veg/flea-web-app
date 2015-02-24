@@ -54,7 +54,9 @@ export default Ember.Component.extend({
       if ((this.get('minCoord') <= start + offset) &&
           (start + offset <= stop + offset) &&
           (stop + offset <= this.get('maxCoord'))) {
-        this.setRange(start + offset, stop + offset);
+        this.set('myRangeStart', start + offset);
+        this.set('myRangeStop', stop + offset);
+        this.toController();
       }
     },
     setRange: function(start, stop) {
