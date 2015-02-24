@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {format_date, htmlTable1D} from '../utils/utils';
+import {format_date, htmlTable1D, regexRanges} from '../utils/utils';
 
 export default Ember.Component.extend({
 
@@ -82,18 +82,12 @@ export default Ember.Component.extend({
     var start = this.get("alnStart");
     var stop = this.get("alnStop");
     var mrca = this.get('mrcaSlice');
-    var mask = this.get('maskUnchanged');
     var grouped = _.groupBy(sequences, function(s) {
       return s.get('date');
     });
     var process = function(s) {
       // convert 1-indexed [start, stop] to 0-indexed [start, stop)
       var result = s.sequence.slice(start - 1, stop);
-      if (mask) {
-        result = result.split('').map(function(aa, idx) {
-          return aa === mrca[idx] ? '.' : aa;
-        }).join('');
-      }
       return {sequence: result,
               copyNumber: s.copyNumber,
               ids: [s.id]};
@@ -115,10 +109,14 @@ export default Ember.Component.extend({
     result.sort();
     result = addPercent(result);
     result = addHTML(result);
+    result = addHighlights(result, this.get('regex'));
+    if (this.get('maskUnchanged')) {
+      result = addMask(result, mrca);
+    }
     return result;
   }.property('alnStart', 'alnStop', 'mrcaSlice',
              'inputSequence.@each', 'inputSequences.length',
-             'maskUnchanged', 'collapseSeqs'),
+             'maskUnchanged', 'collapseSeqs', 'regex'),
 });
 
 
@@ -168,6 +166,30 @@ function addHTML(groups) {
     var seqs = groups[i].sequences;
     for (var j=0; j<seqs.length; j++) {
       seqs[j].html = htmlTable1D(seqs[j].ids, ['Sequence ID']);
+    }
+  }
+  return groups;
+}
+
+
+function addHighlights(groups, regex) {
+  for (var i=0; i<groups.length; i++) {
+    var seqs = groups[i].sequences;
+    for (var j=0; j<seqs.length; j++) {
+      seqs[j].highlights = regexRanges(regex, seqs[j].sequence);
+    }
+  }
+  return groups;
+}
+
+function addMask(groups, mrca) {
+  for (var i=0; i<groups.length; i++) {
+    var seqs = groups[i].sequences;
+    for (var j=0; j<seqs.length; j++) {
+      var seq = seqs[j];
+      seqs[j].sequence = seq.sequence.split('').map(function(aa, idx) {
+        return aa === mrca[idx] ? '.' : aa;
+      }).join('');
     }
   }
   return groups;

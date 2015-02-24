@@ -9,9 +9,25 @@ export default Ember.ObjectController.extend({
   rangeStop: 200,
   minCoord: 1,
 
+  regexValue: 'N\\-*[^P]\\-*[ST]\\-*[^P]',
+  _regex: '',
+
   collapseSeqs: true,
   maskUnchanged: true,
   markPositive: true,
+
+  regex: function() {
+    var value = this.get('regexValue');
+    if (value.length === 0) {
+      return ".^";
+    }
+    try {
+      var r = RegExp(value, 'g');
+      this.set('_regex', value);
+    } catch(err) {
+    }
+    return this.get('_regex');
+  }.property('regexValue'),
 
   // TODO: do not hard-code
   predefinedRegions: [

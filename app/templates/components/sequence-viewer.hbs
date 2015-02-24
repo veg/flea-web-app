@@ -20,7 +20,7 @@
       <td class="seq-cell">
         <ul class="list-unstyled">
           {{#each seq in sequences}}
-          <li>{{amino-acid seq.sequence}}</li>
+          <li>{{amino-acid seq.sequence seq.highlights}}</li>
           {{/each}}
         </ul>
       </td>

@@ -50,3 +50,14 @@ export var htmlTable = function(data, header) {
   result += '</table>';
   return result;
 };
+
+
+export var regexRanges = function(regex, string) {
+  var indices = [];
+  var result;
+  var r = RegExp(regex, 'g');
+  while ((result = r.exec(string)) !== null) {
+    indices.push([result.index, result.index + result[0].length-1]);
+  }
+  return indices;
+}

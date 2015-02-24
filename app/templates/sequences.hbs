@@ -36,14 +36,8 @@
                 minCoord=minCoord maxCoord=maxCoord
                 predefinedRegions=predefinedRegions
                 }}
-                <span class="input-group-addon">
-                  Collapse
-                  {{input type="checkbox" name="collapseSeqs" checked=collapseSeqs}}
-                </span>
-                <span class="input-group-addon">
-                  Mask unchanged
-                  {{input type="checkbox" name="maskUnchanged" checked=maskUnchanged}}
-                </span>
+                {{input type="text" class="form-control" value=regexValue
+                placeholder="Pattern to highlight" autofocus="autofocus"}}
                 <span class="input-group-addon">
                   Mark positively selected sites
                   {{input type="checkbox" name="markPositive" checked=markPositive}}
@@ -61,6 +55,7 @@
                   markPositive=markPositive
                   refCoords=hxb2Coords
                   positiveSelection=model.rates.positiveSelection
+                  regex=regex
               }}
             </div>
           </div>
