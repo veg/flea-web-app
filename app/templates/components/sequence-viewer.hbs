@@ -27,7 +27,11 @@
       <td class="seq-cell">
         <ul class="list-unstyled">
           {{#each seq in sequences}}
-          <li>{{seq.copyNumber}}</li>
+          <li>
+            {{#bootstrap-popover title="" dataContent=seq.html}}
+            {{seq.copyNumber}}
+            {{/bootstrap-popover}}
+          </li>
           {{/each}}
         </ul>
       </td>

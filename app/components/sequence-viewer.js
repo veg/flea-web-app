@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {format_date} from '../utils/utils';
+import {format_date, htmlTable1D} from '../utils/utils';
 
 export default Ember.Component.extend({
 
@@ -112,10 +112,12 @@ export default Ember.Component.extend({
                    'sequences': final_seqs});
     }
     result.sort();
-    return addPercent(result);
+    result = addPercent(result);
+    result = addHTML(result);
+    return result;
   }.property('alnStart', 'alnStop', 'mrcaSlice',
              'inputSequence.@each', 'inputSequences.length',
-             'maskUnchanged', 'collapseSeqs')
+             'maskUnchanged', 'collapseSeqs'),
 });
 
 
@@ -157,6 +159,17 @@ function addPercent(groups) {
     }
     for (var k=0; k<seqs.length; k++) {
       seqs[k].percent = 100 * seqs[k].copyNumber / total;
+    }
+  }
+  return groups;
+}
+
+
+function addHTML(groups) {
+  for (var i=0; i<groups.length; i++) {
+    var seqs = groups[i].sequences;
+    for (var j=0; j<seqs.length; j++) {
+      seqs[j].html = htmlTable1D(seqs[j].ids, ['Sequence ID']);
     }
   }
   return groups;
