@@ -1,71 +1,37 @@
-<div id="seq">
-  <div class="panel-group" id="accordion">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h5 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#_select_aa_display" class="fill-div">
-            Select Sequences <span class='badge'>{{selectedSequences.length}}</span> <span class='badge'>{{selectedCopyNumber}}</span>
-          </a>
-        </h5>
+<div class = "row">
+  <div class = "col-md-12">
+    {{multi-select content=observedSequences name="Sequences"
+    selected=selectedSequences displayName="id" viewLimit=100}}
+    <div class="input-group input-group-sm">
+      {{sequence-range-controls rangeStart=rangeStart rangeStop=rangeStop
+      minCoord=minCoord maxCoord=maxCoord
+      predefinedRegions=predefinedRegions
+      }}
+      {{input type="text" class="form-control" value=regexValue
+      placeholder="Pattern to highlight" autofocus="autofocus"}}
+      <div class="input-group-btn">
+        <button {{action "resetRegex"}} type="button" class="btn btn-default btn-sm" title="Reset regexp">
+          <i class="fa fa-undo"></i>
+        </button>
       </div>
-
-      <div id="_select_aa_display" class="panel-collapse collapse">
-        <div class="panel-body">
-          {{filter-widget content=observedSequences name="Sequence Selector"
-          selected=selectedSequences displayName="id" viewLimit=-1
-          }}
-        </div>
-      </div>
+      <span class="input-group-addon">
+        Mark positively selected sites
+        {{input type="checkbox" name="markPositive" checked=markPositive}}
+      </span>
     </div>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h5 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#_main_aa_display" class="fill-div">
-            Display Sequences
-          </a>
-        </h5>
-      </div>
-
-      <div id="_main_aa_display" class="panel-collapse collapse in">
-        <div class="panel-body">
-          <div class = "row">
-            <div class = "col-md-12">
-              <div class="input-group input-group-sm">
-                {{sequence-range-controls rangeStart=rangeStart rangeStop=rangeStop
-                minCoord=minCoord maxCoord=maxCoord
-                predefinedRegions=predefinedRegions
-                }}
-                {{input type="text" class="form-control" value=regexValue
-                placeholder="Pattern to highlight" autofocus="autofocus"}}
-                <div class="input-group-btn">
-                  <button {{action "resetRegex"}} type="button" class="btn btn-default btn-sm" title="Reset regexp">
-                    <i class="fa fa-undo"></i>
-                  </button>
-                </div>
-                <span class="input-group-addon">
-                  Mark positively selected sites
-                  {{input type="checkbox" name="markPositive" checked=markPositive}}
-                </span>
-              </div>
-            </div>
-          </div>
-          <br>
-          <div class = "row">
-            <div class = "col-md-12">
-              {{sequence-viewer inputSequences=selectedSequences
-                  rangeStart=rangeStart rangeStop=rangeStop mrca=mrca
-                  collapseSeqs=collapseSeqs
-                  maskUnchanged=maskUnchanged
-                  markPositive=markPositive
-                  refCoords=hxb2Coords
-                  positiveSelection=model.rates.positiveSelection
-                  regex=regex
-              }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  </div>
+</div>
+<br>
+<div class = "row">
+  <div class = "col-md-12">
+    {{sequence-viewer inputSequences=selectedSequences
+    rangeStart=rangeStart rangeStop=rangeStop mrca=mrca
+    collapseSeqs=collapseSeqs
+    maskUnchanged=maskUnchanged
+    markPositive=markPositive
+    refCoords=hxb2Coords
+    positiveSelection=model.rates.positiveSelection
+    regex=regex
+    }}
   </div>
 </div>
