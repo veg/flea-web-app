@@ -128,12 +128,17 @@ function collapse(seqs) {
     if (!groups.hasOwnProperty(key)) {
       continue;
     }
+    var group = groups[key];
+    var ids = [];
+    var number = 0;
+    for (var i=0; i<group.length; i++) {
+      ids.push(group[i].ids[0]);
+      number += group[i].copyNumber;
+    }
     result.push({
-      sequence: groups[key][0].sequence,
-      ids: groups[key].map(function(s) { return s.ids[0]; }),
-      copyNumber: _.reduce(groups[key].map(function(s) { return s.copyNumber; }),
-                           function(a, b) { return a + b; },
-                           0)
+      sequence: group[0].sequence,
+      ids: ids,
+      copyNumber: number
     });
   }
   result.sort(function(a, b) {
@@ -146,11 +151,12 @@ function collapse(seqs) {
 function addPercent(groups) {
   for (var i=0; i<groups.length; i++) {
     var seqs = groups[i].sequences;
-    var total = _.reduce(seqs.map(function(s) { return s.copyNumber; }),
-                         function(a, b) { return a + b; },
-                         0);
+    var total = 0;
     for (var j=0; j<seqs.length; j++) {
-      seqs[j].percent = 100 * seqs[j].copyNumber / total;
+      total += seqs[j].copyNumber;
+    }
+    for (var k=0; k<seqs.length; k++) {
+      seqs[k].percent = 100 * seqs[k].copyNumber / total;
     }
   }
   return groups;
