@@ -13,7 +13,7 @@ export default Ember.Component.extend({
   selectDefault: false,
 
   didInsertElement: function() {
-    if (this.get('selectDefault')) {
+    if (this.get('selectDefault') && (this.get('selectedPositions.length') === 0)) {
       this.selectAllPositive();
     }
   },
