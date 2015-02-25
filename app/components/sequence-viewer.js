@@ -72,17 +72,16 @@ export default Ember.Component.extend({
       var hs = ref_map[s - 1];  // convert to 0-index
       var str = "";
       if (hs < 10) {
-        str = "&nbsp&nbsp" + hs;
+        str = "  " + hs;
+      } else if (hs < 100) {
+        str = " " + hs;
       } else {
-        if (hs < 100) {
-          str = "&nbsp" + hs;
-        } else {
-          str = "" + hs;
-        }
+        str = "" + hs;
       }
       if (last_hs === hs) {
         str = "INS";
       }
+      str = str.split('').map(function(c) { return (c === " " ? "&nbsp" : c); });
       var _class = '';
       if (this.get('selectedPositions').contains(s)) {
         _class = 'selected_position';
