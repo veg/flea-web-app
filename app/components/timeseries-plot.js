@@ -245,6 +245,7 @@ export default Ember.Component.extend({
           .attr("y", (i0+1)*(legend_dim.spacer + legend_dim.margin) - legend_dim.margin
                 - (legend_dim.spacer / 2) + legend_dim.font / 2)
           .style("fill", function () {return colors(d);})
+          .attr('font-family', 'monospace')
           .text(function (d) {return d;});
       });
   }
