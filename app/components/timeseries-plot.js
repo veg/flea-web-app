@@ -22,20 +22,30 @@ export default Ember.Component.extend({
   tagName: 'svg',
   attributeBindings: ['width', 'height'],
 
-  // TODO: make these parameters
   width:  900,
   height: 300,
 
-  margin: {
-    top:    20,
-    right:  50,
-    bottom: 60,
-    left:   50
-  },
+  legendRight: false,
 
   ymin: null,
   data: [],
   data2: [],
+
+  _margin: {
+    top:    20,
+    right:  50,
+    bottom: 60,
+    left:   50},
+
+  margin: function() {
+    var margin = this.get('_margin');
+    var names = this.get('seriesNames');
+    if (this.get('legendRight') && (names.length > 0)) {
+      var longest = Math.max.apply(null, names.map(function(n) {return n.length;}));
+      margin.right = 20 + 20 * longest;
+    }
+    return margin;
+  }.property('seriesNames.[]', 'legendRight'),
 
   didInsertElement: function() {
     // TOOD: is this necessary?
@@ -65,7 +75,7 @@ export default Ember.Component.extend({
     var names1 =  data.map(function (d) { return d.name; });
     var names2 =  data2.map(function (d) { return d.name; });
     return names1.concat(names2);
-  }.property('data.@each', 'data2.@each'),
+  }.property('data.[]', 'data2.[]'),
 
   dates: function() {
     var data = this.get('data');
@@ -77,11 +87,11 @@ export default Ember.Component.extend({
     });
     result = d3.set(d3.merge(result)).values();
     return result.map(function(d) {return new Date(d);});
-  }.property('data.@each'),
+  }.property('data.[]'),
 
   xDomain: function() {
     return d3.extent(this.get('dates'));
-  }.property('dates.@each'),
+  }.property('dates.[]'),
 
   xAxisTransform: function() {
     return 'translate(0, %@)'.fmt(this.get('innerHeight'));
@@ -114,11 +124,11 @@ export default Ember.Component.extend({
 
   yScale: function () {
     return this._yScale(this.get('data'));
-  }.property('innerHeight', 'data.@each', 'ymin'),
+  }.property('innerHeight', 'data.[]', 'ymin'),
 
   yScale2: function () {
     return this._yScale(this.get('data2'));
-  }.property('innerHeight', 'data2.@each', 'ymin'),
+  }.property('innerHeight', 'data2.[]', 'ymin'),
 
   yAxisTransform: function() {
     return 'translate(%@, 0)'.fmt(this.get('innerWidth'));
@@ -188,13 +198,23 @@ export default Ember.Component.extend({
       return;
     }
     this._updateChart();
-  }.observes('data', 'd3Line', 'seriesNames'),
+  }.observes('data', 'd3Line', 'seriesNames', 'xScale', 'yScale', 'yScale2'),
 
   // TODO: make legends into seperate component?
   _updateLegend: function() {
     var labels = this.get('seriesNames');
     var colors = this.get('colors');
-    var legend_dim = {x: 0, y: 0, spacer: 25, margin: 5, font: 10};
+
+    var xval = 0;
+    var spacer = 25;
+    var font = 10;
+    if (this.get('legendRight')) {
+      // FIXME: this is way too brittle
+      xval = this.get('innerWidth') + 10;
+      spacer = 10;
+      font = 6;
+    }
+    var legend_dim = {x: xval, y: 0, spacer: spacer, margin: 5, font: font};
     var svg = d3.select('#' + this.get('elementId')).select('.inner').select('.legend');
 
     // TODO: do not remove everything
@@ -222,7 +242,7 @@ export default Ember.Component.extend({
         g.append("text")
           .attr("x", 2*legend_dim.spacer + legend_dim.font/4)
           .attr("y", (i0+1)*(legend_dim.spacer + legend_dim.margin) - legend_dim.margin
-                - (legend_dim.spacer-legend_dim.font)*2/3)
+                - (legend_dim.spacer / 2) + legend_dim.font / 2)
           .style("fill", function () {return colors(d);})
           .text(function (d) {return d;});
       });

@@ -5,6 +5,7 @@ export default Ember.ObjectController.extend({
   selectedSequences: [],
 
   // TODO: maybe these should be in a View instead
+  // range in hxb2 1-indexed coordinates
   rangeStart: 160,
   rangeStop: 200,
   minCoord: 1,
@@ -17,7 +18,8 @@ export default Ember.ObjectController.extend({
   maskUnchanged: true,
   markPositive: true,
 
-  selectedPositions: [170, 175, 177],
+  // in alignment 1-indexed coordinates
+  selectedPositions: [170, 175, 177, 179, 180],
 
   regex: function() {
     var value = this.get('regexValue');
@@ -102,6 +104,7 @@ export default Ember.ObjectController.extend({
   aaTrajectories: function() {
     var sequences = this.get('selectedSequences');
     var positions = this.get('selectedPositions');
+    positions.sort();
     var counts = {};
     var totals = {};
     for (var i=0; i<sequences.length; i++ ) {
@@ -110,7 +113,7 @@ export default Ember.ObjectController.extend({
         return seq.sequence[idx - 1];  // 1-indexed
       }).join('');
       if (!(counts.hasOwnProperty(motif))) {
-        counts[motif] = {}
+        counts[motif] = {};
       }
       if (!(counts[motif].hasOwnProperty(seq.date))) {
         counts[motif][seq.date] = 0;
@@ -126,7 +129,7 @@ export default Ember.ObjectController.extend({
       if (!(counts.hasOwnProperty(motif))) {
         continue;
       }
-      var points = []
+      var points = [];
       for (var date in totals) {
         if (!(totals.hasOwnProperty(date))) {
           continue;
