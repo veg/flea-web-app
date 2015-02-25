@@ -14,8 +14,9 @@ export default Ember.Object.extend({
     ]
   */
 
-  find: function() {
-    return request('/api/sequences').then(function(result) {
+  find: function(session_id) {
+    var url = '/api/' + session_id + '/sequences';
+    return request(url).then(function(result) {
       var sequences = [];
       for (var prop in result) {
         if (!result.hasOwnProperty(prop)) {

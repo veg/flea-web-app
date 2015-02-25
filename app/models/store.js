@@ -4,13 +4,15 @@ var cache = {};
 
 export default Ember.Object.extend({
   find: function(name) {
-    if (cache[name]) {
-      return cache[name];
+    var session_id = this.get('session_id');
+    var key = session_id + name;
+    if (cache[key]) {
+      return cache[key];
     }
 
     var adapter = this.container.lookup('adapter:' + name);
-    return adapter.find().then(function(record) {
-      cache[name] = record;
+    return adapter.find(session_id).then(function(record) {
+      cache[key] = record;
       return record;
     });
   }

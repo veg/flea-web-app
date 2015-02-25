@@ -4,8 +4,9 @@ import {parse_date} from '../utils/utils';
 
 export default Ember.Object.extend({
 
-  find: function() {
-    return request('/api/trees').then(function(result) {
+  find: function(session_id) {
+    var url = '/api/' + session_id + '/trees';
+    return request(url).then(function(result) {
       var trees = [];
       for (var date in result) {
         if (!result.hasOwnProperty(date)) {

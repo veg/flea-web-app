@@ -4,8 +4,9 @@ import {parse_date} from '../utils/utils';
 
 export default Ember.Object.extend({
   // gets rates-pheno.json and formats it to Dates and numbers.
-  find: function() {
-    return request('/api/rates_pheno').then(function(result) {
+  find: function(session_id) {
+    var url = '/api/' + session_id + '/rates_pheno';
+    return request(url).then(function(result) {
       result.forEach (function (d) {
         d.Date = parse_date(String(d.Date));
         for (var k in d) {
