@@ -42,7 +42,7 @@ export default Ember.Component.extend({
     var names = this.get('seriesNames');
     if (this.get('legendRight') && (names.length > 0)) {
       var longest = Math.max.apply(null, names.map(function(n) {return n.length;}));
-      margin.right = 20 + 20 * longest;
+      margin.right = 20 + 10 * longest;
     }
     return margin;
   }.property('seriesNames.[]', 'legendRight'),
@@ -210,7 +210,7 @@ export default Ember.Component.extend({
     var font = 10;
     if (this.get('legendRight')) {
       // FIXME: this is way too brittle
-      xval = this.get('innerWidth') + 10;
+      xval = this.get('innerWidth');
       spacer = 10;
       font = 6;
     }
