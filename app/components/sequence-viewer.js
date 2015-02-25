@@ -8,6 +8,7 @@ export default Ember.Component.extend({
   refCoords: null,
   rangeStart: 1,
   rangeStop: 1,
+  selectedPositions: new Ember.Set(),
 
   transformCoord: function(coord) {
     // transform from 1-index reference coordinate to 1-index alignment coordinate
@@ -37,8 +38,7 @@ export default Ember.Component.extend({
   }.property('refCoords', 'rangeStop'),
 
   refHTML: function() {
-    var coordinates = ["","",""];
-    var selected_string = "";
+    var coordinates = [[], [], [], []];
     var last_hs = -5;
     var ref_map = this.get('refCoords');
     // TODO: there is surely a more elegent way of building this html
@@ -46,34 +46,39 @@ export default Ember.Component.extend({
       var hs = ref_map[s - 1];  // convert to 0-index
       var str = "";
       if (hs < 10) {
-        str = "  " + hs;
+        str = "&nbsp&nbsp" + hs;
       } else {
         if (hs < 100) {
-          str = " " + hs;
+          str = "&nbsp" + hs;
         } else {
           str = "" + hs;
         }
       }
-      if (this.get('markPositive')) {
-        selected_string += (this.get('positiveSelection')[0].indexOf (s)>=0) ? "+" : "&nbsp;";
-      }
       if (last_hs === hs) {
         str = "INS";
       }
-      coordinates[0] += "<span class = '_seq_hover_seq' data-coord = '" + s +"'>" + (str[0] === " " ? "&nbsp;" : str[0]) + "</span>";
-      coordinates[1] += "<span class = '_seq_hover_seq' data-coord = '" + s +"'>" + (str[1] === " " ? "&nbsp;" : str[1]) + "</span>";
-      coordinates[2] += "<span class = '_seq_hover_seq' data-coord = '" + s +"'>" + (str[2] === " " ? "&nbsp;" : str[2]) + "</span>";
+      var _class = '';
+      if (this.get('selectedPositions').contains(s)) {
+        _class = 'selected_position';
+      }
+      coordinates[0].push({character: str[0], _class: _class, dataCoord: s});
+      coordinates[1].push({character: str[1], _class: _class, dataCoord: s});
+      coordinates[2].push({character: str[2], _class: _class, dataCoord: s});
+      if (this.get('markPositive')) {
+        coordinates[3].push({character: (this.get('positiveSelection')[0].indexOf(s) >= 0) ? "+" : "&nbsp",
+                             dataCoord: s});
+      }
       last_hs = hs;
     }
-    return coordinates[0] + "<br/>" + coordinates[1] + "<br/>" + coordinates[2] + (this.get('markPositive') ? "<br/>" + selected_string : "");
-    }.property('alnStart', 'alnStop', 'refCoords', 'markPositive', 'positiveSelection'),
+    return coordinates;
+  }.property('alnStart', 'alnStop', 'refCoords', 'markPositive', 'positiveSelection', 'selectedPositions', 'selectedPositions.[]'),
 
   mrcaSlice: function() {
     var start = this.get("alnStart");
     var stop = this.get("alnStop");
     // convert 1-indexed [start, stop] to 0-indexed [start, stop)
     return this.get('mrca').sequence.slice(start - 1, stop);
-  }.property('alnStart', 'alnStop', 'inputSequence.@each'),
+  }.property('alnStart', 'alnStop'),
 
   groupedSequences: function() {
     var self = this;
@@ -115,8 +120,20 @@ export default Ember.Component.extend({
     }
     return result;
   }.property('alnStart', 'alnStop', 'mrcaSlice',
-             'inputSequence.@each', 'inputSequences.length',
+             'inputSequences.@each',
              'maskUnchanged', 'collapseSeqs', 'regex'),
+
+  actions: {
+    togglePosition: function(pos) {
+      pos = +pos;
+      if (this.get('selectedPositions').contains(pos)) {
+        this.get('selectedPositions').remove(pos);
+      } else {
+        this.get('selectedPositions').add(pos);
+      }
+      console.log(this.get('selectedPositions').toArray());
+    }
+  }
 });
 
 

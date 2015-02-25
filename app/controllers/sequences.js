@@ -19,7 +19,7 @@ export default Ember.ObjectController.extend({
   markPositive: true,
 
   // in alignment 1-indexed coordinates
-  selectedPositions: [170, 175, 177, 179, 180],
+  selectedPositions: new Ember.Set(),
 
   regex: function() {
     var value = this.get('regexValue');
@@ -102,9 +102,9 @@ export default Ember.ObjectController.extend({
   }.property('model.frequencies.@each'),
 
   aaTrajectories: function() {
+    console.log('trajectories');
     var sequences = this.get('selectedSequences');
-    var positions = this.get('selectedPositions');
-    positions.sort();
+    var positions = this.get('selectedPositions').toArray().sort(function(a, b) {return (a - b);});
     var counts = {};
     var totals = {};
     for (var i=0; i<sequences.length; i++ ) {
@@ -143,7 +143,7 @@ export default Ember.ObjectController.extend({
       series.push({name: motif, values: points});
     }
     return series;
-  }.property('selectedPositions.[]', 'selectedSequences.[]'),
+  }.property('selectedPositions.[]', 'selectedSequences.@each'),
 
   actions: {
     resetRegex: function() {

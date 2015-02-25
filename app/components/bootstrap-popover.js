@@ -22,5 +22,4 @@ export default Ember.Component.extend({
       placement: this.get('placement')
     });
   }.observes('dataContent', 'html', 'placement')
-
-})
+});

@@ -117,6 +117,19 @@ canvas {
   fill: #FFB314;
 }
 
+#sequence-viewer .ref-coords {
+  line-height: 100%;
+  cursor: pointer;
+}
+
+.selected_position {
+    background-color: rgba(0,0,0,0.2);
+}
+
+#sequence-viewer .ref-coords span:hover {
+    background-color: rgba(0,0,0,0.2);
+}
+
 .gene_legend {
     font: 12px sans-serif;
 }
