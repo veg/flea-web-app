@@ -1,7 +1,5 @@
 <div class = "row">
   <div class = "col-md-12">
-    {{multi-select content=observedSequences name="Sequences"
-    selected=selectedSequences displayName="id" viewLimit=100}}
     <div class="input-group input-group-sm">
       {{sequence-range-controls rangeStart=rangeStart rangeStop=rangeStop
       minCoord=minCoord maxCoord=maxCoord
@@ -19,6 +17,8 @@
         {{input type="checkbox" name="markPositive" checked=markPositive}}
       </span>
     </div>
+    {{multi-select content=observedSequences name="Sequences"
+    selected=selectedSequences displayName="id" viewLimit=100}}
   </div>
 </div>
 <br>
