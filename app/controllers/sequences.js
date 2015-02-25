@@ -161,10 +161,17 @@ export default Ember.ObjectController.extend({
       var split_series = _.partition(series, function(elt) {return _.includes(top9, elt.name);});
       var series = split_series[0];
       var rest_series = split_series[1];
-      // TODO: now combine others
+      // now combine others
+      var combined = rest_series[0].values;
+      for (var k=1; k<rest_series.length; k++) {
+        var curve = rest_series[k].values;
+        for (var m=0; m<curve.length; m++) {
+          combined[m].y += curve[m].y;
+        }
+      }
+      series.push({name: 'other', values: combined});
     }
     // TODO: sort by date each motif became prevalent
-
     return series;
   }.property('selectedPositions.[]', 'selectedSequences.@each'),
 
