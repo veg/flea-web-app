@@ -26,6 +26,7 @@ export default Ember.Component.extend({
   height: 300,
 
   legendRight: false,
+  interpolation: "linear",
 
   ymin: null,
   data: [],
@@ -140,7 +141,7 @@ export default Ember.Component.extend({
     return d3.svg.line()
       .x(function(d) { return xScale(d.x); })
       .y(function(d) { return yScale(d.y); })
-      .interpolate('linear');
+      .interpolate(this.get('interpolation'));
   }.property('xScale', 'yScale'),
 
   d3Line2: function() {
@@ -149,7 +150,7 @@ export default Ember.Component.extend({
     return d3.svg.line()
       .x(function(d) { return xScale(d.x); })
       .y(function(d) { return yScale(d.y); })
-      .interpolate('linear');
+      .interpolate(this.get('interpolation'));
   }.property('xScale', 'yScale2'),
 
   xAxisFormat: function() {
