@@ -102,9 +102,11 @@ export default Ember.ObjectController.extend({
   }.property('model.frequencies.@each'),
 
   aaTrajectories: function() {
-    console.log('trajectories');
     var sequences = this.get('selectedSequences');
     var positions = this.get('selectedPositions').toArray().sort(function(a, b) {return (a - b);});
+    if (positions.length === 0) {
+      return [];
+    }
     var counts = {};
     var totals = {};
     for (var i=0; i<sequences.length; i++ ) {
