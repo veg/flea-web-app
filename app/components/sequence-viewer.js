@@ -156,7 +156,6 @@ export default Ember.Component.extend({
       } else {
         this.get('selectedPositions').add(pos);
       }
-      console.log(this.get('selectedPositions').toArray());
     },
     clearPositions: function() {
       this.get('selectedPositions').clear();

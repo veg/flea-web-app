@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import {sumArray} from '../utils/utils';
 
 export default Ember.ObjectController.extend({
 
@@ -147,14 +146,14 @@ export default Ember.ObjectController.extend({
     }
     // take top 9 and combine others
     if (series.length > 10) {
-      var sums = [];
+      var maxes = [];
       for (var j=0; j<series.length; j++) {
         var trajectory = series[j];
-        var tsum = sumArray(trajectory.values, function(v) {return v.y;});
-        sums.push({name: trajectory.name, sum: tsum});
+        var tmax = _.max(trajectory.values, function(v) {return v.y;});
+        maxes.push({name: trajectory.name, max: tmax});
       }
-      sums.sort(function(a, b) { return a.sum - b.sum; });
-      var split_names = _.partition(sums.map(function(v) {return v.name;}),
+      maxes.sort(function(a, b) { return a.sum - b.sum; });
+      var split_names = _.partition(maxes.map(function(v) {return v.name;}),
                                     function(value, index) {return index < 9;});
       var top9 = split_names[0];
       var rest = split_names[1];
