@@ -6,6 +6,12 @@ export default Ember.Controller.extend({
   useEntropy: false,
   markPositive: true,
 
+  needs: ['application'],
+
+  currentPath: function() {
+    return this.get('rootURL') + this.get('controllers.application.currentPath');
+  }.property('rootURL', 'controllers.application.currentPath'),
+
   labels: function() {
     if (this.get('useEntropy')) {
       return ['Entropy'];

@@ -6,5 +6,10 @@ export default Ember.Route.extend({
       rates: this.store.find('rates'),
       structure: this.store.find('structure')
     });
+  },
+
+  setupController: function(controller, model){
+    this._super(controller, model);
+    controller.set('rootURL', this.router.get('rootURL'));
   }
 });
