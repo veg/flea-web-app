@@ -120,11 +120,11 @@ export default Ember.ObjectController.extend({
       if (!(counts[motif].hasOwnProperty(seq.date))) {
         counts[motif][seq.date] = 0;
       }
-      counts[motif][seq.date] += 1;
+      counts[motif][seq.date] += seq.copyNumber;
       if (!(totals.hasOwnProperty(seq.date))) {
         totals[seq.date] = 0;
       }
-      totals[seq.date] += 1;
+      totals[seq.date] += seq.copyNumber;
     }
     var series = [];
     for (var motif in counts) {
