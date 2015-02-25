@@ -4,7 +4,7 @@ import config from './config/environment';
 var Router = Ember.Router.extend({
   location: config.locationType,
   rootURL: function() {
-    return '/session/' + this.get('session_id') + '/';
+    return '/' + this.get('session_id') + '/';
   }.property('session_id')
 });
 
