@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import {sumArray} from '../utils/utils';
 
 export default Ember.ObjectController.extend({
 
@@ -144,6 +145,26 @@ export default Ember.ObjectController.extend({
       }
       series.push({name: motif, values: points});
     }
+    // take top 9 and combine others
+    if (series.length > 10) {
+      var sums = [];
+      for (var j=0; j<series.length; j++) {
+        var trajectory = series[j];
+        var tsum = sumArray(trajectory.values, function(v) {return v.y;});
+        sums.push({name: trajectory.name, sum: tsum});
+      }
+      sums.sort(function(a, b) { return a.sum - b.sum; });
+      var split_names = _.partition(sums.map(function(v) {return v.name;}),
+                                    function(value, index) {return index < 9;});
+      var top9 = split_names[0];
+      var rest = split_names[1];
+      var split_series = _.partition(series, function(elt) {return _.includes(top9, elt.name);});
+      var series = split_series[0];
+      var rest_series = split_series[1];
+      // TODO: now combine others
+    }
+    // TODO: sort by date each motif became prevalent
+
     return series;
   }.property('selectedPositions.[]', 'selectedSequences.@each'),
 

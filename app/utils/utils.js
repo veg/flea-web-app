@@ -61,3 +61,17 @@ export var regexRanges = function(regex, string) {
   }
   return indices;
 };
+
+
+export var sumArray = function(collection, accessor) {
+  var total = 0;
+  if (!accessor) {
+    accessor = function(a) {
+      return a;
+    };
+  }
+  for (var i=0; i<collection.length; i++) {
+    total += accessor(collection[i]);
+  }
+  return total
+}
