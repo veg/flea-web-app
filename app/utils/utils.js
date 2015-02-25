@@ -73,5 +73,5 @@ export var sumArray = function(collection, accessor) {
   for (var i=0; i<collection.length; i++) {
     total += accessor(collection[i]);
   }
-  return total
-}
+  return total;
+};
