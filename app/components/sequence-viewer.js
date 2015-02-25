@@ -132,6 +132,26 @@ export default Ember.Component.extend({
         this.get('selectedPositions').add(pos);
       }
       console.log(this.get('selectedPositions').toArray());
+    },
+    clearPositions: function() {
+      this.get('selectedPositions').clear();
+    },
+    selectAllPositive: function () {
+      var positions = this.get('positiveSelection')[0];
+      var start = this.get('alnStart');
+      var stop = this.get('alnStop');
+      var result = new Ember.Set();
+      for (var i = 0; i < positions.length; i++) {
+        // could do binary search to speed this up
+        var pos = positions[i];
+        if (start <= pos && pos <= stop) {
+          result.add(pos);
+        }
+        if (pos > stop) {
+          break;
+        }
+      }
+      this.set('selectedPositions', result);
     }
   }
 });
