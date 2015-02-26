@@ -113,7 +113,6 @@ export default Ember.ObjectController.extend({
     result = addHTML(result);
     result = addHighlights(result, this.get('regex'));
     result = addMask(result, mrca);
-    console.log(result);
     return result;
   }.property('alnStart', 'alnStop', 'mrcaSlice',
              'selectedSequences.@each',
