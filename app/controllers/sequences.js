@@ -11,7 +11,7 @@ export default Ember.ObjectController.extend({
   selectedSequences: [],
 
   init: function () {
-    this.set('selectedSequences', this.get('controllers.application.model.sequences'));
+    this.set('selectedSequences', this.get('observedSequences'));
   },
 
   // TODO: maybe these should be in a View instead
