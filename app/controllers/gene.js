@@ -8,8 +8,8 @@ export default Ember.Controller.extend({
   markPositive: true,
 
   currentPath: function() {
-    return this.get('rootURL') + this.get('controllers.application.currentPath');
-  }.property('rootURL', 'controllers.application.currentPath'),
+    return this.get('controllers.application.rootURL') + this.get('controllers.application.currentPath');
+  }.property('controllers.application.rootURL', 'controllers.application.currentPath'),
 
   labels: function() {
     if (this.get('useEntropy')) {
