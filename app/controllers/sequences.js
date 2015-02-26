@@ -2,6 +2,7 @@ import Ember from 'ember';
 import {format_date, htmlTable1D, regexRanges} from '../utils/utils';
 
 export default Ember.ObjectController.extend({
+  needs: ['application'],
 
   selectedSequences: [],
 
@@ -63,14 +64,14 @@ export default Ember.ObjectController.extend({
   },
 
   observedSequences: function() {
-    var seqs = this.get('model.sequences');
+    var seqs = this.get('controllers.application.model.sequences');
     return this.filterSequenceTypes(seqs, 'Observed');
-  }.property('model.sequences.@each'),
+  }.property('controllers.application.model.sequences.@each'),
 
   mrca: function() {
-    var seqs = this.get('model.sequences');
+    var seqs = this.get('controllers.application.model.sequences');
     return this.filterSequenceTypes(seqs, 'MRCA')[0];
-  }.property('model.sequences.@each'),
+  }.property('controllers.application.model.sequences.@each'),
 
   mrcaSlice: function() {
     var start = this.get("alnStart");
@@ -147,7 +148,7 @@ export default Ember.ObjectController.extend({
 
   // _hxb2_coords
   refCoords: function () {
-    var data = this.get('model.frequencies');
+    var data = this.get('controllers.application.model.frequencies');
     var coords = [];
     for (var k in data) {
       if (data.hasOwnProperty(k)) {
@@ -156,7 +157,7 @@ export default Ember.ObjectController.extend({
     }
     coords.sort (function (a,b) {return a[0] - b[0];});
     return coords.map (function (d) {return d[1];});
-  }.property('model.frequencies.@each'),
+  }.property('controllers.application.model.frequencies.@each'),
 
   aaTrajectories: function() {
     var sequences = this.get('selectedSequences');

@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.ObjectController.extend({
+  needs: ['application'],
 
   // TODO: populate these on the fly
   regions: ['gp160', 'signal', 'c1', 'v1', 'v2',
@@ -44,15 +45,15 @@ export default Ember.ObjectController.extend({
   }.property('selectedRegions.length'),
 
   evoData: function() {
-    var all_data = this.get('model');
+    var all_data = this.get('controllers.application.model.trajectory');
     var regions = this.get('selectedRegions');
     var metrics = this.get('selectedEvoMetrics');
     return prepData(all_data, regions, metrics);
-  }.property('model', 'selectedRegions.@each',
+  }.property('controllers.application.model.trajectory', 'selectedRegions.@each',
              'selectedEvoMetrics.@each'),
 
   _phenoData: function(index) {
-    var all_data = this.get('model');
+    var all_data = this.get('controllers.application.model.trajectory');
     var regions = this.get('selectedRegions');
     var metrics = this.get('selectedPhenoMetrics');
     if (regions.length > 1) {
@@ -67,7 +68,7 @@ export default Ember.ObjectController.extend({
   phenoData: function() {
     var result = this._phenoData(0);
     return result;
-  }.property('model',
+  }.property('controllers.application.model.trajectory',
              'selectedRegions.@each',
              'selectedPhenoMetrics.@each'),
 
@@ -77,7 +78,7 @@ export default Ember.ObjectController.extend({
       result = this._phenoData(1);
     }
     return result;
-  }.property('model',
+  }.property('controllers.application.model.trajectory',
              'selectedRegions.@each',
              'selectedPhenoMetrics.@each')
 });

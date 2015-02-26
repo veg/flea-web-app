@@ -10,8 +10,10 @@ function format_percent(frac) {
 }
 
 export default Ember.Controller.extend({
+  needs: ['application'],
+  
   mabNames: function() {
-    var json = this.get('model.neutralization');
+    var json = this.get('controllers.application.model.neutralization');
     var result = [];
     for (var mab_name in json) {
       if (json.hasOwnProperty(mab_name)) {
@@ -20,10 +22,10 @@ export default Ember.Controller.extend({
     }
     result.sort();
     return result;
-  }.property('self.model.neutralization.@each'),
+  }.property('controllers.application.model.neutralization.@each'),
 
   mabFeatures: function() {
-    var json = this.get('model.neutralization');
+    var json = this.get('controllers.application.model.neutralization');
     var seq_id_to_date = this.get('seqIdToDate');
 
     var mab_table = {};
@@ -53,10 +55,10 @@ export default Ember.Controller.extend({
       }
     }
     return mab_table;
-  }.property('mabName.@each', 'model.neutralization.@each', 'seqIdToDate'),
+  }.property('mabName.@each', 'controllers.application.model.neutralization.@each', 'seqIdToDate'),
 
   sortedDates: function() {
-    var d = this.get('model.dates');
+    var d = this.get('controllers.application.model.dates');
     var result = [];
     for (var k in d) {
       if(d.hasOwnProperty(k)) {
@@ -65,7 +67,7 @@ export default Ember.Controller.extend({
     }
     result.sort(function(a, b) {return a < b ? -1 : 1;});
     return result;
-  }.property('model.date.@each'),
+  }.property('controllers.application.model.date.@each'),
 
   // TODO: move these to the view?
   headerNames: function() {
@@ -135,12 +137,12 @@ export default Ember.Controller.extend({
   }.property('mabFeature.@each', 'sortedDate.@each'),
 
   seqIdToDate: function() {
-    var seqs = this.get('model.sequences');
+    var seqs = this.get('controllers.application.model.sequences');
     return seqs.reduce(function(acc, s) {
       acc[s['id']] = s['date'];
       return acc;
     }, {});
-  }.property('model.sequence.@each')
+  }.property('controllers.application.model.sequence.@each')
 });
 
 

@@ -2,11 +2,10 @@ import Ember from 'ember';
 import {parse_date, format_date, isString} from '../utils/utils';
 
 export default Ember.Controller.extend({
+  needs: ['application'],
 
   useEntropy: false,
   markPositive: true,
-
-  needs: ['application'],
 
   currentPath: function() {
     return this.get('rootURL') + this.get('controllers.application.currentPath');
@@ -29,19 +28,19 @@ export default Ember.Controller.extend({
   },
 
   meanDS: function() {
-    var rates = this.get('model.rates.sortedRates');
+    var rates = this.get('controllers.application.model.rates.sortedRates');
     return this.getRate(rates, 0);
-  }.property('model.rates.sortedRates.[].[]'),
+  }.property('controllers.application.model.rates.sortedRates.[].[]'),
 
   meanDN: function() {
-    var rates = this.get('model.rates.sortedRates');
+    var rates = this.get('controllers.application.model.rates.sortedRates');
     return this.getRate(rates, 1);
-  }.property('model.rates.sortedRates.[].[]'),
+  }.property('controllers.application.model.rates.sortedRates.[].[]'),
 
   entropy: function() {
-    var rates = this.get('model.rates.sortedRates');
+    var rates = this.get('controllers.application.model.rates.sortedRates');
     return this.getRate(rates, 4);
-  }.property('model.rates.sortedRates.[].[]'),
+  }.property('controllers.application.model.rates.sortedRates.[].[]'),
 
   data1: function() {
     if (this.get('useEntropy')) {
@@ -58,7 +57,7 @@ export default Ember.Controller.extend({
   }.property('useEntropy', 'entropy.[].[]', 'meanDN.[].[]'),
 
   names: function() {
-    var sorted = this.get('model.rates.sortedRates');
+    var sorted = this.get('controllers.application.model.rates.sortedRates');
     var result = sorted.map(function(d) {
       var name = d.date;
       if (name === 'Combined') {
@@ -70,12 +69,12 @@ export default Ember.Controller.extend({
       return format_date(name);
     });
     return result;
-  }.property('model.rates.sortedRates.[].[]'),
+  }.property('controllers.application.model.rates.sortedRates.[].[]'),
 
   positions: function() {
     if (this.get('markPositive')) {
-      return this.get('model.rates.positiveSelection');
+      return this.get('controllers.application.model.rates.positiveSelection');
     }
     return [];
-  }.property('markPositive', 'model.rates.positiveSelection')
+  }.property('markPositive', 'controllers.application.model.rates.positiveSelection')
 });
