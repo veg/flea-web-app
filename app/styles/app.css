@@ -225,12 +225,34 @@ a.fill-div {
     color: #9edae5;
 }
 
+.loading-pane {
+    margin-top: 200px;
+}
+
 .loading-message {
     font-size:22px;
     font-weight:300;
     font-family:sans-serif;
     text-align: center;
+ }
+
+.error-pane {
     margin-top: 200px;
+}
+
+.error-title {
+    font-size:22px;
+    font-weight:300;
+    font-family:sans-serif;
+    text-align: center;
+}
+
+.error-message {
+    margin-top: 10px;
+    font-size:16px;
+    font-family:sans-serif;
+    text-align: center;
+    color: rgba(0,0,0, 0.5);
 }
 
 /*
