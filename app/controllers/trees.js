@@ -2,7 +2,6 @@ import Ember from 'ember';
 import {parse_date, format_date, isString} from '../utils/utils';
 
 export default Ember.Controller.extend({
-  needs: ['application'],
 
   _selectedGenomicRegion: '',
   _selectedTimePoint: '',
@@ -15,7 +14,7 @@ export default Ember.Controller.extend({
   spaceState: 0,
 
   nestedTrees: function() {
-    var trees = this.get('controllers.application.model.trees');
+    var trees = this.get('model.trees');
     var keys = {};
     for (var i=0; i < trees.length; i++) {
       var tree = trees[i];
@@ -34,7 +33,7 @@ export default Ember.Controller.extend({
       }
     }
     return keys;
-  }.property('controllers.application.model.trees.@each'),
+  }.property('model.trees.@each'),
 
   genomicRegions: function() {
     var trees = this.get('nestedTrees');
@@ -101,12 +100,12 @@ export default Ember.Controller.extend({
   // FIXME: code duplication. Same function used in neutralization controller.
   // Where to put this to share it?
   seqIdToDate: function() {
-    var seqs = this.get('controllers.application.model.sequences');
+    var seqs = this.get('model.sequences');
     return seqs.reduce(function(acc, s) {
       acc[s['id']] = s['date'];
       return acc;
     }, {});
-  }.property('controllers.application.model.sequences.@each'),
+  }.property('model.sequences.@each'),
 
   actions: {
     setSortState: function(state) {

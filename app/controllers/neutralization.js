@@ -10,8 +10,6 @@ function format_percent(frac) {
 }
 
 export default Ember.Controller.extend({
-  needs: ['application'],
-  
   mabNames: function() {
     var json = this.get('model.neutralization');
     var result = [];
@@ -137,12 +135,12 @@ export default Ember.Controller.extend({
   }.property('mabFeature.@each', 'sortedDate.@each'),
 
   seqIdToDate: function() {
-    var seqs = this.get('controllers.application.model.sequences');
+    var seqs = this.get('model.sequences');
     return seqs.reduce(function(acc, s) {
       acc[s['id']] = s['date'];
       return acc;
     }, {});
-  }.property('controllers.application.model.sequences.@each')
+  }.property('model.sequences.@each')
 });
 
 

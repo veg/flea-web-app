@@ -3,9 +3,8 @@ import Ember from 'ember';
 export default Ember.Route.extend({
   model: function() {
     return Ember.RSVP.hash({
-      neutralization: this.store.find('neutralization'),
+      trees: this.store.find('trees'),
       sequences: this.store.find('sequences'),
-      dates: this.store.find('dates')
     });
   }
 });
