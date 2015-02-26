@@ -19,7 +19,9 @@
     </div>
     <div class="input-group input-group-sm">
       {{multi-select content=observedSequences name="Sequences"
-      selected=selectedSequences displayName="id" viewLimit=100}}
+      selected=_selectedSequences displayName="id" viewLimit=100
+      submit="finalizeSelection" submitOnClose=true
+      }}
     </div>
   </div>
 </div>

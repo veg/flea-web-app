@@ -4,7 +4,15 @@ import {format_date, htmlTable1D, regexRanges} from '../utils/utils';
 export default Ember.ObjectController.extend({
   needs: ['application'],
 
+  // set by selector component
+  _selectedSequences: [],
+
+  // set from _selectedSequences in finalizeSelection action
   selectedSequences: [],
+
+  init: function () {
+    this.set('selectedSequences', this.get('controllers.application.model.sequences'));
+  },
 
   // TODO: maybe these should be in a View instead
   // range in hxb2 1-indexed coordinates
@@ -235,6 +243,9 @@ export default Ember.ObjectController.extend({
   actions: {
     resetRegex: function() {
       this.set('regexValue', this.get('regexDefault'));
+    },
+    finalizeSelection: function() {
+      this.set('selectedSequences', this.get('_selectedSequences'));
     }
   }
 });
