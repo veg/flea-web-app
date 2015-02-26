@@ -13,7 +13,7 @@ export default Ember.Controller.extend({
   needs: ['application'],
   
   mabNames: function() {
-    var json = this.get('controllers.application.model.neutralization');
+    var json = this.get('model.neutralization');
     var result = [];
     for (var mab_name in json) {
       if (json.hasOwnProperty(mab_name)) {
@@ -22,10 +22,10 @@ export default Ember.Controller.extend({
     }
     result.sort();
     return result;
-  }.property('controllers.application.model.neutralization.@each'),
+  }.property('model.neutralization.@each'),
 
   mabFeatures: function() {
-    var json = this.get('controllers.application.model.neutralization');
+    var json = this.get('model.neutralization');
     var seq_id_to_date = this.get('seqIdToDate');
 
     var mab_table = {};
@@ -55,10 +55,10 @@ export default Ember.Controller.extend({
       }
     }
     return mab_table;
-  }.property('mabName.@each', 'controllers.application.model.neutralization.@each', 'seqIdToDate'),
+  }.property('mabName.@each', 'model.neutralization.@each', 'seqIdToDate'),
 
   sortedDates: function() {
-    var d = this.get('controllers.application.model.dates');
+    var d = this.get('model.dates');
     var result = [];
     for (var k in d) {
       if(d.hasOwnProperty(k)) {
@@ -67,7 +67,7 @@ export default Ember.Controller.extend({
     }
     result.sort(function(a, b) {return a < b ? -1 : 1;});
     return result;
-  }.property('controllers.application.model.date.@each'),
+  }.property('model.dates.@each'),
 
   // TODO: move these to the view?
   headerNames: function() {
@@ -142,7 +142,7 @@ export default Ember.Controller.extend({
       acc[s['id']] = s['date'];
       return acc;
     }, {});
-  }.property('controllers.application.model.sequence.@each')
+  }.property('controllers.application.model.sequences.@each')
 });
 
 
