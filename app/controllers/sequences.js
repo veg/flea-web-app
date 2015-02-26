@@ -7,11 +7,7 @@ export default Ember.ObjectController.extend({
   _selectedSequences: [],
 
   // set from _selectedSequences in finalizeSelection action
-  selectedSequences: [],
-
-  init: function () {
-    this.set('selectedSequences', this.get('observedSequences'));
-  },
+  selectedSequences: 'empty',
 
   // TODO: maybe these should be in a View instead
   // range in hxb2 1-indexed coordinates
@@ -51,15 +47,6 @@ export default Ember.ObjectController.extend({
     {name: 'MPER', start: 662, stop: 683}
   ],
 
-  selectedCopyNumber: function() {
-    var seqs = this.get('selectedSequences');
-    var result = 0;
-    for (var i=0; i<seqs.length; i++) {
-      result += seqs[i].copyNumber;
-    }
-    return result;
-  }.property('selectedSequences.@each'),
-
   maxCoord: function() {
     return this.get('mrca').sequence.length;
   }.property('mrca'),
@@ -90,6 +77,9 @@ export default Ember.ObjectController.extend({
   groupedSequences: function() {
     var self = this;
     var sequences = self.get('selectedSequences');
+    if (sequences === 'empty') {
+      sequences = this.get('observedSequences');
+    }
     var result = [];
     var start = this.get("alnStart");
     var stop = this.get("alnStop");
@@ -168,6 +158,9 @@ export default Ember.ObjectController.extend({
 
   aaTrajectories: function() {
     var sequences = this.get('selectedSequences');
+    if (sequences === 'empty') {
+      sequences = this.get('observedSequences');
+    }
     var positions = this.get('selectedPositions').toArray().sort(function(a, b) {return (a - b);});
     if (positions.length === 0) {
       return [];
