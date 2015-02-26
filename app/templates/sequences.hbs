@@ -17,8 +17,10 @@
         {{input type="checkbox" name="markPositive" checked=markPositive}}
       </span>
     </div>
-    {{multi-select content=observedSequences name="Sequences"
-    selected=selectedSequences displayName="id" viewLimit=100}}
+    <div class="input-group input-group-sm">
+      {{multi-select content=observedSequences name="Sequences"
+      selected=selectedSequences displayName="id" viewLimit=100}}
+    </div>
   </div>
 </div>
 <br>
@@ -26,13 +28,11 @@
   <div class = "col-md-12">
     {{timeseries-plot width=800 height=250 data=aaTrajectories legendRight=true ymin=0 interpolation="basis"}}
 
-    {{sequence-viewer inputSequences=selectedSequences
-    rangeStart=rangeStart rangeStop=rangeStop mrca=mrca
+    {{sequence-viewer groupedSequences=groupedSequences
+    alnStart=alnStart alnStop=alnStop mrca=mrcaSlice
     selectedPositions=selectedPositions
-    collapseSeqs=collapseSeqs
-    maskUnchanged=maskUnchanged
     markPositive=markPositive
-    refCoords=hxb2Coords
+    refCoords=refCoords
     positiveSelection=model.rates.positiveSelection
     regex=regex
     selectDefault=true

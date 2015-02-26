@@ -79,20 +79,3 @@ export default Ember.Controller.extend({
     return [];
   }.property('markPositive', 'model.rates.positiveSelection')
 });
-
-
-function get_site_residues(data, site) {
-  var all_residues = {};
-  for (var k in data[site]) {
-    if (data.hasOwnProperty(k)) {
-      if (k !== "HXB2") {
-        for (var residue in data[site][k]) {
-          if (data[site][k].hasOwnProperty(residue)) {
-            all_residues[residue] = 1;
-          }
-        }
-      }
-    }
-  }
-  return d3.keys (all_residues).sort();
-}
