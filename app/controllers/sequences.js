@@ -207,10 +207,10 @@ export default Ember.ObjectController.extend({
       var maxes = [];
       for (var j=0; j<series.length; j++) {
         var trajectory = series[j];
-        var tmax = _.max(trajectory.values, function(v) {return v.y;});
+        var tmax = _.max(trajectory.values.map(function(v) { return v.y; }));
         maxes.push({name: trajectory.name, max: tmax});
       }
-      maxes.sort(function(a, b) { return a.sum - b.sum; });
+      maxes.sort(function(a, b) { return b.max - a.max; });
       var split_names = _.partition(maxes.map(function(v) {return v.name;}),
                                     function(value, index) {return index < 9;});
       var top9 = split_names[0];
