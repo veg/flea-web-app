@@ -103,10 +103,13 @@ export default Ember.ObjectController.extend({
       final_seqs.sort(function(a, b) {
         return b.copyNumber - a.copyNumber;
       });
-      result.push({'date': format_date(new Date(key)),
+      result.push({'date': new Date(key),
                    'sequences': final_seqs});
     }
-    result.sort();
+    result.sort(function(a, b) {return a.date - b.date;});
+    result.forEach(function(elt) {
+      elt.date = format_date(elt.date);
+    });
     result = addPercent(result);
     result = addHTML(result);
     result = addHighlights(result, this.get('regex'));
