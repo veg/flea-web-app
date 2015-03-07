@@ -57,6 +57,31 @@ export default Ember.Controller.extend({
     return this.get('meanDN');
   }.property('useEntropy', 'entropy.[].[]', 'meanDN.[].[]'),
 
+  structureData: function() {
+    var dn = this.get('meanDN');
+    var ds = this.get('meanDS');
+    var zipped = _.zip(dn[0], ds[0]);
+    // TODO: do not hardcode these values
+    var upper = Math.log(5);
+    var lower = Math.log(1/5);
+    var ratios = zipped.map(function(pair) {
+      var result = Math.log(pair[0] / pair[1]);
+      // cap extreme values
+      if (result > upper) {
+        result = upper;
+      } else if (result < lower) {
+        result = lower;
+      }
+      return result;
+    });
+    // take only reference coordinates
+    var coordMap = this.get('model.frequencies.refToFirstAlnCoords');
+    var result = _.map(coordMap, function(alnCoord) {
+      return ratios[alnCoord] || 0;
+    });
+    return result;
+  }.property('model.frequencies.refToFirstAlnCoords', 'meanDN', 'meanDS'),
+
   names: function() {
     var sorted = this.get('model.rates.sortedRates');
     var result = sorted.map(function(d) {
