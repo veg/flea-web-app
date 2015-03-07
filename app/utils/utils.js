@@ -75,3 +75,14 @@ export var sumArray = function(collection, accessor) {
   }
   return total;
 };
+
+export var transformIndex =  function(idx, map) {
+  idx = idx - 1;
+  var result = -1;
+  if (idx >= map.length) {
+    result = map[map.length - 1];
+  } else {
+    result = map[idx];
+  }
+  return result + 1;
+};
