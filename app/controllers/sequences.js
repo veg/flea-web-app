@@ -48,8 +48,9 @@ export default Ember.ObjectController.extend({
   ],
 
   maxCoord: function() {
-    return this.get('mrca').sequence.length;
-  }.property('mrca'),
+    // maximum reference coordinate
+    return this.get('refToFirstAlnCoords').length;
+  }.property('refToFirstAlnCoords'),
 
   filterSequenceTypes: function(seqs, type) {
     return seqs.filter(function(seq) {
@@ -119,45 +120,74 @@ export default Ember.ObjectController.extend({
              'selectedSequences.@each',
              'regex'),
 
-  transformCoord: function(coord) {
-    // transform from 1-index reference coordinate to 1-index alignment coordinate
-    var refCoords = this.get('refCoords');
-    if (refCoords[refCoords.length - 1] < coord) {
-      // so we can see insertions after reference
-      return refCoords.length;
-    }
-    var idx = refCoords.indexOf(coord);
-    if (idx === -1) {
-      //find first larger index
-      for (idx = 0; idx < refCoords.length; idx++) {
-        if (refCoords[idx] > coord) {
-          break;
-        }
-      }
-    }
-    return idx + 1;  // convert from 0-index to 1-index
-  },
-
-  alnStart: function() {
-    return this.transformCoord(this.get('rangeStart'));
-  }.property('refCoords', 'rangeStart'),
-
-  alnStop: function() {
-    return this.transformCoord(this.get('rangeStop'));
-  }.property('refCoords', 'rangeStop'),
-
-  // _hxb2_coords
-  refCoords: function () {
+  alnToRefCoords: function () {
+    // maps from alignment coordinates to reference coordinates
+    // both 0-indexed.
     var data = this.get('model.frequencies');
     var coords = [];
     for (var k in data) {
       if (data.hasOwnProperty(k)) {
-        coords.push ([parseInt(k), parseInt(data[k]['HXB2'])]);
+        coords.push ([parseInt(k) - 1, parseInt(data[k]['HXB2']) - 1]);
       }
     }
     coords.sort (function (a,b) {return a[0] - b[0];});
     return coords.map (function (d) {return d[1];});
   }.property('model.frequencies.@each'),
+
+  refToFirstAlnCoords: function () {
+    // inverse of alnToRefCoords.
+    // maps reference coordinates to alignment coordinates
+    // both 0-indexed
+    var alnToRef = this.get('alnToRefCoords');
+    var maxIndex = alnToRef[alnToRef.length - 1];
+    var result = new Array(maxIndex);
+    var refIndex;
+    for (var i=alnToRef.length - 1; i > -1; i--) {
+      refIndex = alnToRef[i];
+      result[refIndex] = i;
+    }
+    return result;
+  }.property('alnToRefCoords'),
+
+  refToLastAlnCoords: function () {
+    // inverse of alnToRefCoords.
+    // maps reference coordinates to alignment coordinates
+    // both 0-indexed
+    var alnToRef = this.get('alnToRefCoords');
+    var maxIndex = alnToRef[alnToRef.length - 1];
+    var result = new Array(maxIndex);
+    var refIndex;
+    for (var i=0; i<alnToRef.length; i++) {
+      refIndex = alnToRef[i];
+      result[refIndex] = i;
+    }
+    return result;
+  }.property('alnToRefCoords'),
+
+  transformIndex: function(idx, map) {
+    idx = idx - 1;
+    var result = -1;
+    if (idx >= map.length) {
+      result = map[map.length - 1];
+    } else {
+      result = map[idx];
+    }
+    return result + 1;
+  },
+
+  alnStart: function() {
+    // 1-indexed aligment range start
+    var idx = this.get('rangeStart');
+    var map = this.get('refToFirstAlnCoords');
+    return this.transformIndex(idx, map);
+  }.property('refToFirstAlnCoords', 'rangeStart'),
+
+  alnStop: function() {
+    // 1-indexed aligment range stop
+    var idx = this.get('rangeStop');
+    var map = this.get('refToLastAlnCoords');
+    return this.transformIndex(idx, map);
+  }.property('refToLastAlnCoords', 'rangeStop'),
 
   aaTrajectories: function() {
     var sequences = this.get('selectedSequences');

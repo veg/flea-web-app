@@ -21,7 +21,7 @@ export default Ember.Component.extend({
     var ref_map = this.get('refCoords');
     // TODO: there is surely a more elegent way of building this html
     for (var s = this.get('alnStart'); s <= this.get('alnStop'); s++) {
-      var hs = ref_map[s - 1];  // convert to 0-index
+      var hs = ref_map[s - 1] + 1;
       var str = "";
       if (hs < 10) {
         str = "  " + hs;
