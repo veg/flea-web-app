@@ -1,6 +1,10 @@
 import Ember from 'ember';
 import {format_date, htmlTable1D, regexRanges, transformIndex} from '../utils/utils';
 
+
+var pngsRegex = 'N\\-*[^P-]\\-*[ST]\\-*[^P-]';
+
+
 export default Ember.ObjectController.extend({
 
   // set by selector component
@@ -15,8 +19,8 @@ export default Ember.ObjectController.extend({
   rangeStop: 200,
   minCoord: 1,
 
-  regexValue: 'N\\-*[^P]\\-*[ST]\\-*[^P]',
-  regexDefault: 'N\\-*[^P]\\-*[ST]\\-*[^P]',
+  regexValue: pngsRegex,
+  regexDefault: pngsRegex,
   _regex: '',
 
   markPositive: true,
