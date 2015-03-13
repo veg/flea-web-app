@@ -6,7 +6,7 @@ import {parse_date} from '../utils/utils';
 export default Ember.Object.extend({
 
   find: function(session_id) {
-    var url = config.baseURL + 'api/' + session_id + '/trees';
+    var url = config.baseURL + 'data/' + session_id + '/trees';
     return request(url).then(function(result) {
       var trees = [];
       for (var date in result) {

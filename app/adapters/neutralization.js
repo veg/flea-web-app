@@ -4,7 +4,7 @@ import request from 'ic-ajax';
 
 export default Ember.Object.extend({
   find: function(session_id) {
-    var url = config.baseURL + 'api/' + session_id + '/neutralization';
+    var url = config.baseURL + 'data/' + session_id + '/neutralization';
     return request(url).then(function(result) {
       return result;
     });

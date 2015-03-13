@@ -52,7 +52,7 @@ var FrequencyObject = Ember.Object.extend({
 
 export default Ember.Object.extend({
   find: function(session_id) {
-    var url = config.baseURL + 'api/' + session_id + '/frequencies';
+    var url = config.baseURL + 'data/' + session_id + '/frequencies';
     return request(url).then(function(data) {
       return FrequencyObject.create({data: data});
     });

@@ -43,7 +43,7 @@ function positive_selection_positions (mx) {
 
 export default Ember.Object.extend({
   find: function(session_id) {
-    var url = config.baseURL + 'api/' + session_id + '/rates';
+    var url = config.baseURL + 'data/' + session_id + '/rates';
     return request(url).then(function(result) {
       var new_result = [];
       for (var name in result) {
