@@ -1,5 +1,23 @@
 {
   "name": "flea-app",
+  "main": "dist/assets/flea-app.js",
+  "ignore": [
+    "app",
+    "bower_components",
+    "bower.json",
+    "Brocfile.js",
+    "config",
+    "node_modules",
+    "package.json",
+    "public",
+    "README.md",
+    "server",
+    "testem.json",
+    "tests",
+    "tmp",
+    "TODO",
+    "vendor"
+  ],
   "dependencies": {
     "handlebars": "~1.3.0",
     "jquery": "^1.11.1",
