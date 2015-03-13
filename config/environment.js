@@ -4,7 +4,7 @@ module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'flea-app',
     environment: environment,
-    baseURL: '/flea/',
+    baseURL: '/',
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
@@ -40,6 +40,7 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     ENV.locationType = 'history';
+    ENV.baseURL = '/flea/';
   }
 
   // config/environment.js
