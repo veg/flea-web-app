@@ -3,17 +3,18 @@ import config from './config/environment';
 
 var Router = Ember.Router.extend({
   location: config.locationType,
-  rootURL: function() {
-    return '/' + this.get('session_id') + '/';
-  }.property('session_id')
+  baseURL: config.baseURL,
+  rootURL: '/',
 });
 
 Router.map(function() {
-  this.resource('trajectory', {path: '/trajectory'});
-  this.resource('gene', {path: '/gene'});
-  this.resource('sequences', {path: '/sequences'});
-  this.resource('trees', {path: '/trees'});
-  this.resource('neutralization', {path: '/neutralization'});
+  this.route("session", { path: "/:session_id" }, function() {
+    this.route('trajectory', {path: '/trajectory'});
+    this.route('gene', {path: '/gene'});
+    this.route('sequences', {path: '/sequences'});
+    this.route('trees', {path: '/trees'});
+    this.route('neutralization', {path: '/neutralization'});
+  });
 });
 
 export default Router;

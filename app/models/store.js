@@ -3,8 +3,7 @@ import Ember from 'ember';
 var cache = {};
 
 export default Ember.Object.extend({
-  find: function(name) {
-    var session_id = this.get('session_id');
+  find: function(name, session_id) {
     var key = session_id + name;
     if (cache[key]) {
       return cache[key];

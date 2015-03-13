@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import config from '../config/environment';
 import request from 'ic-ajax';
 
 var FrequencyObject = Ember.Object.extend({
@@ -51,7 +52,7 @@ var FrequencyObject = Ember.Object.extend({
 
 export default Ember.Object.extend({
   find: function(session_id) {
-    var url = '/api/' + session_id + '/frequencies';
+    var url = config.baseURL + 'api/' + session_id + '/frequencies';
     return request(url).then(function(data) {
       return FrequencyObject.create({data: data});
     });

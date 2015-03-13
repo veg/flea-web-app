@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {format_date, htmlTable1D, regexRanges, transformIndex} from '../utils/utils';
+import {format_date, htmlTable1D, regexRanges, transformIndex} from '../../utils/utils';
 
 
 var pngsRegex = 'N\\-*[^P-]\\-*[ST]\\-*[^P-]';

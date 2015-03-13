@@ -1,11 +1,12 @@
 import Ember from 'ember';
+import config from '../config/environment';
 import request from 'ic-ajax';
 
 import {parse_date} from '../utils/utils';
 
 export default Ember.Object.extend({
   find: function(session_id) {
-    var url = '/api/' + session_id + '/dates';
+    var url = config.baseURL + 'api/' + session_id + '/dates';
     return request(url).then(function(result) {
       var new_result = {};
       for (var d in result) {

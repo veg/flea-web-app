@@ -1,16 +1,22 @@
 import Ember from 'ember';
-import {parse_date, format_date, isString} from '../utils/utils';
+import {parse_date, format_date, isString} from '../../utils/utils';
 
 export default Ember.Controller.extend({
 
   useEntropy: false,
   markPositive: true,
 
-  needs: ['application'],
+  needs: ['application', 'session'],
 
   currentPath: function() {
-    return this.get('controllers.application.rootURL') + this.get('controllers.application.currentPath');
-  }.property('controllers.application.rootURL', 'controllers.application.currentPath'),
+    var base = this.get('controllers.application.baseURL');
+    var path = this.get('controllers.application.currentPath');
+    var session_id = this.get('controllers.session.session_id');
+    path = path.replace('session', session_id).replace('.', '/');
+    return base + path;
+  }.property('controllers.application.baseURL',
+             'controllers.application.currentPath',
+             'controllers.session.session_id'),
 
   labels: function() {
     if (this.get('useEntropy')) {

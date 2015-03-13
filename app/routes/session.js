@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  redirect: function() {
-    this.transitionTo('trajectory');
+  model: function(params) {
+    return {session_id: params.session_id};
   }
 });
