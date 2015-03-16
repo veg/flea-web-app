@@ -8,7 +8,8 @@
       {{input type="text" class="form-control" value=regexValue
       placeholder="Pattern to highlight" autofocus="autofocus"}}
       <div class="input-group-btn">
-        <button {{action "resetRegex"}} type="button" class="btn btn-default btn-sm" title="Reset regexp">
+        <button {{action "resetRegex"}} type="button"
+          class="btn btn-default btn-sm" title="Reset regexp">
           <i class="fa fa-undo"></i>
         </button>
       </div>
@@ -28,7 +29,8 @@
 <br>
 <div class = "row">
   <div class = "col-md-12">
-    {{timeseries-plot width=800 height=250 data=aaTrajectories legendRight=true ymin=0 interpolation="basis"}}
+    {{timeseries-plot width=800 height=250 data=aaTrajectories
+      legendRight=true ymin=0 interpolation="monotone"}}
 
     {{sequence-viewer groupedSequences=groupedSequences
     alnStart=alnStart alnStop=alnStop mrca=mrcaSlice
