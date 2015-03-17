@@ -6,6 +6,8 @@ export default Ember.Controller.extend({
   useEntropy: false,
   markPositive: true,
 
+  selectedTimepointIdx: 0,
+
   needs: ['application', 'session'],
 
   currentPath: function() {
@@ -88,10 +90,16 @@ export default Ember.Controller.extend({
     return result;
   }.property('model.frequencies.refToFirstAlnCoords', 'meanDN', 'meanDS'),
 
-  names: function() {
+  timepoints: function() {
     var sorted = this.get('model.rates.sortedRates');
-    var result = sorted.map(function(d) {
-      var name = d.date;
+    return sorted.map(function(d) {
+      return d.date;
+    });
+  }.property('model.rates.sortedRates.[].[]'),
+
+  names: function() {
+    var timepoints = this.get('timepoints');
+    return timepoints.map(function(name) {
       if (name === 'Combined') {
         return name;
       }
@@ -100,8 +108,7 @@ export default Ember.Controller.extend({
       }
       return format_date(name);
     });
-    return result;
-  }.property('model.rates.sortedRates.[].[]'),
+  }.property('timepoints.@each'),
 
   positions: function() {
     if (this.get('markPositive')) {
