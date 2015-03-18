@@ -4,6 +4,7 @@ import {parse_date, format_date, isString} from '../../utils/utils';
 export default Ember.Controller.extend({
 
   useEntropy: false,
+  useTurnover: false,
   markPositive: true,
 
   selectedTimepointIdx: 0,
@@ -24,8 +25,11 @@ export default Ember.Controller.extend({
     if (this.get('useEntropy')) {
       return ['Entropy'];
     }
+    if (this.get('useTurnover')) {
+      return ['Turnover'];
+    }
     return ['Mean dS', 'Mean dN'];
-  }.property('useEntropy'),
+  }.property('useEntropy', 'useTurnover'),
 
   getRate: function(data, idx) {
     var result = data.map(function(d) {
@@ -51,24 +55,38 @@ export default Ember.Controller.extend({
     return this.getRate(rates, 4);
   }.property('model.rates.sortedRates.[].[]'),
 
+  turnover: function() {
+    var turnover = this.get('model.turnover.sortedTurnover');
+    return turnover.map(function(elt) {
+      return elt.turnover;
+    })
+  }.property('model.turnover.sortedTurnover'),
+
   data1: function() {
     if (this.get('useEntropy')) {
       return this.get('entropy');
     }
+    else if (this.get('useTurnover')) {
+      console.log(this.get('turnover'));
+      return this.get('turnover');
+    }
     return this.get('meanDS');
-  }.property('useEntropy', 'entropy.[].[]', 'meanDS.[].[]'),
+  }.property('useEntropy', 'useTurnover', 'turnover', 'entropy', 'meanDS'),
 
   data2: function() {
-      if (this.get('useEntropy')) {
+    if (this.get('useEntropy') || this.get('useTurnover')) {
       return [];
     }
     return this.get('meanDN');
-  }.property('useEntropy', 'entropy.[].[]', 'meanDN.[].[]'),
+  }.property('useEntropy', 'useTurnover', 'turnover', 'entropy', 'meanDN'),
 
   structureData: function() {
     var idx = this.get('selectedTimepointIdx');
     if (this.get('useEntropy')) {
       return this.get('entropy')[idx];
+    }
+    if (this.get('useTurnover')) {
+      return this.get('turnover')[idx];
     }
     var dn = this.get('meanDN');
     var ds = this.get('meanDS');
@@ -93,7 +111,8 @@ export default Ember.Controller.extend({
     });
     return result;
   }.property('model.frequencies.refToFirstAlnCoords',
-             'meanDN', 'meanDS', 'entropy', 'selectedTimepointIdx'),
+             'meanDN', 'meanDS', 'entropy', 'turnover', 'selectedTimepointIdx',
+             'useEntropy', 'useTurnover'),
 
   timepoints: function() {
     var sorted = this.get('model.rates.sortedRates');
@@ -104,7 +123,7 @@ export default Ember.Controller.extend({
 
   names: function() {
     var timepoints = this.get('timepoints');
-    return timepoints.map(function(name) {
+    var names = timepoints.map(function(name) {
       if (name === 'Combined') {
         return name;
       }
@@ -113,7 +132,12 @@ export default Ember.Controller.extend({
       }
       return format_date(name);
     });
-  }.property('timepoints.@each'),
+    if (this.get('useTurnover')) {
+      // remove Combined and first timepoint
+      names.splice(0, 2);
+    }
+    return names;
+  }.property('timepoints.@each', 'useTurnover'),
 
   positions: function() {
     if (this.get('markPositive')) {
