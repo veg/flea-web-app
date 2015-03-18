@@ -66,9 +66,13 @@ export default Ember.Controller.extend({
   }.property('useEntropy', 'entropy.[].[]', 'meanDN.[].[]'),
 
   structureData: function() {
+    var idx = this.get('selectedTimepointIdx');
+    if (this.get('useEntropy')) {
+      return this.get('entropy')[idx];
+    }
     var dn = this.get('meanDN');
     var ds = this.get('meanDS');
-    var zipped = _.zip(dn[0], ds[0]);
+    var zipped = _.zip(dn[idx], ds[idx]);
     // TODO: do not hardcode these values
     var upper = Math.log(5);
     var lower = Math.log(1/5);
@@ -88,7 +92,8 @@ export default Ember.Controller.extend({
       return ratios[alnCoord] || 0;
     });
     return result;
-  }.property('model.frequencies.refToFirstAlnCoords', 'meanDN', 'meanDS'),
+  }.property('model.frequencies.refToFirstAlnCoords',
+             'meanDN', 'meanDS', 'entropy', 'selectedTimepointIdx'),
 
   timepoints: function() {
     var sorted = this.get('model.rates.sortedRates');
