@@ -61,6 +61,10 @@ export default Ember.Controller.extend({
     })
   }.property('model.turnover.sortedTurnover'),
 
+  addCombined: function() {
+    return this.get('selectedMetric') === "Turnover";
+  }.property('selectedMetric'),
+
   data1: function() {
     var metric = this.get('selectedMetric');
     if (metric === "Entropy") {

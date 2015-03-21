@@ -11,6 +11,9 @@ export default Ember.Component.extend({
   tagName: 'svg',
   attributeBindings: ['width', 'height'],
 
+  // if false, use first data element as a combined view
+  addCombined: true,
+
   //TODO: make it possible to fit width of container
   width:  850,
   heightEach: 80,
@@ -54,7 +57,8 @@ export default Ember.Component.extend({
     }
     this._updateChart();
   }.observes('name.@each', 'data1', 'data2', 'positions',
-             'labels.[]', 'width', 'height', 'heightEach', 'margin', 'yMax', 'labelHeight'),
+             'labels.[]', 'width', 'height', 'heightEach', 'margin', 'yMax',
+             'labelHeight', 'addCombined'),
 
   yMax: function() {
     var data1 = this.get('data1');
@@ -69,6 +73,29 @@ export default Ember.Component.extend({
     var positions = this.get('positions');
     var labels = this.get('labels');
 
+    // assume all arrays have same length
+    // TODO: check this assumption
+    var n_sites = data1[0].length;
+    var two_d = data2.length > 0;
+
+    if (this.get('addCombined') && names[0] !== "Combined") {
+      // FIXME: _updateChart gets called multiple times, and these
+      // changes persist. Hack fix is to check if it's already been
+      // done and not do it again. But it would be better if this were
+      // only called once, and repeated calls to this.get('data1')
+      // were immutable.
+      var zeros = []
+      for (var i=0; i < n_sites; i++) {
+        zeros.push(0);
+      }
+      data1.splice(0, 0, zeros);
+      if (two_d) {
+        data2.splice(0, 0, zeros);
+      }
+      positions.splice(0, 0, []);
+      names.splice(0, 0, "Combined");
+    }
+
     var width = this.get('innerWidth');
     var height = this.get('innerHeight');
     var height_each = this.get('heightEach');
@@ -79,8 +106,6 @@ export default Ember.Component.extend({
 
     // FIXME: use innerGroupTransform, so margin should be unnecessary here
     var margin = this.get('margin');
-
-    var n_sites = data1[0].length;
 
     function brushed() {
       x.domain(brush.empty() ? x_overall.domain() : brush.extent());
@@ -120,8 +145,6 @@ export default Ember.Component.extend({
     var brush = d3.svg.brush()
         .x(x_overall)
         .on("brush", brushed);
-
-    var two_d = data2.length > 0;
 
     var ymax = this.get('yMax');
     var y = d3.scale.linear()
