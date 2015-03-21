@@ -3,8 +3,9 @@ import {parse_date, format_date, isString} from '../../utils/utils';
 
 export default Ember.Controller.extend({
 
-  useEntropy: false,
-  useTurnover: false,
+  // FIXME: selecting and checking by string value is verbose and error-prone.
+  metrics: ["dNdS", "Turnover", "Entropy"],
+  selectedMetric: "dNdS",
   markPositive: true,
 
   selectedTimepointIdx: 0,
@@ -22,14 +23,12 @@ export default Ember.Controller.extend({
              'controllers.session.session_id'),
 
   labels: function() {
-    if (this.get('useEntropy')) {
-      return ['Entropy'];
+    var metric = this.get('selectedMetric');
+    if (metric === "dNdS") {
+      return ['Mean dS', 'Mean dN'];
     }
-    if (this.get('useTurnover')) {
-      return ['Turnover'];
-    }
-    return ['Mean dS', 'Mean dN'];
-  }.property('useEntropy', 'useTurnover'),
+    return [metric];
+  }.property('selectedMetric'),
 
   getRate: function(data, idx) {
     var result = data.map(function(d) {
@@ -63,21 +62,26 @@ export default Ember.Controller.extend({
   }.property('model.turnover.sortedTurnover'),
 
   data1: function() {
-    if (this.get('useEntropy')) {
+    var metric = this.get('selectedMetric');
+    if (metric === "Entropy") {
       return this.get('entropy');
     }
-    else if (this.get('useTurnover')) {
+    else if (metric === "Turnover") {
       return this.get('turnover');
     }
-    return this.get('meanDS');
-  }.property('useEntropy', 'useTurnover', 'turnover', 'entropy', 'meanDS'),
+    else if (metric === "dNdS") {
+      return this.get('meanDS');
+    }
+    throw "Invalid metric";
+  }.property('selectedMetric', 'turnover', 'entropy', 'meanDS'),
 
   data2: function() {
-    if (this.get('useEntropy') || this.get('useTurnover')) {
-      return [];
+    var metric = this.get('selectedMetric');
+    if (metric === "dNdS") {
+      return this.get('meanDN');
     }
-    return this.get('meanDN');
-  }.property('useEntropy', 'useTurnover', 'turnover', 'entropy', 'meanDN'),
+    return [];
+  }.property('selectedMetric', 'turnover', 'entropy', 'meanDN'),
 
   structureData: function() {
     var idx = this.get('selectedTimepointIdx');
@@ -85,10 +89,11 @@ export default Ember.Controller.extend({
       // a hack; presumable selectedIdx will be updated later
       idx = this.get('names.length') - 1;
     }
-    if (this.get('useEntropy')) {
+    var metric = this.get('selectedMetric');
+    if (metric === "Entropy") {
       return this.get('entropy')[idx];
     }
-    if (this.get('useTurnover')) {
+    if (metric === "Turnover") {
       return this.get('turnover')[idx];
     }
     var dn = this.get('meanDN');
@@ -116,18 +121,18 @@ export default Ember.Controller.extend({
     return result;
   }.property('model.frequencies.refToFirstAlnCoords',
              'meanDN', 'meanDS', 'entropy', 'turnover', 'selectedTimepointIdx',
-             'useEntropy', 'useTurnover'),
+             'selectedMetric'),
 
   timepoints: function() {
     var sorted = this.get('model.rates.sortedRates');
     var result = sorted.map(function(d) {
       return d.date;
     });
-    if (this.get('useTurnover')) {
+    if (this.get('selectedMetric') === "Turnover") {
       result.splice(0, 2);
     }
     return result;
-  }.property('model.rates.sortedRates.[].[]', 'useTurnover'),
+  }.property('model.rates.sortedRates.[].[]', 'selectedMetric'),
 
   names: function() {
     var timepoints = this.get('timepoints');

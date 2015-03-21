@@ -6,18 +6,22 @@
 
 <div class="input-group input-group-sm">
   <span class="input-group-addon">
-    Use entropy
-    {{input type="checkbox" name="useEntropy" checked=useEntropy}}
+    <label for="evo_regions">Metrics(s) to plot</label>
+    {{view bootstrap-multiselect
+      multiple=false
+      content=metrics
+      selection=selectedMetric
+      allowMultiple=false
+      id="gene_metrics"
+    }}
   </span>
   <span class="input-group-addon">
-    Use turnover
-    {{input type="checkbox" name="useTurnover" checked=useTurnover}}
-  </span>
-  <span class="input-group-addon">
-    Mark positively selected sites
+    <label>Mark positively selected sites</label>
     {{input type="checkbox" name="markPositive" checked=markPositive}}
   </span>
 </div>
+
 <br>
+
 {{gene-plots width=1140 names=names data1=data1 data2=data2
   positions=positions labels=labels url=currentPath}}
