@@ -57,6 +57,7 @@ export default Ember.Controller.extend({
 
   turnover: function() {
     var turnover = this.get('model.turnover.sortedTurnover');
+    console.log(turnover);
     return turnover.map(function(elt) {
       return elt.turnover;
     })
@@ -67,7 +68,6 @@ export default Ember.Controller.extend({
       return this.get('entropy');
     }
     else if (this.get('useTurnover')) {
-      console.log(this.get('turnover'));
       return this.get('turnover');
     }
     return this.get('meanDS');
@@ -82,6 +82,10 @@ export default Ember.Controller.extend({
 
   structureData: function() {
     var idx = this.get('selectedTimepointIdx');
+    if (idx >= this.get('names.length')) {
+      // a hack; presumable selectedIdx will be updated later
+      idx = this.get('names.length') - 1;
+    }
     if (this.get('useEntropy')) {
       return this.get('entropy')[idx];
     }
@@ -92,6 +96,7 @@ export default Ember.Controller.extend({
     var ds = this.get('meanDS');
     var zipped = _.zip(dn[idx], ds[idx]);
     // TODO: do not hardcode these values
+    // FIXME: fix issue when number of timepoints changes; selector should remain on current one if possible
     var upper = Math.log(5);
     var lower = Math.log(1/5);
     var ratios = zipped.map(function(pair) {
@@ -116,10 +121,14 @@ export default Ember.Controller.extend({
 
   timepoints: function() {
     var sorted = this.get('model.rates.sortedRates');
-    return sorted.map(function(d) {
+    var result = sorted.map(function(d) {
       return d.date;
     });
-  }.property('model.rates.sortedRates.[].[]'),
+    if (this.get('useTurnover')) {
+      result.splice(0, 2);
+    }
+    return result;
+  }.property('model.rates.sortedRates.[].[]', 'useTurnover'),
 
   names: function() {
     var timepoints = this.get('timepoints');
@@ -132,12 +141,8 @@ export default Ember.Controller.extend({
       }
       return format_date(name);
     });
-    if (this.get('useTurnover')) {
-      // remove Combined and first timepoint
-      names.splice(0, 2);
-    }
     return names;
-  }.property('timepoints.@each', 'useTurnover'),
+  }.property('timepoints.@each'),
 
   positions: function() {
     if (this.get('markPositive')) {
