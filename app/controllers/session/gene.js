@@ -57,7 +57,6 @@ export default Ember.Controller.extend({
 
   turnover: function() {
     var turnover = this.get('model.turnover.sortedTurnover');
-    console.log(turnover);
     return turnover.map(function(elt) {
       return elt.turnover;
     })
