@@ -52,6 +52,7 @@ export default Ember.Component.extend({
   }.property('margin'),
 
   onChartChange: function() {
+    // FIXME: this gets called multiple times
     if (this.state !== 'inDOM') {
       return;
     }
@@ -79,21 +80,16 @@ export default Ember.Component.extend({
     var two_d = data2.length > 0;
 
     if (this.get('addCombined') && names[0] !== "Combined") {
-      // FIXME: _updateChart gets called multiple times, and these
-      // changes persist. Hack fix is to check if it's already been
-      // done and not do it again. But it would be better if this were
-      // only called once, and repeated calls to this.get('data1')
-      // were immutable.
       var zeros = []
       for (var i=0; i < n_sites; i++) {
         zeros.push(0);
       }
-      data1.splice(0, 0, zeros);
+      data1 = addFront(zeros, data1);
       if (two_d) {
-        data2.splice(0, 0, zeros);
+        data1 = addFront(zeros, data2);
       }
-      positions.splice(0, 0, []);
-      names.splice(0, 0, "Combined");
+      positions = addFront([], positions);
+      names = addFront("Combined", names);
     }
 
     var width = this.get('innerWidth');
@@ -277,3 +273,11 @@ export default Ember.Component.extend({
     }
   }
 });
+
+
+function addFront(elt, arr) {
+  // add `elt` to front of `arr`, without modifying `arr`.
+  var result = [elt];
+  result.pushObjects(arr);
+  return result;
+}
