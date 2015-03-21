@@ -2,7 +2,14 @@
 {{pv-wrapper structure=model.structure data=structureData}}
 </div>
 
-{{range-selector values=timepoints names=names selectedIdx=selectedTimepointIdx}}
+<div class="input-group input-group-sm">
+  <div class="input-group-btn">
+    <button {{action "togglePlayback"}} type="button" class="btn btn-default btn-sm" title="Toggle playback">
+      <i class={{buttonClass}}></i>
+    </button>
+  </div>
+  {{range-selector values=timepoints names=names selectedIdx=selectedTimepointIdx}}
+</div>
 
 <div class="input-group input-group-sm">
   <span class="input-group-addon">

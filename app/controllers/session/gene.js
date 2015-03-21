@@ -10,6 +10,8 @@ export default Ember.Controller.extend({
 
   selectedTimepointIdx: 0,
 
+  playing: false,
+
   needs: ['application', 'session'],
 
   currentPath: function() {
@@ -157,5 +159,32 @@ export default Ember.Controller.extend({
       return this.get('model.rates.positiveSelection');
     }
     return [];
-  }.property('markPositive', 'model.rates.positiveSelection')
+  }.property('markPositive', 'model.rates.positiveSelection'),
+
+  startPlayback: function() {
+      this.set('playing', true);
+  },
+
+  stopPlayback: function() {
+      this.set('playing', false);
+  }.observes('selectedMetric'),
+
+  buttonClass: function() {
+    if (this.get('playing')) {
+      return "fa fa-playing";
+    } else {
+      return "fa fa-stop";
+    }
+  }.property('playing'),
+
+  actions: {
+    // FIXME: move viewer, selector, and play controls to a component.
+    togglePlayback: function() {
+      if (this.get('playing')) {
+        this.stopPlayback();
+      } else{
+        this.startPlayback();
+      }
+    }
+  }
 });
