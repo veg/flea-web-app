@@ -60,7 +60,7 @@ export default Ember.Controller.extend({
     var turnover = this.get('model.turnover.sortedTurnover');
     return turnover.map(function(elt) {
       return elt.turnover;
-    })
+    });
   }.property('model.turnover.sortedTurnover'),
 
   addCombined: function() {

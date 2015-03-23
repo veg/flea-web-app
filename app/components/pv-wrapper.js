@@ -1,11 +1,31 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  // options
+  shouldLabel: true,
+  fog: true,
+  // slabMode: 'auto',
+  // slabNear: 1,
+  // slabFar: 100,
+
   // bound
   structure: null,
   data: [],
+
+  // created
   viewer: null,
   geometry: null,
+
+  setOption: function(name, val) {
+    this.get('viewer').options(name, val);
+    this.get('viewer').requestRedraw();
+  },
+
+  updateFog: function() {
+    this.setOption('fog', this.get('fog'));
+  }.observes('fog'),
+
+
 
   didInsertElement: function () {
     var options = {
@@ -61,19 +81,23 @@ export default Ember.Component.extend({
 
   labelResidues: function() {
     var viewer = this.get('viewer');
-    var structure = this.get('structure');
-    var uniq_res_id = 0;
-    var label_options = {
-      fontSize: 10,
-      fontColor: "rgba(0, 0, 0, 0.5)"
-    };
-    structure.eachResidue(function(res) {
-      var ref_coord = res.num();
-      if (ref_coord % 10 === 0) {
-        var id = 'coord_label_residue_' + uniq_res_id;
-        viewer.label(id, ref_coord, res.atom(0).pos(), label_options);
-        uniq_res_id += 1;
-      }
-    });
-  }
+    viewer.rm('label*');
+    if (this.get('shouldLabel')) {
+      var structure = this.get('structure');
+      var uniq_res_id = 0;
+      var label_options = {
+        fontSize: 10,
+        fontColor: "rgba(0, 0, 0, 0.5)"
+      };
+      structure.eachResidue(function(res) {
+        var ref_coord = res.num();
+        if (ref_coord % 10 === 0) {
+          var id = 'label_' + uniq_res_id;
+          viewer.label(id, ref_coord, res.atom(0).pos(), label_options);
+          uniq_res_id += 1;
+        }
+      });
+    }
+    this.get('viewer').requestRedraw();
+  }.observes('shouldLabel')
 });
