@@ -197,7 +197,6 @@ export default Ember.Controller.extend({
 
   nextTimepoint: function(){
     var idx = (this.get('selectedTimepointIdx') + 1) % this.get('timepoints.length');
-    console.log(idx);
     this.set('selectedTimepointIdx', idx);
   },
 
