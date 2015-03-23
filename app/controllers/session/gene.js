@@ -154,6 +154,10 @@ export default Ember.Controller.extend({
     return names;
   }.property('timepoints.@each'),
 
+  selectedName: function() {
+    return this.get('names')[this.get('selectedTimepointIdx')];
+  }.property('names', 'selectedTimepointIdx'),
+
   positions: function() {
     if (this.get('markPositive')) {
       return this.get('model.rates.positiveSelection');
@@ -171,9 +175,9 @@ export default Ember.Controller.extend({
 
   buttonClass: function() {
     if (this.get('playing')) {
-      return "fa fa-playing";
-    } else {
       return "fa fa-stop";
+    } else {
+      return "fa fa-play";
     }
   }.property('playing'),
 

@@ -2,35 +2,47 @@
 {{pv-wrapper structure=model.structure data=structureData}}
 </div>
 
-<div class="input-group input-group-sm">
-  <div class="input-group-btn">
-    <button {{action "togglePlayback"}} type="button" class="btn btn-default btn-sm" title="Toggle playback">
-      <i class={{buttonClass}}></i>
-    </button>
+<div class="form-horizontal control-group">
+  <div class="col-sm-1">
+  <button {{action "togglePlayback"}} type="button" class="btn btn-default btn-sm" title="Toggle playback">
+    <i {{bind-attr class="buttonClass"}}></i>
+  </button>
   </div>
-  {{range-selector values=timepoints names=names selectedIdx=selectedTimepointIdx}}
+  <div class="col-sm-9">
+    {{range-selector values=timepoints names=names selectedIdx=selectedTimepointIdx}}
+  </div>
+  <div class="col-sm-2 flea-value">
+    <output>{{selectedName}}</output>
+  </div>
 </div>
 
-<div class="input-group input-group-sm">
-  <span class="input-group-addon">
-    <label for="evo_regions">Metrics(s) to plot</label>
-    {{view bootstrap-multiselect
-      multiple=false
-      content=metrics
-      selection=selectedMetric
-      allowMultiple=false
-      id="gene_metrics"
+<div class="row">
+  <div class="col-sm-12">
+    <div class="input-group input-group-sm">
+      <span class="input-group-addon">
+        <label for="evo_regions">Metrics(s) to plot</label>
+        {{view bootstrap-multiselect
+        multiple=false
+        content=metrics
+        selection=selectedMetric
+        allowMultiple=false
+        id="gene_metrics"
+        }}
+      </span>
+      <span class="input-group-addon">
+        <label>Mark positively selected sites</label>
+        {{input type="checkbox" name="markPositive" checked=markPositive}}
+      </span>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-sm-12">
+    {{gene-plots width=1140 names=names data1=data1 data2=data2
+    positions=positions labels=labels url=currentPath
+    addCombined=addCombined
     }}
-  </span>
-  <span class="input-group-addon">
-    <label>Mark positively selected sites</label>
-    {{input type="checkbox" name="markPositive" checked=markPositive}}
-  </span>
+  </div>
 </div>
-
-<br>
-
-{{gene-plots width=1140 names=names data1=data1 data2=data2
-  positions=positions labels=labels url=currentPath
-  addCombined=addCombined
-}}
