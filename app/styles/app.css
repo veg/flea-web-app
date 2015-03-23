@@ -255,6 +255,17 @@ a.fill-div {
     color: rgba(0,0,0, 0.5);
 }
 
+.flea-label {
+    vertical-align: middle;
+    font-size: 14px;
+    margin: 0;
+}
+
+.flea-value {
+    vertical-align: middle;
+    font-size: 14px;
+}
+
 /*
 
 spinner taken from spinkit

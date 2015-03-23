@@ -4,9 +4,10 @@ export default Ember.Component.extend({
   // options
   shouldLabel: true,
   fog: true,
-  // slabMode: 'auto',
-  // slabNear: 1,
-  // slabFar: 100,
+  slabModes: ['auto', 'fixed'],
+  slabMode: 'auto',
+  slabNear: 0.1,
+  slabFar: 400.0,  // FIXME: compute this dynamically
 
   // bound
   structure: null,
@@ -16,16 +17,21 @@ export default Ember.Component.extend({
   viewer: null,
   geometry: null,
 
-  setOption: function(name, val) {
-    this.get('viewer').options(name, val);
-    this.get('viewer').requestRedraw();
-  },
-
   updateFog: function() {
-    this.setOption('fog', this.get('fog'));
+    this.get('viewer').options('fog', this.get('fog'))
+    this.get('viewer').requestRedraw();
   }.observes('fog'),
 
+  updateSlabMode: function() {
+    this.get('viewer').slabMode(this.get('slabMode'),
+                                {near: +this.get('slabNear'),
+                                 far: +this.get('slabFar')});
+    this.get('viewer').requestRedraw();
+  }.observes('slabMode', 'slabNear', 'slabFar'),
 
+  showSlabControls: function() {
+    return this.get('slabMode') === 'fixed';
+  }.property('slabMode'),
 
   didInsertElement: function () {
     var options = {
