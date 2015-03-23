@@ -4,6 +4,7 @@ export default Ember.Component.extend({
   // options
   shouldLabel: true,
   fog: true,
+  spin: false,
   slabModes: ['auto', 'fixed'],
   slabMode: 'auto',
   slabNear: 0.1,
@@ -16,6 +17,10 @@ export default Ember.Component.extend({
   // created
   viewer: null,
   geometry: null,
+
+  updateSpin: function() {
+    this.get('viewer').spin(this.get('spin'));
+  }.observes('spin'),
 
   updateFog: function() {
     this.get('viewer').options('fog', this.get('fog'))
