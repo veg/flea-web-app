@@ -59,6 +59,6 @@ app.import('bower_components/moment/moment.js');
 app.import('bower_components/phylotree/phylotree.js');
 app.import('bower_components/phylotree/phylotree.css');
 
-app.import('bower_components/bio-pv-1.4.0/js/bio-pv.min.js');
+app.import('bower_components/bio-pv-1.5.0/js/bio-pv.min.js');
 
 module.exports = app.toTree();
