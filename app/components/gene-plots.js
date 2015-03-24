@@ -28,8 +28,8 @@ export default Ember.Component.extend({
 
   height: function() {
     var margin = this.get('margin');
-    return margin.top + margin.bottom + this.get('names.length') * this.get('heightEach') + this.get('labelHeight');
-  }.property('heightEach', 'margin', 'names.length', 'labelHeight'),
+    return margin.top + margin.bottom + this.get('nPlots') * this.get('heightEach') + this.get('labelHeight');
+  }.property('heightEach', 'margin', 'nPlots', 'labelHeight'),
 
 
   didInsertElement: function() {
@@ -66,6 +66,14 @@ export default Ember.Component.extend({
     var data2 = this.get('data2');
     return [d3.max(_.flatten(data1)), d3.max(_.flatten(data2))];
   }.property('data1', 'data2'),
+
+  nPlots: function() {
+    var result = this.get('names.length');
+    if (this.get('addCombined')) {
+      result += 1;
+    }
+    return result;
+  }.property('names.length', 'addCombined'),
 
   _updateChart: function() {
     var names = this.get('names');
