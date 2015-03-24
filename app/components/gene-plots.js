@@ -83,8 +83,8 @@ export default Ember.Component.extend({
     var labels = this.get('labels');
 
     // assume all arrays have same length
-    // TODO: check this assumption
     var n_sites = data1[0].length;
+    var n_plots = this.get('nPlots');
     var two_d = data2.length > 0;
 
     if (this.get('addCombined') && names[0] !== "Combined") {
@@ -98,6 +98,24 @@ export default Ember.Component.extend({
       }
       positions = addFront([], positions);
       names = addFront("Combined", names);
+    }
+
+    // check data consistency
+    if (two_d && data1.length !== data2.length) {
+      throw "data1 and data2 have different lengths";
+    }
+    if (data1.length !== names.length) {
+      throw "data1 and names have different lengths";
+    }
+    for (var i=0; i<n_plots; i++) {
+      if (data1[i].length !== n_sites) {
+        throw "data vector lengths are inconsistent";
+      }
+      if (two_d) {
+        if (data2[i].length !== n_sites) {
+          throw "data vector lengths are inconsistent";
+        }
+      }
     }
 
     var width = this.get('innerWidth');
