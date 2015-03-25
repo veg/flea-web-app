@@ -38,19 +38,20 @@ var FrequencyObject = Ember.Object.extend({
   }.property('alnToRefCoords'),
 
   refToLastAlnCoords: function () {
-    // inverse of alnToRefCoords.
-    // maps reference coordinates to alignment coordinates
-    // both 0-indexed
+    // TODO: code duplication
     var alnToRef = this.get('alnToRefCoords');
     var maxIndex = alnToRef[alnToRef.length - 1];
     var result = new Array(maxIndex);
     var refIndex;
-    for (var i=0; i<alnToRef.length; i++) {
-      refIndex = alnToRef[i];
-      result[refIndex] = i;
+    var aln_index = 0;
+    for (var ref_index=0; ref_index<result.length; ref_index++) {
+      while (alnToRef[aln_index] <= ref_index) {
+        aln_index += 1;
+      }
+      result[ref_index] = aln_index;
     }
     return result;
-  }.property('alnToRefCoords'),
+  }.property('alnToRefCoords')
 });
 
 export default Ember.Object.extend({
