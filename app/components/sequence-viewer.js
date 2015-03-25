@@ -16,9 +16,10 @@ export default Ember.Component.extend({
   },
 
   refHTML: function() {
-    var coordinates = [[], [], [], []];
+    var result = [];
     var last_hs = -5;
     var ref_map = this.get('refCoords');
+    var positive_positions = this.get('positiveSelection')[0];
     // TODO: there is surely a more elegent way of building this html
     for (var s = this.get('alnStart'); s <= this.get('alnStop'); s++) {
       var hs = ref_map[s - 1] + 1;
@@ -33,21 +34,22 @@ export default Ember.Component.extend({
       if (last_hs === hs) {
         str = "INS";
       }
-      str = str.split('').map(function(c) { return (c === " " ? "&nbsp" : c); });
-      var _class = '';
+      var _class = 'hxb2_coord';
       if (this.get('selectedPositions').contains(s)) {
-        _class = 'selected_position';
+        _class += ' selected_position';
       }
-      coordinates[0].push({character: str[0], _class: _class, dataCoord: s});
-      coordinates[1].push({character: str[1], _class: _class, dataCoord: s});
-      coordinates[2].push({character: str[2], _class: _class, dataCoord: s});
+      str = str.split('').join("<br/>");
       if (this.get('markPositive')) {
-        coordinates[3].push({character: (this.get('positiveSelection')[0].indexOf(s) >= 0) ? "+" : "&nbsp",
-                             dataCoord: s});
+        str += '<br/>';
+        str += (positive_positions.indexOf(s) >=0) ? "+" : "";
       }
+
+      result.push({_class: _class,
+                   dataCoord: s,
+                   html: str});
       last_hs = hs;
     }
-    return coordinates;
+    return result;
   }.property('alnStart', 'alnStop', 'refCoords', 'markPositive', 'positiveSelection',
              'selectedPositions', 'selectedPositions.[]'),
 

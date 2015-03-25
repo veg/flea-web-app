@@ -7,12 +7,12 @@
       </div>
     </td>
     <td class="seq-cell ref-coords">
-    {{#each row in refHTML}}
-    {{#each elt in row}}<span {{bind-attr class=elt._class}}
-                              {{bind-attr data-coord=elt.dataCoord}}
-                              {{action "togglePosition" elt.dataCoord}}
-                              >{{{elt.character}}}</span>{{/each}}
-    <br>
+    {{#each elt in refHTML}}
+    <span {{bind-attr class=elt._class}}
+          {{bind-attr data-coord=elt.dataCoord}}
+          {{action "togglePosition" elt.dataCoord}}>
+      {{{elt.html}}}
+    </span>
     {{/each}}
     </td>
     <td class="seq-cell"></td>
