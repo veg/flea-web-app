@@ -15,8 +15,7 @@ export default Ember.ObjectController.extend({
 
   // TODO: maybe these should be in a View instead
   // range in hxb2 1-indexed coordinates
-  rangeStart: 160,
-  rangeStop: 200,
+  ranges: [[160, 200]],
   minCoord: 1,
 
   regexValue: pngsRegex,
@@ -53,8 +52,8 @@ export default Ember.ObjectController.extend({
 
   maxCoord: function() {
     // maximum reference coordinate
-    return this.get('model.frequencies.refToFirstAlnCoords').length;
-  }.property('model.frequencies.refToFirstAlnCoords'),
+    return this.get('model.frequencies.refToLastAlnCoords').length;
+  }.property('model.frequencies.refToLastAlnCoords.length'),
 
   filterSequenceTypes: function(seqs, type) {
     return seqs.filter(function(seq) {
@@ -72,12 +71,17 @@ export default Ember.ObjectController.extend({
     return this.filterSequenceTypes(seqs, 'MRCA')[0];
   }.property('model.sequences.@each'),
 
+  toSlices: function(seq, ranges) {
+    return ranges.map(function(range) {
+      return seq.slice(range[0] - 1, range[1]);
+    }).join('|');
+  },
+
   mrcaSlice: function() {
-    var start = this.get("alnStart");
-    var stop = this.get("alnStop");
-    // convert 1-indexed [start, stop] to 0-indexed [start, stop)
-    return this.get('mrca').sequence.slice(start - 1, stop);
-  }.property('alnStart', 'alnStop'),
+    var mrca = this.get('mrca');
+    var ranges = this.get('alnRanges');
+    return this.toSlices(mrca.sequence, ranges);
+  }.property('mrca', 'alnRanges'),
 
   groupedSequences: function() {
     var self = this;
@@ -86,15 +90,13 @@ export default Ember.ObjectController.extend({
       sequences = this.get('observedSequences');
     }
     var result = [];
-    var start = this.get("alnStart");
-    var stop = this.get("alnStop");
+    var ranges = this.get('alnRanges');
     var mrca = this.get('mrcaSlice');
     var grouped = _.groupBy(sequences, function(s) {
       return s.get('date');
     });
-    var process = function(s) {
-      // convert 1-indexed [start, stop] to 0-indexed [start, stop)
-      var result = s.sequence.slice(start - 1, stop);
+    var slice = function(s) {
+      var result = self.toSlices(s.sequence, ranges);
       return {sequence: result,
               copyNumber: s.copyNumber,
               ids: [s.id]};
@@ -103,7 +105,7 @@ export default Ember.ObjectController.extend({
       if (!grouped.hasOwnProperty(key)) {
         continue;
       }
-      var final_seqs = grouped[key].map(process);
+      var final_seqs = grouped[key].map(slice);
       final_seqs = collapse(final_seqs);
       final_seqs.sort(function(a, b) {
         return b.copyNumber - a.copyNumber;
@@ -120,23 +122,33 @@ export default Ember.ObjectController.extend({
     result = addHighlights(result, this.get('regex'));
     result = addMask(result, mrca);
     return result;
-  }.property('alnStart', 'alnStop', 'mrcaSlice',
+  }.property('alnRanges', 'mrcaSlice',
              'selectedSequences.@each',
              'regex'),
 
-  alnStart: function() {
-    // 1-indexed aligment range start
-    var idx = this.get('rangeStart');
-    var map = this.get('model.frequencies.refToFirstAlnCoords');
-    return transformIndex(idx, map);
-  }.property('model.frequencies.refToFirstAlnCoords', 'rangeStart'),
+  alnRanges: function() {
+    // 1-indexed [start, stop] reference ranges to
+    // 1-indexed [start, stop] aligment ranges
+    var ranges = this.get('ranges');
+    var mapFirst = this.get('model.frequencies.refToFirstAlnCoords');
+    var mapLast = this.get('model.frequencies.refToLastAlnCoords');
+    var toref = this.get('model.frequencies.alnToRefCoords');
+    return ranges.map(function(range) {
+      var start = transformIndex(range[0], mapFirst);
+      var stop = transformIndex(range[1], mapLast);
 
-  alnStop: function() {
-    // 1-indexed aligment range stop
-    var idx = this.get('rangeStop');
-    var map = this.get('model.frequencies.refToLastAlnCoords');
-    return transformIndex(idx, map);
-  }.property('model.frequencies.refToLastAlnCoords', 'rangeStop'),
+      if (range[0] != transformIndex(start, toref)) {
+        throw "start index wrong";
+      }
+      if (range[1] != transformIndex(stop, toref)) {
+        throw "stop index wrong";
+      }
+
+      return [start, stop];
+    });
+  }.property('model.frequencies.refToFirstAlnCoords',
+             'model.frequencies.refToLastAlnCoords',
+             'ranges'),
 
   aaTrajectories: function() {
     var sequences = this.get('selectedSequences');
@@ -167,8 +179,8 @@ export default Ember.ObjectController.extend({
       totals[seq.date] += seq.copyNumber;
     }
     var series = [];
-    for (var motif in counts) {
-      if (!(counts.hasOwnProperty(motif))) {
+    for (var m in counts) {
+      if (!(counts.hasOwnProperty(m))) {
         continue;
       }
       var points = [];
@@ -177,12 +189,12 @@ export default Ember.ObjectController.extend({
           continue;
         }
         var frac = 0;
-        if (counts[motif].hasOwnProperty(date)) {
-          frac = counts[motif][date] / totals[date];
+        if (counts[m].hasOwnProperty(date)) {
+          frac = counts[m][date] / totals[date];
         }
         points.push({x: new Date(date), y: frac});
       }
-      series.push({name: motif, values: points});
+      series.push({name: m, values: points});
     }
     // take top 9 and combine others
     if (series.length > 10) {
@@ -196,9 +208,8 @@ export default Ember.ObjectController.extend({
       var split_names = _.partition(maxes.map(function(v) {return v.name;}),
                                     function(value, index) {return index < 9;});
       var top9 = split_names[0];
-      var rest = split_names[1];
       var split_series = _.partition(series, function(elt) {return _.includes(top9, elt.name);});
-      var series = split_series[0];
+      var first_series = split_series[0];
       var rest_series = split_series[1];
       // now combine others
       var combined = rest_series[0].values;
@@ -208,7 +219,8 @@ export default Ember.ObjectController.extend({
           combined[m].y += curve[m].y;
         }
       }
-      series.push({name: 'other', values: combined});
+      first_series.push({name: 'other', values: combined});
+      series = first_series;
     }
     // TODO: sort by date each motif became prevalent
     return series;
@@ -290,9 +302,9 @@ function addMask(groups, mrca) {
     var seqs = groups[i].sequences;
     for (var j=0; j<seqs.length; j++) {
       var seq = seqs[j];
-      seqs[j].sequence = seq.sequence.split('').map(function(aa, idx) {
-        return aa === mrca[idx] ? '.' : aa;
-      }).join('');
+      seqs[j].mask = seq.sequence.split('').map(function(aa, idx) {
+        return aa === mrca[idx];
+      });
     }
   }
   return groups;

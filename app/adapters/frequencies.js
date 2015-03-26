@@ -46,9 +46,9 @@ var FrequencyObject = Ember.Object.extend({
     var aln_index = 0;
     for (var ref_index=0; ref_index<result.length; ref_index++) {
       while (alnToRef[aln_index] <= ref_index) {
+        result[ref_index] = aln_index;
         aln_index += 1;
       }
-      result[ref_index] = aln_index;
     }
     return result;
   }.property('alnToRefCoords')

@@ -77,6 +77,8 @@ export var sumArray = function(collection, accessor) {
 };
 
 export var transformIndex =  function(idx, map) {
+  // transform idx using map
+  // idx and result are 1-indexed, map is 0-indexed
   idx = idx - 1;
   var result = -1;
   if (idx >= map.length) {

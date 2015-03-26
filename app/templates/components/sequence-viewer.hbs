@@ -21,7 +21,7 @@
   <tbody>
     <tr>
       <td class="seq-cell">MRCA</td>
-      <td class="seq-cell">{{amino-acid mrca}}</td>
+      <td class="seq-cell"><span class="mrca">{{amino-acid mrca}}</span></td>
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
     </tr>
@@ -31,7 +31,7 @@
       <td class="seq-cell">
         <ul class="list-unstyled">
           {{#each seq in sequences}}
-          <li>{{amino-acid seq.sequence seq.highlights}}</li>
+          <li>{{amino-acid seq.sequence seq.highlights seq.mask}}</li>
           {{/each}}
         </ul>
       </td>

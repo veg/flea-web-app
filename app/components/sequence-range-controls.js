@@ -5,66 +5,99 @@ export default Ember.Component.extend({
   tagName: '',
 
   // bound to controller
-  rangeStart: 1,
-  rangeStop: 1,
+  ranges: [],
 
   // updated from template
   minCoord: 1,
   maxCoord: 1,
 
-  // TODO: this kind of validation and syncing with controller
-  // must be common. Look for more idiomatic way to do it.
-  myRangeStart: 1,
-  myRangeStop: 1,
+  myRanges: [],
+  rangeText: '',
 
   fromController: function() {
-    this.set('myRangeStart', +this.get('rangeStart'));
-    this.set('myRangeStop', +this.get('rangeStop'));
+    this.updateFromController();
   }.on('didInsertElement'),
 
+  updateFromController: function() {
+    this.set('myRanges', this.get('ranges'));
+    this.makeText();
+  }.observes('ranges'),
+
+  makeText: function() {
+    var ranges = this.get('myRanges');
+    var text = ranges.map(function(range) {
+      return range[0] + "-" + range[1];
+    }).join(';');
+    this.set('rangeText', text);
+  },
+
+  parseText: function () {
+    var text = this.get('rangeText');
+    var ranges = text.split(';').map(function(a) {
+      var parts = a.split('-');
+      if (parts.length != 2) {
+        throw "wrong number of ranges";
+      }
+      return [+parts[0], +parts[1]];
+    });
+    this.set('myRanges', ranges);
+  },
+
   toController: function() {
-    var mystart = +this.get('myRangeStart');
-    var mystop = +this.get('myRangeStop');
+    var ranges = this.get('myRanges');
 
     var minCoord = +this.get('minCoord');
     var maxCoord = +this.get('maxCoord');
 
-    if (mystart < minCoord) {
-      mystart = this.set('myRangeStart', minCoord);
-    }
+    ranges = ranges.map(function(range) {
+      var start = range[0];
+      var stop = range[1];
+      if (start < minCoord) {
+        start = minCoord;
+      }
+      if (stop > maxCoord) {
+        stop = maxCoord;
+      }
+      return [start, stop];
+    });
+    this.set('myRanges', ranges);
 
-    if (mystop > maxCoord) {
-      this.set('myRangeStop', maxCoord);
-      mystop = maxCoord;
-    }
-
-    if ((minCoord <= mystart) && (mystart <= mystop) && (mystop <= maxCoord)) {
-      this.set('rangeStart', +mystart);
-      this.set('rangeStop', +mystop);
-      this.set('myRangeStart', +mystart);
-      this.set('myRangeStop', +mystop);
+    if (_.all(ranges.map(function(range) {
+      return range[0] < range[1];
+    }))) {
+      this.set('ranges', ranges);
+      this.set('myRanges', ranges);
     }
   },
 
   actions: {
-    moveRange: function(offset) {
+    moveRanges: function(offset) {
       // FIXME: why are these sometimes strings???
-      var start = +this.get('rangeStart');
-      var stop = +this.get('rangeStop');
-      if ((this.get('minCoord') <= start + offset) &&
+      var ranges = this.get('ranges');
+      var minCoord = this.get('minCoord');
+      var maxCoord = this.get('maxCoord');
+      for (var r=0; r<ranges.length; r++) {
+        var start = ranges[r][0];
+        var stop = ranges[r][1];
+        if ((minCoord <= start + offset) &&
           (start + offset <= stop + offset) &&
-          (stop + offset <= this.get('maxCoord'))) {
-        this.set('myRangeStart', start + offset);
-        this.set('myRangeStop', stop + offset);
-        this.toController();
+          (stop + offset <= maxCoord)) {
+          ranges[r][0] = start + offset;
+          ranges[r][1] = stop + offset;
+        }
       }
-    },
-    setRange: function(start, stop) {
-      this.set('myRangeStart', start);
-      this.set('myRangeStop', stop);
+      this.set('myRanges', ranges);
       this.toController();
     },
+
+    setRange: function(start, stop) {
+      this.set('myRanges', [[start, stop]]);
+      this.makeText();
+      this.toController();
+    },
+
     display: function() {
+      this.parseText();
       this.toController();
     }
   }

@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-export default Ember.Handlebars.makeBoundHelper(function(sequence, ranges) {
+export default Ember.Handlebars.makeBoundHelper(function(sequence, ranges, mask) {
   var escaped = sequence.split('').map(Handlebars.Utils.escapeExpression);
   var range_idx = 0;
   var result = escaped.map(function(aa, idx) {
@@ -10,12 +10,21 @@ export default Ember.Handlebars.makeBoundHelper(function(sequence, ranges) {
         html_str += "<span class = 'pngs'>";
       }
     }
-    if (aa === "." || aa === "-") {
-      html_str += aa;
+    aa = aa.toUpperCase();
+    var _class = "";
+    if (aa === "|") {
+      _class = '"seperator"';
     } else {
-      aa = aa.toUpperCase();
-      html_str += '<span class="aa' + aa + '">' + aa + '</span>';
+      _class = 'aa aa' + aa;
+      if (mask && mask[idx]) {
+        _class += ' match';
+        if (aa !== "-") {
+          aa = ".";
+        }
+      }
+      _class = '"' + _class + '"';
     }
+    html_str += '<span class=' + _class + '>' + aa + '</span>';
     if (range_idx < ranges.length) {
       if (idx === ranges[range_idx][1]) {
         html_str += "</span>";
