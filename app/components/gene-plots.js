@@ -96,7 +96,9 @@ export default Ember.Component.extend({
       if (two_d) {
         data1 = addFront(zeros, data2);
       }
-      positions = addFront([], positions);
+      if (positions.length > 0) {
+        positions = addFront([], positions);
+      }
       names = addFront("Combined", names);
     }
 
