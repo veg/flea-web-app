@@ -32,6 +32,14 @@
     {{timeseries-plot width=800 height=250 data=aaTrajectories
       legendRight=true ymin=0 interpolation="monotone"}}
 
+    {{sequence-canvas
+    alnRanges=alnRanges
+    minCoord=minCoord
+    maxCoord=maxCoord
+    predefinedRegions=predefinedRegions
+    refCoords=model.frequencies.alnToRefCoords
+    }}
+
     {{sequence-viewer groupedSequences=groupedSequences
     alnRanges=alnRanges mrca=mrcaSlice
     selectedPositions=selectedPositions

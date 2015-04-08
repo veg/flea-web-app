@@ -84,6 +84,10 @@ canvas {
     font: 12px monospace;
 }
 
+.sequence-canvas{
+    float:left;
+}
+
 .sequence-viewer tr td{
     text-align: right;
 }
