@@ -36,7 +36,7 @@ export default Ember.Component.extend({
         .enter()
         .append("line");
 
-    var lineAttributes = lines
+    lines
         .attr("x1", function(d) {return d[0];})
         .attr("y1", function(d) {return d[1];})
         .attr("x2", function(d) {return d[2];})
@@ -58,9 +58,9 @@ export default Ember.Component.extend({
 
     lines.enter().append("line")
       .attr("x1", function(d) {return d;})
-      .attr("y1", function(d) {return h / 3;})
+      .attr("y1", function() {return h / 3;})
       .attr("x2", function(d) {return d;})
-      .attr("y2", function(d) {return 2 * h / 3;})
+      .attr("y2", function() {return 2 * h / 3;})
       .attr("stroke-width", 1)
       .attr("stroke", "green");
 
@@ -79,9 +79,9 @@ export default Ember.Component.extend({
 
     lines.enter().append("line")
       .attr("x1", function(d) {return d;})
-      .attr("y1", function(d) {return 0;})
+      .attr("y1", function() {return 0;})
       .attr("x2", function(d) {return d;})
-      .attr("y2", function(d) {return h;})
+      .attr("y2", function() {return h;})
       .attr("stroke-width", 1)
       .attr("stroke", "red");
 
@@ -93,13 +93,13 @@ export default Ember.Component.extend({
     var h = this.get('height');
     var ranges = this.get('alnRanges');
 
-    var rects = svg.selectAll("rect").data(ranges, function(r) { return new String(r); });
+    var rects = svg.selectAll("rect").data(ranges, function(r) { return String(r); });
 
     rects.enter().append("rect")
       .attr("x", function(d) {return d[0] - 1;}) // convert to 0-index
-      .attr("y", function(d) {return 0;})
+      .attr("y", function() {return 0;})
       .attr("width", function(d) {return d[1] - d[0];})
-      .attr("height", function(d) {return h;})
+      .attr("height", function() {return h;})
       .attr("stroke-width", 1)
       .attr("stroke", "blue")
       .attr("fill-opacity", 0);

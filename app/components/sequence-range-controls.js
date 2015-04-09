@@ -35,7 +35,7 @@ export default Ember.Component.extend({
     var text = this.get('rangeText');
     var ranges = text.split(';').map(function(a) {
       var parts = a.split('-');
-      if (parts.length != 2) {
+      if (parts.length !== 2) {
         throw "wrong number of ranges";
       }
       return [+parts[0], +parts[1]];

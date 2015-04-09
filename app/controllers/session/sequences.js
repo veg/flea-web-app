@@ -33,7 +33,7 @@ export default Ember.ObjectController.extend({
       return ".^";
     }
     try {
-      var r = new RegExp(value, 'g');
+      new RegExp(value, 'g');
       this.set('_regex', value);
     } catch(err) {
     }
@@ -137,18 +137,9 @@ export default Ember.ObjectController.extend({
     var ranges = this.get('ranges');
     var mapFirst = this.get('model.frequencies.refToFirstAlnCoords');
     var mapLast = this.get('model.frequencies.refToLastAlnCoords');
-    var toref = this.get('model.frequencies.alnToRefCoords');
     return ranges.map(function(range) {
       var start = transformIndex(range[0], mapFirst);
       var stop = transformIndex(range[1], mapLast);
-
-      if (range[0] != transformIndex(start, toref)) {
-        throw "start index wrong";
-      }
-      if (range[1] != transformIndex(stop, toref)) {
-        throw "stop index wrong";
-      }
-
       return [start, stop];
     });
   }.property('model.frequencies.refToFirstAlnCoords',
@@ -220,8 +211,8 @@ export default Ember.ObjectController.extend({
       var combined = rest_series[0].values;
       for (var k=1; k<rest_series.length; k++) {
         var curve = rest_series[k].values;
-        for (var m=0; m<curve.length; m++) {
-          combined[m].y += curve[m].y;
+        for (var n=0; n<curve.length; n++) {
+          combined[n].y += curve[n].y;
         }
       }
       first_series.push({name: 'other', values: combined});

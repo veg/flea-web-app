@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {parse_date, format_date, isString} from '../utils/utils';
+import format_date from '../utils/utils';
 
 export default Ember.Component.extend({
   tagName: 'svg',
@@ -38,11 +38,9 @@ export default Ember.Component.extend({
   }.property('seq_ids_to_dates'),
 
   didInsertElement: function() {
-    var seq_ids_to_dates = this.get('seq_ids_to_dates');
-
     var tree_widget = d3.layout.phylotree("body")
         .size([this.get('height'), this.get('width')])
-        .separation (function (a,b) {return 0;})
+        .separation (function () {return 0;})
         .style_nodes (this.get('nodeColorizer'))
         .branch_name (this.get('nodeNamer'));
 

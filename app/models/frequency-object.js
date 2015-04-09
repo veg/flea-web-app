@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-var FrequencyObject = Ember.Object.extend({
+export default Ember.Object.extend({
   data: [],
 
   alnToRefCoords: function () {
@@ -24,7 +24,6 @@ var FrequencyObject = Ember.Object.extend({
     var alnToRef = this.get('alnToRefCoords');
     var maxIndex = alnToRef[alnToRef.length - 1];
     var result = new Array(maxIndex);
-    var refIndex;
     var aln_index = 0;
     for (var ref_index=0; ref_index<result.length; ref_index++) {
       while (alnToRef[aln_index] < ref_index) {
@@ -46,7 +45,6 @@ var FrequencyObject = Ember.Object.extend({
     var alnToRef = this.get('alnToRefCoords');
     var maxIndex = alnToRef[alnToRef.length - 1];
     var result = new Array(maxIndex);
-    var refIndex;
     var aln_index = 0;
     for (var ref_index=0; ref_index<result.length; ref_index++) {
       result[ref_index] = aln_index;

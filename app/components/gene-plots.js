@@ -88,7 +88,7 @@ export default Ember.Component.extend({
     var two_d = data2.length > 0;
 
     if (this.get('addCombined') && names[0] !== "Combined") {
-      var zeros = []
+      var zeros = [];
       for (var i=0; i < n_sites; i++) {
         zeros.push(0);
       }
@@ -109,12 +109,12 @@ export default Ember.Component.extend({
     if (data1.length !== names.length) {
       throw "data1 and names have different lengths";
     }
-    for (var i=0; i<n_plots; i++) {
-      if (data1[i].length !== n_sites) {
+    for (var j=0; j<n_plots; j++) {
+      if (data1[j].length !== n_sites) {
         throw "data vector lengths are inconsistent";
       }
       if (two_d) {
-        if (data2[i].length !== n_sites) {
+        if (data2[j].length !== n_sites) {
           throw "data vector lengths are inconsistent";
         }
       }
@@ -128,8 +128,7 @@ export default Ember.Component.extend({
     // FIXME: there must be a more ember-friendly way to do this
     var url = this.get('url');
 
-    // FIXME: use innerGroupTransform, so margin should be unnecessary here
-    var margin = this.get('margin');
+    var make_cx = function (d) {return x(d);};
 
     function brushed() {
       x.domain(brush.empty() ? x_overall.domain() : brush.extent());
@@ -139,7 +138,7 @@ export default Ember.Component.extend({
           focus_plots[k].select("._pos_dN").attr("d", area_objects[k][1]);
         }
         focus_plots[k].selectAll(".selected_site").
-          attr ("cx", function (d) {return x(d);});
+          attr ("cx", make_cx);
       }
       svg.select(".pos.x.axis").call(xAxis);
     }

@@ -23,7 +23,7 @@ export default Ember.Component.extend({
   }.observes('spin'),
 
   updateFog: function() {
-    this.get('viewer').options('fog', this.get('fog'))
+    this.get('viewer').options('fog', this.get('fog'));
     this.get('viewer').requestRedraw();
   }.observes('fog'),
 
@@ -45,7 +45,7 @@ export default Ember.Component.extend({
       antialias: true,
       quality : 'medium'
     };
-    var viewer = pv.Viewer(this.$()[0], options)
+    var viewer = pv.Viewer(this.$()[0], options);
     this.set('viewer', viewer);
     var structure = this.get('structure');
     viewer.fitTo(structure);

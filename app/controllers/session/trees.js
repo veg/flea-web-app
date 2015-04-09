@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {parse_date, format_date, isString} from '../../utils/utils';
+import format_date from '../../utils/utils';
 
 export default Ember.Controller.extend({
 
@@ -59,7 +59,7 @@ export default Ember.Controller.extend({
     return Object.keys(trees[region][date]);
   }.property('nestedTrees', 'selectedGenomicRegion', 'selectedTimePoint'),
 
-  handleSelection: function(options, hidden, key, value, oldvalue) {
+  handleSelection: function(options, hidden, key, value) {
     if (value === undefined) {
       if (!(_.includes(options, this.get(hidden)))) {
         this.set(hidden, options[0]);
@@ -74,16 +74,16 @@ export default Ember.Controller.extend({
     return this.get(hidden);
   },
 
-  selectedGenomicRegion: function(key, value, oldvalue) {
-    return this.handleSelection(this.get('genomicRegions'), '_selectedGenomicRegion', key, value, oldvalue);
+  selectedGenomicRegion: function(key, value) {
+    return this.handleSelection(this.get('genomicRegions'), '_selectedGenomicRegion', key, value);
   }.property('genomicRegions'),
 
-  selectedTimePoint: function(key, value, oldvalue) {
-    return this.handleSelection(this.get('timePoints'), '_selectedTimePoint', key, value, oldvalue);
+  selectedTimePoint: function(key, value) {
+    return this.handleSelection(this.get('timePoints'), '_selectedTimePoint', key, value);
   }.property('timePoints'),
 
-  selectedDistanceMeasure: function(key, value, oldvalue) {
-    return this.handleSelection(this.get('distanceMeasures'), '_selectedDistanceMeasure', key, value, oldvalue);
+  selectedDistanceMeasure: function(key, value) {
+    return this.handleSelection(this.get('distanceMeasures'), '_selectedDistanceMeasure', key, value);
   }.property('distanceMeasures'),
 
   tree: function() {
