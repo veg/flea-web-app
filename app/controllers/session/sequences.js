@@ -55,6 +55,11 @@ export default Ember.ObjectController.extend({
     return this.get('model.frequencies.refToLastAlnCoords').length;
   }.property('model.frequencies.refToLastAlnCoords.length'),
 
+  maxAlnCoord: function() {
+    // maximum reference coordinate
+    return this.get('model.frequencies.alnToRefCoords').length;
+  }.property('model.frequencies.alnToRefCoords.length'),
+
   filterSequenceTypes: function(seqs, type) {
     return seqs.filter(function(seq) {
       return seq.get('type') === type;
