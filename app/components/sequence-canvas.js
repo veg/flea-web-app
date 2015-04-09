@@ -17,6 +17,7 @@ export default Ember.Component.extend({
 
   didInsertElement: function() {
     this.drawMain();
+    this.drawPositive();
     this.drawSelected();
     this.drawRanges();
   },
@@ -43,6 +44,28 @@ export default Ember.Component.extend({
         .attr("stroke-width", 1)
         .attr("stroke", "black");
   }.observes('width', 'height'),
+
+  drawPositive: function() {
+    var posns = [];
+    if (this.get('markPositive')) {
+      posns = this.get('positiveSelection')[0];
+      // convert to 0-index
+      posns = posns.map(function(p) { return p - 1; } );
+    }
+    var h = this.get('height');
+    var svg = d3.select('#' + this.get('elementId')).select('.positive');
+    var lines = svg.selectAll("line").data(posns, function(p) { return p; });
+
+    lines.enter().append("line")
+      .attr("x1", function(d) {return d;})
+      .attr("y1", function(d) {return h / 3;})
+      .attr("x2", function(d) {return d;})
+      .attr("y2", function(d) {return 2 * h / 3;})
+      .attr("stroke-width", 1)
+      .attr("stroke", "green");
+
+    lines.exit().remove();
+  }.observes('markPositive', 'positiveSelection'),
 
   drawSelected: function() {
     var svg = d3.select('#' + this.get('elementId')).select('.selected');
