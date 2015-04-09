@@ -19,6 +19,7 @@ export default Ember.Component.extend({
   didInsertElement: function() {
     this.drawMain();
     this.drawSelected();
+    this.drawRanges();
   },
 
   drawMain: function() {
@@ -49,8 +50,6 @@ export default Ember.Component.extend({
     var h = this.get('height');
     var posns = this.get('selectedPositions').toArray();
 
-    console.log(posns);
-
     var lines = svg.selectAll("line").data(posns, function(p) { return p; });
 
     lines.enter().append("line")
@@ -62,5 +61,25 @@ export default Ember.Component.extend({
       .attr("stroke", "red");
 
     lines.exit().remove();
-  }.observes('selectedPositions.[]')
+  }.observes('selectedPositions.[]'),
+
+  drawRanges: function() {
+    var svg = d3.select('#' + this.get('elementId')).select('.ranges');
+    var h = this.get('height');
+    var ranges = this.get('alnRanges');
+
+    var rects = svg.selectAll("rect").data(ranges, function(r) { return new String(r); });
+
+    rects.enter().append("rect")
+      .attr("x", function(d) {return d[0];})
+      .attr("y", function(d) {return 0;})
+      .attr("width", function(d) {return d[1] - d[0];})
+      .attr("height", function(d) {return h;})
+      .attr("stroke-width", 1)
+      .attr("stroke", "blue")
+      .attr("fill-opacity", 0);
+
+    rects.exit().remove();
+  }.observes('alnRanges')
+
 });
