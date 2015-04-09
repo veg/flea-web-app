@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  tagName: 'canvas',
+  tagName: 'svg',
   classNames: ['sequence-canvas'],
   height: 50,
   attributeBindings: ['width', 'height'],
@@ -17,32 +17,50 @@ export default Ember.Component.extend({
   width: Ember.computed.alias('maxCoord'),
 
   didInsertElement: function() {
-    this.set('ctx', this.get('element').getContext('2d'));
-    this.draw();
+    this.drawMain();
+    this.drawSelected();
   },
 
-  draw: function() {
-    console.log('drawing');
-    this._empty();
-    var ctx = this.get('ctx');
+  drawMain: function() {
+    var w = this.get('width');
     var h = this.get('height');
+    var svg = d3.select('#' + this.get('elementId')).select('.main');
 
-    ctx.strokeRect(0, 0, this.get('width'), this.get('height'));
+    var coords = [[0, h / 2, w, h / 2],
+                 [0, h/3, 0, 2 * h / 3],
+                 [w, h/3, w, 2 * h / 3]];
 
-    // draw selected positions
-    this.get('selectedPositions').forEach(function(p) {
-      ctx.beginPath();
-      ctx.moveTo(p, 0);
-      ctx.lineTo(p, h);
-      ctx.stroke();
-    });
-  }.observes('maxCoord', 'predefinedRegions', 'refCoord', 'selectedPositions.[]'),
+    var lines = svg.selectAll("lines")
+        .data(coords)
+        .enter()
+        .append("line");
 
-  _empty: function() {
-    var ctx = this.get('ctx');
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(0, 0, this.get('width'), this.get('height'));
-  }
+    var lineAttributes = lines
+        .attr("x1", function(d) {return d[0];})
+        .attr("y1", function(d) {return d[1];})
+        .attr("x2", function(d) {return d[2];})
+        .attr("y2", function(d) {return d[3];})
+        .attr("stroke-width", 1)
+        .attr("stroke", "black");
+  }.observes('width', 'height'),
+
+  drawSelected: function() {
+    var svg = d3.select('#' + this.get('elementId')).select('.selected');
+    var h = this.get('height');
+    var posns = this.get('selectedPositions').toArray();
+
+    console.log(posns);
+
+    var lines = svg.selectAll("line").data(posns, function(p) { return p; });
+
+    lines.enter().append("line")
+      .attr("x1", function(d) {return d;})
+      .attr("y1", function(d) {return 0;})
+      .attr("x2", function(d) {return d;})
+      .attr("y2", function(d) {return h;})
+      .attr("stroke-width", 1)
+      .attr("stroke", "red");
+
+    lines.exit().remove();
+  }.observes('selectedPositions.[]')
 });
-
-
