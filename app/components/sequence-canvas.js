@@ -27,6 +27,8 @@ export default Ember.Component.extend({
     var h = this.get('height');
     var svg = d3.select('#' + this.get('elementId')).select('.main');
 
+    // TODO: brushable to make new range
+
     var coords = [[0, h / 2, w, h / 2],
                  [0, h/3, 0, 2 * h / 3],
                  [w - 1, h/3, w - 1, 2 * h / 3]];
@@ -92,19 +94,44 @@ export default Ember.Component.extend({
     var svg = d3.select('#' + this.get('elementId')).select('.ranges');
     var h = this.get('height');
     var ranges = this.get('alnRanges');
+    var self = this;
+    var totalWidth = this.get('width');
+
+    function dragmove(d) {
+      var x = d3.round(+d3.event.x);
+      var width = +this.getAttribute('width');
+      if (x >= 0 && x + width < totalWidth) {
+        d3.select(this)
+          .attr("x", x);
+      }
+    }
+
+    function dragend(d) {
+      var idx = +this.getAttribute('idx');
+      var start = (+this.getAttribute('x')) + 1;  // convert back to 1-index
+      var width = +this.getAttribute('width');
+      var range = [start, start + width];
+      self.sendAction('updateRange', idx, range);
+    }
+
+    var drag = d3.behavior.drag()
+        .on("drag", dragmove)
+        .on("dragend", dragend);
 
     var rects = svg.selectAll("rect").data(ranges, function(r) { return String(r); });
 
     rects.enter().append("rect")
       .attr("x", function(d) {return d[0] - 1;}) // convert to 0-index
       .attr("y", function() {return 0;})
+      .attr("idx", function(d, i) {return i;})
       .attr("width", function(d) {return d[1] - d[0];})
       .attr("height", function() {return h;})
       .attr("stroke-width", 1)
       .attr("stroke", "blue")
-      .attr("fill-opacity", 0);
+      .attr("fill-opacity", 0)
+      .call(drag);
 
     rects.exit().remove();
-  }.observes('alnRanges')
+  }.observes('alnRanges', 'maxCoord', 'height')
 
 });

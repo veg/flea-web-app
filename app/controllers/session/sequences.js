@@ -228,6 +228,17 @@ export default Ember.ObjectController.extend({
     },
     finalizeSelection: function() {
       this.set('selectedSequences', this.get('_selectedSequences'));
+    },
+
+    updateAlnRange: function(idx, range) {
+      // TODO: check range is valid
+      var alnRanges = this.get('alnRanges');
+      var map = this.get('model.frequencies.alnToRefCoords');
+      var refRanges = this.get('ranges');
+      refRanges[idx] = [map[range[0]], map[range[1]]];
+      this.set('ranges', refRanges);
+      // FIXME: this should not be necessary
+      this.notifyPropertyChange('ranges');
     }
   }
 });
