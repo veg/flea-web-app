@@ -23,19 +23,13 @@ export default Ember.Object.extend({
     // both 0-indexed
     var alnToRef = this.get('alnToRefCoords');
     var maxIndex = alnToRef[alnToRef.length - 1];
-    var result = new Array(maxIndex);
+    var result = new Array(maxIndex + 1);
     var aln_index = 0;
     for (var ref_index=0; ref_index<result.length; ref_index++) {
       while (alnToRef[aln_index] < ref_index) {
         aln_index += 1;
       }
       result[ref_index] = aln_index;
-    }
-    // TODO: move to tests
-    for (var i=0; i<result.length; i++) {
-      if (!((i > alnToRef[result[i] - 1]) && (i <= alnToRef[result[i]]))) {
-        throw "index conversion wrong";
-      }
     }
     return result;
   }.property('alnToRefCoords'),
@@ -44,16 +38,14 @@ export default Ember.Object.extend({
     // TODO: code duplication
     var alnToRef = this.get('alnToRefCoords');
     var maxIndex = alnToRef[alnToRef.length - 1];
-    var result = new Array(maxIndex);
+    var result = new Array(maxIndex + 1);
     var aln_index = 0;
     for (var ref_index=0; ref_index<result.length; ref_index++) {
-      result[ref_index] = aln_index;
-      while (alnToRef[aln_index] <= ref_index) {
-        result[ref_index] = aln_index;
+      // advance aln_index as much as possible
+      while (alnToRef[aln_index] <= ref_index && alnToRef[aln_index + 1] <= ref_index) {
         aln_index += 1;
       }
-    }
-    for (var i=0; i<result.length; i++) {
+      result[ref_index] = aln_index;
     }
     return result;
   }.property('alnToRefCoords')

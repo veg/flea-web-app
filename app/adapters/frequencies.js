@@ -2,7 +2,7 @@ import Ember from 'ember';
 import config from '../config/environment';
 import request from 'ic-ajax';
 
-import FrequencyObject from 'models/frequency-object';
+import FrequencyObject from '../models/frequency-object';
 
 
 export default Ember.Object.extend({
