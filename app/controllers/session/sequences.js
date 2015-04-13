@@ -135,16 +135,19 @@ export default Ember.ObjectController.extend({
     // 1-indexed [start, stop] reference ranges to
     // 1-indexed [start, stop] aligment ranges
     var ranges = this.get('ranges');
+    this.checkRanges(ranges, this.get('maxCoord'));
     var mapFirst = this.get('model.frequencies.refToFirstAlnCoords');
     var mapLast = this.get('model.frequencies.refToLastAlnCoords');
-    return ranges.map(function(range) {
+    var result = ranges.map(function(range) {
       var start = transformIndex(range[0], mapFirst);
       var stop = transformIndex(range[1], mapLast);
       return [start, stop];
     });
-  }.property('model.frequencies.refToFirstAlnCoords',
-             'model.frequencies.refToLastAlnCoords',
-             'ranges'),
+    this.checkRanges(result, this.get('maxAlnCoord'));
+    return result;
+  }.property('ranges',
+             'model.frequencies.refToFirstAlnCoords',
+             'model.frequencies.refToLastAlnCoords'),
 
   aaTrajectories: function() {
     var sequences = this.get('selectedSequences');
@@ -222,6 +225,25 @@ export default Ember.ObjectController.extend({
     return series;
   }.property('selectedPositions.[]', 'selectedSequences.@each'),
 
+  checkRanges: function(ranges, maxCoord) {
+    for (var i=0; i<ranges.length; i++) {
+      this.checkRange(ranges[i], maxCoord);
+    }
+  },
+
+  checkRange: function(range, maxCoord) {
+    // check 1-indexed range against 1-indexed maximum coordinate
+    var start = range[0];
+    var stop = range[1];
+    if (start < 1) {
+      throw "invalid start position";
+    }
+
+    if (stop > maxCoord) {
+      throw "invalid stop position";
+    }
+  },
+
   actions: {
     resetRegex: function() {
       this.set('regexValue', this.get('regexDefault'));
@@ -231,7 +253,8 @@ export default Ember.ObjectController.extend({
     },
 
     updateAlnRange: function(idx, range) {
-      // TODO: check range is valid
+      this.checkRange(range, this.get('maxAlnCoord'));
+
       var alnRanges = this.get('alnRanges');
       var map = this.get('model.frequencies.alnToRefCoords');
       var refRanges = this.get('ranges');
