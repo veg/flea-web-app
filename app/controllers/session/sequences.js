@@ -235,10 +235,12 @@ export default Ember.ObjectController.extend({
       var alnRanges = this.get('alnRanges');
       var map = this.get('model.frequencies.alnToRefCoords');
       var refRanges = this.get('ranges');
-      refRanges[idx] = [map[range[0]], map[range[1]]];
-      this.set('ranges', refRanges);
-      // FIXME: this should not be necessary
-      this.notifyPropertyChange('ranges');
+
+      // shallow copy, so we have a different object. Ensures that
+      // calling this.set() triggers computed properties.
+      var result = refRanges.slice(0);
+      result[idx] = [map[range[0]], map[range[1]]];
+      this.set('ranges', result);
     }
   }
 });
