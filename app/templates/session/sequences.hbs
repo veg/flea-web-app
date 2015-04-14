@@ -38,12 +38,13 @@
   <div class = "col-md-12">
     {{sequence-canvas
     alnRanges=alnRanges
-    seqLen=alnLen
+    alnLen=alnLen
     markPositive=markPositive
     positiveSelection=model.rates.positiveSelection
     selectedPositions=selectedPositions
     predefinedRegions=predefinedRegions
     alnToRefCoords=model.frequencies.alnToRefCoords
+    refToAlnCoords=model.frequencies.refToFirstAlnCoords
     updateRange="updateAlnRange"
     }}
   </div>

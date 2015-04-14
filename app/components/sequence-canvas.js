@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-import {oneIndex} from '../utils/utils';
+import {zeroIndex, oneIndex, transformIndex} from '../utils/utils';
 
 export default Ember.Component.extend({
   tagName: 'svg',
@@ -10,14 +10,14 @@ export default Ember.Component.extend({
   attributeBindings: ['width', 'height'],
 
   alnRanges: null,
-  seqLen: 1,
+  alnLen: 1,
   selectedPositions: null,
   predefinedRegions: null,
   alnToRefCoords: null,
 
   tick: 100,
 
-  width: Ember.computed.alias('seqLen'),
+  width: Ember.computed.alias('alnLen'),
 
   height: function() {
     return this.get('mainHeight') + this.get('axisHeight');
@@ -64,20 +64,27 @@ export default Ember.Component.extend({
   }.observes('width', 'mainHeight'),
 
   drawAxis: function() {
-    var map = this.get('alnToRefCoords');
+    var r2a = this.get('refToAlnCoords');
+    var a2r = this.get('alnToRefCoords');
     var tick = this.get('tick');
-    var ticks = [];
-    for (var i=0; i<map.length; i++) {
-      if (map[i] > 0 && oneIndex(map[i]) % tick === 0) {
-        ticks.push(i);
-      }
-    }
+
+    var nTicks = Math.max(Math.floor(a2r[a2r.length - 1] / tick), 0);
+
+    // 0-indexed reference ticks we want, but they may not actually be available
+    var wanted = _.range(1, nTicks + 1).map(function(i) {
+      return zeroIndex(i * tick);
+    });
+
+    // transform to closest possible alignment indices
+    var ticks = wanted.map(function(t) {
+      return transformIndex(t, r2a, false);
+    });
 
     var x = d3.scale.linear().domain([0, this.get('width')])
         .range([0, this.get('width')]);
     var xAxis = d3.svg.axis().scale(x).orient("bottom")
         .tickValues(ticks)
-        .tickFormat(function(t) { return oneIndex(map[t]); });
+        .tickFormat(function(t) { return oneIndex(transformIndex(t, a2r, false)) });
     var svg = d3.select('#' + this.get('elementId')).select('.axis');
 
     svg
