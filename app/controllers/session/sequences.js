@@ -240,6 +240,11 @@ export default Ember.ObjectController.extend({
       result[idx] = [transformIndex(range[0], map, false),
                      transformIndex(range[1], map, true)];
       this.set('ranges', result);
+    },
+
+    setRanges: function(ranges) {
+      checkRanges(ranges, this.get('refLen'));
+      this.set('ranges', ranges);
     }
   }
 });
