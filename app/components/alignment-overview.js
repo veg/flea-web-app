@@ -7,7 +7,7 @@ import {zeroIndex, oneIndex, transformIndex} from '../utils/utils';
 
 export default Ember.Component.extend({
   tagName: 'svg',
-  classNames: ['sequence-canvas'],
+  classNames: ['alignment-overview'],
   labelHeight: 10,
   mainHeight: 30,
   axisHeight: 20,
