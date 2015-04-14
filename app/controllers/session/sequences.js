@@ -133,7 +133,9 @@ export default Ember.ObjectController.extend({
     var mapLast = this.get('model.frequencies.refToLastAlnCoords');
     var result = ranges.map(function(range) {
       var start = transformIndex(range[0], mapFirst);
-      var stop = transformIndex(range[1], mapLast);
+
+      // convert to closed endpoint, transform, then convert back to open endpoint
+      var stop = transformIndex(range[1] - 1, mapLast) + 1;
       return [start, stop];
     });
     checkRanges(result, this.get('alnLen'));
