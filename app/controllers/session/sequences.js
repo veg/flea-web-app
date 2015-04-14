@@ -40,7 +40,7 @@ export default Ember.ObjectController.extend({
   }.property('regexValue'),
 
   // TODO: do not hard-code
-  // note: these are 0-indexed [start, stop) ranges
+  // note: these are 0-indexed [start, stop) reference coordinates
   predefinedRegions: [
     {name: 'V1', start: 130, stop: 156},
     {name: 'V2', start: 156, stop: 196},

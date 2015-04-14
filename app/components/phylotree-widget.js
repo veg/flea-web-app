@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import format_date from '../utils/utils';
+import {format_date} from '../utils/utils';
 
 export default Ember.Component.extend({
   tagName: 'svg',
