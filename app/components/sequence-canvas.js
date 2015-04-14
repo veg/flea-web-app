@@ -94,8 +94,9 @@ export default Ember.Component.extend({
     var totalWidth = this.get('width');
 
     function dragmove(d) {
-      var x = d3.round(+d3.event.x);
+      var dx = d3.round(+d3.event.dx);
       var width = +this.getAttribute('width');
+      var x = (+this.getAttribute('x')) + dx;
       if (x >= 0 && x + width < totalWidth) {
         d3.select(this)
           .attr("x", x);
