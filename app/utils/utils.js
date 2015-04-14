@@ -76,15 +76,50 @@ export var sumArray = function(collection, accessor) {
   return total;
 };
 
-export var transformIndex =  function(idx, map) {
+export var transformIndex = function(idx, map) {
   // transform idx using map
-  // idx and result are 1-indexed, map is 0-indexed
-  idx = idx - 1;
-  var result = -1;
+  // everything is 0-indexed
+  var result;
   if (idx >= map.length) {
     result = map[map.length - 1];
   } else {
     result = map[idx];
   }
-  return result + 1;
+  return result;
+};
+
+
+export var checkRange = function(range, len) {
+  var start = range[0];
+  var stop = range[1];
+  if (start < 0) {
+    throw "invalid start position";
+  }
+  if (stop > len) {
+    throw "invalid stop position";
+  }
+  if (start >= stop) {
+    throw "invalid range";
+  }
+};
+
+export var checkRanges = function(ranges, len) {
+  for (var i=0; i<ranges.length; i++) {
+    checkRange(ranges[i], len);
+  }
+};
+
+
+export var oneIndex = function(i) {
+  if (i < 0) {
+    throw "invalid index";
+  }
+  return i + 1;
+};
+
+export var zeroIndex = function(i) {
+  if (i < 1) {
+    throw "invalid index";
+  }
+  return i - 1;
 };

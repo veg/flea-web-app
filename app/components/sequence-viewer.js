@@ -1,10 +1,11 @@
 import Ember from 'ember';
+import {oneIndex} from '../utils/utils';
 
 export default Ember.Component.extend({
 
   // bound to controller
   groupedSequences: {},
-  refCoords: null,
+  alnToRef: null,
   selectedPositions: new Ember.Set(),
 
   selectDefault: false,
@@ -18,15 +19,15 @@ export default Ember.Component.extend({
   refHTML: function() {
     var result = [];
     var last_hs = -5;
-    var ref_map = this.get('refCoords');
+    var map = this.get('alnToRef');
     var positive_positions = this.get('positiveSelection')[0];
     // TODO: there is surely a more elegent way of building this html
     var ranges = this.get('alnRanges');
     for (var i=0; i<ranges.length; i++) {
       var start = ranges[i][0];
       var stop = ranges[i][1];
-      for (var s=start; s <= stop; s++) {
-        var hs = ref_map[s - 1] + 1;
+      for (var s=start; s < stop; s++) {
+        var hs = oneIndex(map[s]);
         var str = "";
         if (hs < 10) {
           str = "  " + hs;
@@ -60,7 +61,7 @@ export default Ember.Component.extend({
       }
     }
     return result;
-  }.property('alnRanges', 'refCoords', 'markPositive', 'positiveSelection',
+  }.property('alnRanges', 'alnToRef', 'markPositive', 'positiveSelection',
              'selectedPositions', 'selectedPositions.[]'),
 
   selectAllPositive: function () {

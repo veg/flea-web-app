@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {format_date, htmlTable1D, regexRanges, transformIndex} from '../../utils/utils';
+import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges} from '../../utils/utils';
 
 
 var pngsRegex = 'N\\-*[^P-]\\-*[ST]\\-*[^P-]';
@@ -14,9 +14,8 @@ export default Ember.ObjectController.extend({
   selectedSequences: 'empty',
 
   // TODO: maybe these should be in a View instead
-  // range in hxb2 1-indexed coordinates
-  ranges: [[160, 200]],
-  minCoord: 1,
+  // range in 0-indexed [start, stop) reference coordinates
+  ranges: [[159, 200]],
 
   regexValue: pngsRegex,
   regexDefault: pngsRegex,
@@ -24,7 +23,7 @@ export default Ember.ObjectController.extend({
 
   markPositive: true,
 
-  // in alignment 1-indexed coordinates
+  // in alignment 0-indexed coordinates
   selectedPositions: new Ember.Set(),
 
   regex: function() {
@@ -41,24 +40,19 @@ export default Ember.ObjectController.extend({
   }.property('regexValue'),
 
   // TODO: do not hard-code
+  // note: these are 0-indexed [start, stop) ranges
   predefinedRegions: [
-    {name: 'V1', start: 131, stop: 156},
-    {name: 'V2', start: 157, stop: 196},
-    {name: 'V3', start: 296, stop: 330},
-    {name: 'V4', start: 385, stop: 418},
-    {name: 'V5', start: 461, stop: 471},
-    {name: 'MPER', start: 662, stop: 683}
+    {name: 'V1', start: 130, stop: 156},
+    {name: 'V2', start: 156, stop: 196},
+    {name: 'V3', start: 295, stop: 330},
+    {name: 'V4', start: 384, stop: 418},
+    {name: 'V5', start: 460, stop: 471},
+    {name: 'MPER', start: 661, stop: 683}
   ],
 
-  maxCoord: function() {
-    // maximum reference coordinate
-    return this.get('model.frequencies.refToLastAlnCoords').length;
-  }.property('model.frequencies.refToLastAlnCoords.length'),
+  refLen: Ember.computed.alias('model.frequencies.refToLastAlnCoords.length'),
 
-  maxAlnCoord: function() {
-    // maximum reference coordinate
-    return this.get('model.frequencies.alnToRefCoords').length;
-  }.property('model.frequencies.alnToRefCoords.length'),
+  alnLen: Ember.computed.alias('model.frequencies.alnToRefCoords.length'),
 
   filterSequenceTypes: function(seqs, type) {
     return seqs.filter(function(seq) {
@@ -78,7 +72,7 @@ export default Ember.ObjectController.extend({
 
   toSlices: function(seq, ranges) {
     return ranges.map(function(range) {
-      return seq.slice(range[0] - 1, range[1]);
+      return seq.slice(range[0], range[1]);
     }).join('|');
   },
 
@@ -132,10 +126,9 @@ export default Ember.ObjectController.extend({
              'regex'),
 
   alnRanges: function() {
-    // 1-indexed [start, stop] reference ranges to
-    // 1-indexed [start, stop] aligment ranges
+    // convert reference ranges to aligment ranges
     var ranges = this.get('ranges');
-    this.checkRanges(ranges, this.get('maxCoord'));
+    checkRanges(ranges, this.get('refLen'));
     var mapFirst = this.get('model.frequencies.refToFirstAlnCoords');
     var mapLast = this.get('model.frequencies.refToLastAlnCoords');
     var result = ranges.map(function(range) {
@@ -143,7 +136,7 @@ export default Ember.ObjectController.extend({
       var stop = transformIndex(range[1], mapLast);
       return [start, stop];
     });
-    this.checkRanges(result, this.get('maxAlnCoord'));
+    checkRanges(result, this.get('alnLen'));
     return result;
   }.property('ranges',
              'model.frequencies.refToFirstAlnCoords',
@@ -163,7 +156,7 @@ export default Ember.ObjectController.extend({
     for (var i=0; i<sequences.length; i++ ) {
       var seq = sequences[i];
       var motif = positions.map(function(idx) {
-        return seq.sequence[idx - 1];  // 1-indexed
+        return seq.sequence[idx];
       }).join('');
       if (!(counts.hasOwnProperty(motif))) {
         counts[motif] = {};
@@ -225,25 +218,6 @@ export default Ember.ObjectController.extend({
     return series;
   }.property('selectedPositions.[]', 'selectedSequences.@each'),
 
-  checkRanges: function(ranges, maxCoord) {
-    for (var i=0; i<ranges.length; i++) {
-      this.checkRange(ranges[i], maxCoord);
-    }
-  },
-
-  checkRange: function(range, maxCoord) {
-    // check 1-indexed range against 1-indexed maximum coordinate
-    var start = range[0];
-    var stop = range[1];
-    if (start < 1) {
-      throw "invalid start position";
-    }
-
-    if (stop > maxCoord) {
-      throw "invalid stop position";
-    }
-  },
-
   actions: {
     resetRegex: function() {
       this.set('regexValue', this.get('regexDefault'));
@@ -253,7 +227,7 @@ export default Ember.ObjectController.extend({
     },
 
     updateAlnRange: function(idx, range) {
-      this.checkRange(range, this.get('maxAlnCoord'));
+      checkRange(range, this.get('alnLen'));
 
       var alnRanges = this.get('alnRanges');
       var map = this.get('model.frequencies.alnToRefCoords');

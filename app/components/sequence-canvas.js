@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import {oneIndex, zeroIndex} from '../utils/utils';
 
 export default Ember.Component.extend({
   tagName: 'svg',
@@ -8,12 +9,12 @@ export default Ember.Component.extend({
 
   // bound to controller
   alnRanges: null,
-  maxCoord: 1,
+  seqLen: 1,
   selectedPositions: null,
   predefinedRegions: null,
   refCoord: null,
 
-  width: Ember.computed.alias('maxCoord'),
+  width: Ember.computed.alias('seqLen'),
 
   didInsertElement: function() {
     this.drawMain();
@@ -51,8 +52,6 @@ export default Ember.Component.extend({
     var posns = [];
     if (this.get('markPositive')) {
       posns = this.get('positiveSelection')[0];
-      // convert to 0-index
-      posns = posns.map(function(p) { return p - 1; } );
     }
     var h = this.get('height');
     var svg = d3.select('#' + this.get('elementId')).select('.positive');
@@ -73,9 +72,6 @@ export default Ember.Component.extend({
     var svg = d3.select('#' + this.get('elementId')).select('.selected');
     var h = this.get('height');
     var posns = this.get('selectedPositions').toArray();
-
-    // convert to 0-index
-    posns = posns.map(function(p) { return p - 1; } );
 
     var lines = svg.selectAll("line").data(posns, function(p) { return p; });
 
@@ -108,7 +104,7 @@ export default Ember.Component.extend({
 
     function dragend(d) {
       var idx = +this.getAttribute('idx');
-      var start = (+this.getAttribute('x')) + 1;  // convert back to 1-index
+      var start = (+this.getAttribute('x'));
       var width = +this.getAttribute('width');
       var range = [start, start + width];
       self.sendAction('updateRange', idx, range);
@@ -121,7 +117,7 @@ export default Ember.Component.extend({
     var rects = svg.selectAll("rect").data(ranges, function(r) { return String(r); });
 
     rects.enter().append("rect")
-      .attr("x", function(d) {return d[0] - 1;}) // convert to 0-index
+      .attr("x", function(d) {return d[0];})
       .attr("y", function() {return 0;})
       .attr("idx", function(d, i) {return i;})
       .attr("width", function(d) {return d[1] - d[0];})
@@ -132,6 +128,6 @@ export default Ember.Component.extend({
       .call(drag);
 
     rects.exit().remove();
-  }.observes('alnRanges', 'maxCoord', 'height')
+  }.observes('alnRanges', 'width', 'height')
 
 });

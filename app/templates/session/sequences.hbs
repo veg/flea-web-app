@@ -2,7 +2,7 @@
   <div class = "col-md-12">
     <div class="input-group input-group-sm">
       {{sequence-range-controls ranges=ranges
-      minCoord=minCoord maxCoord=maxCoord
+      seqLen=refLen
       predefinedRegions=predefinedRegions
       }}
       {{input type="text" class="form-control" value=regexValue
@@ -31,10 +31,14 @@
   <div class = "col-md-12">
     {{timeseries-plot width=800 height=250 data=aaTrajectories
       legendRight=true ymin=0 interpolation="monotone"}}
+  </div>
+</div>
 
+<div class = "row">
+  <div class = "col-md-12">
     {{sequence-canvas
     alnRanges=alnRanges
-    maxCoord=maxAlnCoord
+    seqLen=alnLen
     markPositive=markPositive
     positiveSelection=model.rates.positiveSelection
     selectedPositions=selectedPositions
@@ -42,12 +46,16 @@
     refCoords=model.frequencies.alnToRefCoords
     updateRange="updateAlnRange"
     }}
+  </div>
+</div>
 
+<div class = "row">
+  <div class = "col-md-12">
     {{sequence-viewer groupedSequences=groupedSequences
     alnRanges=alnRanges mrca=mrcaSlice
     selectedPositions=selectedPositions
     markPositive=markPositive
-    refCoords=model.frequencies.alnToRefCoords
+    alnToRef=model.frequencies.alnToRefCoords
     positiveSelection=model.rates.positiveSelection
     regex=regex
     selectDefault=true

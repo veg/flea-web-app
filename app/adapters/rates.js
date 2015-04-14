@@ -37,7 +37,7 @@ function positive_selection_positions (mx) {
   }).filter (function (d) {
     return d [1] >= 0.95;
   }).map (function (d) {
-    return d[0] + 1;
+    return d[0];
   });
 }
 

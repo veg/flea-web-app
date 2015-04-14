@@ -1,15 +1,15 @@
 import Ember from 'ember';
+import {oneIndex, zeroIndex} from '../utils/utils';
 
 export default Ember.Component.extend({
 
   tagName: '',
 
-  // bound to controller
+  // bound to controller; 0-indexed
   ranges: [],
 
   // updated from template
-  minCoord: 1,
-  maxCoord: 1,
+  seqLen: 1,
 
   myRanges: [],
   rangeText: '',
@@ -26,7 +26,7 @@ export default Ember.Component.extend({
   makeText: function() {
     var ranges = this.get('myRanges');
     var text = ranges.map(function(range) {
-      return range[0] + "-" + range[1];
+      return oneIndex(range[0]) + "-" + range[1];
     }).join(';');
     this.set('rangeText', text);
   },
@@ -38,7 +38,7 @@ export default Ember.Component.extend({
       if (parts.length !== 2) {
         throw "wrong number of ranges";
       }
-      return [+parts[0], +parts[1]];
+      return [(+parts[0]) - 1, +parts[1]];
     });
     this.set('myRanges', ranges);
   },
@@ -46,17 +46,16 @@ export default Ember.Component.extend({
   toController: function() {
     var ranges = this.get('myRanges');
 
-    var minCoord = +this.get('minCoord');
-    var maxCoord = +this.get('maxCoord');
+    var seqLen = +this.get('seqLen');
 
     ranges = ranges.map(function(range) {
       var start = range[0];
       var stop = range[1];
-      if (start < minCoord) {
-        start = minCoord;
+      if (start < 0) {
+        start = 0;
       }
-      if (stop > maxCoord) {
-        stop = maxCoord;
+      if (stop > seqLen) {
+        stop = seqLen;
       }
       return [start, stop];
     });
@@ -74,14 +73,13 @@ export default Ember.Component.extend({
     moveRanges: function(offset) {
       // FIXME: why are these sometimes strings???
       var ranges = this.get('ranges');
-      var minCoord = this.get('minCoord');
-      var maxCoord = this.get('maxCoord');
+      var seqLen = this.get('seqLen');
       for (var r=0; r<ranges.length; r++) {
         var start = ranges[r][0];
         var stop = ranges[r][1];
-        if ((minCoord <= start + offset) &&
+        if ((0 <= start + offset) &&
           (start + offset <= stop + offset) &&
-          (stop + offset <= maxCoord)) {
+          (stop + offset <= seqLen)) {
           ranges[r][0] = start + offset;
           ranges[r][1] = stop + offset;
         }

@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import {zeroIndex} from '../utils/utils';
 
 export default Ember.Object.extend({
   data: [],
@@ -10,7 +11,7 @@ export default Ember.Object.extend({
     var coords = [];
     for (var k in data) {
       if (data.hasOwnProperty(k)) {
-        coords.push ([parseInt(k) - 1, parseInt(data[k]['HXB2']) - 1]);
+        coords.push([zeroIndex(parseInt(k)), zeroIndex(parseInt(data[k]['HXB2']))]);
       }
     }
     coords.sort (function (a,b) {return a[0] - b[0];});
@@ -22,8 +23,8 @@ export default Ember.Object.extend({
     // maps reference coordinates to alignment coordinates
     // both 0-indexed
     var alnToRef = this.get('alnToRefCoords');
-    var maxIndex = alnToRef[alnToRef.length - 1];
-    var result = new Array(maxIndex + 1);
+    var refLen = alnToRef[alnToRef.length - 1] + 1;
+    var result = new Array(refLen);
     var aln_index = 0;
     for (var ref_index=0; ref_index<result.length; ref_index++) {
       while (alnToRef[aln_index] < ref_index) {
@@ -37,8 +38,8 @@ export default Ember.Object.extend({
   refToLastAlnCoords: function () {
     // TODO: code duplication
     var alnToRef = this.get('alnToRefCoords');
-    var maxIndex = alnToRef[alnToRef.length - 1];
-    var result = new Array(maxIndex + 1);
+    var refLen = alnToRef[alnToRef.length - 1] + 1;
+    var result = new Array(refLen);
     var aln_index = 0;
     for (var ref_index=0; ref_index<result.length; ref_index++) {
       // advance aln_index as much as possible
