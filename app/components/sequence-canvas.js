@@ -26,6 +26,7 @@ export default Ember.Component.extend({
   didInsertElement: function() {
     this.drawMain();
     this.drawAxis();
+    this.drawInsertions();
     this.drawPositive();
     this.drawSelected();
     this.drawRanges();
@@ -85,6 +86,50 @@ export default Ember.Component.extend({
       .call(xAxis);
 
   }.observes('width', 'mainHeight'),
+
+  insertions: function() {
+    // 0-indexed [start, stop] intervals
+    var map = this.get('alnToRefCoords');
+    var ranges = [];
+    var current = false;
+    var start = -1;
+    var stop = -1;
+    var len = map.length;
+    for (var i=1; i<map.length; i++) {
+      if (!current && map[i - 1] === map[i]) {
+        current = true;
+        start = i;
+      } else if (current && map[i - 1] !== map[i]) {
+        stop = i - 1;
+        current = false;
+        ranges.push([start, stop]);
+      } else if (current && i + 1 === len) {
+        stop = i;
+        current = false;
+        ranges.push([start, stop]);
+      }
+    }
+    return ranges;
+  }.property('alnToRefCoords'),
+
+  drawInsertions: function() {
+    var svg = d3.select('#' + this.get('elementId')).select('.insertions');
+    var insertions = this.get('insertions');
+    var h = this.get('mainHeight') / 2;
+
+    var lines = svg.selectAll("line").data(insertions, function(r) { return String(r); });
+
+    lines.enter().append("line")
+      .attr("x1", function(d) {return d[0];})
+      .attr("y1", function() {return h;})
+      .attr("x2", function(d) {return d[1];})
+      .attr("y2", function() {return h;})
+      .attr("stroke-width", 3)
+      .attr("stroke", "black");
+
+    lines.exit().remove();
+
+  }.observes('insertions', 'mainHeight'),
 
   drawPositive: function() {
     var posns = [];
