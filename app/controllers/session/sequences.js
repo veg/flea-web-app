@@ -132,10 +132,10 @@ export default Ember.ObjectController.extend({
     var mapFirst = this.get('model.frequencies.refToFirstAlnCoords');
     var mapLast = this.get('model.frequencies.refToLastAlnCoords');
     var result = ranges.map(function(range) {
-      var start = transformIndex(range[0], mapFirst);
+      var start = transformIndex(range[0], mapFirst, false);
 
       // convert to closed endpoint, transform, then convert back to open endpoint
-      var stop = transformIndex(range[1] - 1, mapLast) + 1;
+      var stop = transformIndex(range[1], mapLast, true);
       return [start, stop];
     });
     checkRanges(result, this.get('alnLen'));
@@ -230,7 +230,6 @@ export default Ember.ObjectController.extend({
 
     updateAlnRange: function(idx, range) {
       checkRange(range, this.get('alnLen'));
-
       var alnRanges = this.get('alnRanges');
       var map = this.get('model.frequencies.alnToRefCoords');
       var refRanges = this.get('ranges');
@@ -238,7 +237,8 @@ export default Ember.ObjectController.extend({
       // shallow copy, so we have a different object. Ensures that
       // calling this.set() triggers computed properties.
       var result = refRanges.slice(0);
-      result[idx] = [map[range[0]], map[range[1]]];
+      result[idx] = [transformIndex(range[0], map, false),
+                     transformIndex(range[1], map, true)];
       this.set('ranges', result);
     }
   }

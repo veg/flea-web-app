@@ -76,14 +76,21 @@ export var sumArray = function(collection, accessor) {
   return total;
 };
 
-export var transformIndex = function(idx, map) {
+export var transformIndex = function(idx, map, open) {
   // transform idx using map
   // everything is 0-indexed
+  // if `open`, this is an open interval
   var result;
+  if (open) {
+    idx -= 1;
+  }
   if (idx >= map.length) {
     result = map[map.length - 1];
   } else {
     result = map[idx];
+  }
+  if (open) {
+    result += 1;
   }
   return result;
 };

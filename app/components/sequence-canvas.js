@@ -1,31 +1,45 @@
 import Ember from 'ember';
-import {oneIndex, zeroIndex} from '../utils/utils';
+
+import {oneIndex} from '../utils/utils';
 
 export default Ember.Component.extend({
   tagName: 'svg',
   classNames: ['sequence-canvas'],
-  height: 30,
+  mainHeight: 30,
+  axisHeight: 20,
   attributeBindings: ['width', 'height'],
 
-  // bound to controller
   alnRanges: null,
   seqLen: 1,
   selectedPositions: null,
   predefinedRegions: null,
-  refCoord: null,
+  alnToRefCoords: null,
+
+  tick: 100,
 
   width: Ember.computed.alias('seqLen'),
 
+  height: function() {
+    return this.get('mainHeight') + this.get('axisHeight');
+  }.property('mainHeight', 'axisHeight'),
+
   didInsertElement: function() {
     this.drawMain();
+    this.drawAxis();
     this.drawPositive();
     this.drawSelected();
     this.drawRanges();
   },
 
+  closedRanges: function() {
+    return this.get('alnRanges').map(function(r) {
+      return [r[0], r[1] - 1];
+    });
+  }.property('alnRanges'),
+
   drawMain: function() {
     var w = this.get('width');
-    var h = this.get('height');
+    var h = this.get('mainHeight');
     var svg = d3.select('#' + this.get('elementId')).select('.main');
 
     // TODO: brushable to make new range
@@ -46,14 +60,38 @@ export default Ember.Component.extend({
         .attr("y2", function(d) {return d[3];})
         .attr("stroke-width", 1)
         .attr("stroke", "black");
-  }.observes('width', 'height'),
+  }.observes('width', 'mainHeight'),
+
+  drawAxis: function() {
+    var map = this.get('alnToRefCoords');
+    var tick = this.get('tick');
+    var ticks = [];
+    for (var i=0; i<map.length; i++) {
+      if (map[i] > 0 && oneIndex(map[i]) % tick === 0) {
+        ticks.push(i);
+      }
+    }
+
+    var x = d3.scale.linear().domain([0, this.get('width')])
+        .range([0, this.get('width')]);
+    var xAxis = d3.svg.axis().scale(x).orient("bottom")
+        .tickValues(ticks)
+        .tickFormat(function(t) { return oneIndex(map[t]); });
+    var svg = d3.select('#' + this.get('elementId')).select('.axis');
+
+    svg
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + this.get('mainHeight') + ")")
+      .call(xAxis);
+
+  }.observes('width', 'mainHeight'),
 
   drawPositive: function() {
     var posns = [];
     if (this.get('markPositive')) {
       posns = this.get('positiveSelection')[0];
     }
-    var h = this.get('height');
+    var h = this.get('mainHeight');
     var svg = d3.select('#' + this.get('elementId')).select('.positive');
     var lines = svg.selectAll("line").data(posns, function(p) { return p; });
 
@@ -66,11 +104,11 @@ export default Ember.Component.extend({
       .attr("stroke", "green");
 
     lines.exit().remove();
-  }.observes('markPositive', 'positiveSelection'),
+  }.observes('markPositive', 'positiveSelection', 'mainHeight'),
 
   drawSelected: function() {
     var svg = d3.select('#' + this.get('elementId')).select('.selected');
-    var h = this.get('height');
+    var h = this.get('mainHeight');
     var posns = this.get('selectedPositions').toArray();
 
     var lines = svg.selectAll("line").data(posns, function(p) { return p; });
@@ -84,12 +122,12 @@ export default Ember.Component.extend({
       .attr("stroke", "red");
 
     lines.exit().remove();
-  }.observes('selectedPositions.[]'),
+  }.observes('selectedPositions.[]', 'mainHeight'),
 
   drawRanges: function() {
     var svg = d3.select('#' + this.get('elementId')).select('.ranges');
-    var h = this.get('height');
-    var ranges = this.get('alnRanges');
+    var h = this.get('mainHeight');
+    var ranges = this.get('closedRanges');
     var self = this;
     var totalWidth = this.get('width');
 
@@ -97,7 +135,7 @@ export default Ember.Component.extend({
       var dx = d3.round(+d3.event.dx);
       var width = +this.getAttribute('width');
       var x = (+this.getAttribute('x')) + dx;
-      if (x >= 0 && x + width < totalWidth) {
+      if (x >= 0 && x + width + 1 <= totalWidth) {
         d3.select(this)
           .attr("x", x);
       }
@@ -107,7 +145,7 @@ export default Ember.Component.extend({
       var idx = +this.getAttribute('idx');
       var start = (+this.getAttribute('x'));
       var width = +this.getAttribute('width');
-      var range = [start, start + width];
+      var range = [start, start + width + 1];
       self.sendAction('updateRange', idx, range);
     }
 
@@ -125,10 +163,11 @@ export default Ember.Component.extend({
       .attr("height", function() {return h;})
       .attr("stroke-width", 1)
       .attr("stroke", "blue")
-      .attr("fill-opacity", 0)
+      .style("fill", "blue")
+      .attr("fill-opacity", 0.1)
       .call(drag);
 
     rects.exit().remove();
-  }.observes('alnRanges', 'width', 'height')
+  }.observes('closedRanges', 'width', 'mainHeight')
 
 });
