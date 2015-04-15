@@ -15,7 +15,7 @@ export default Ember.ObjectController.extend({
 
   // TODO: maybe these should be in a View instead
   // range in 0-indexed [start, stop) reference coordinates
-  ranges: [[159, 200]],
+  _ranges: [[159, 200]],
 
   regexValue: pngsRegex,
   regexDefault: pngsRegex,
@@ -124,6 +124,15 @@ export default Ember.ObjectController.extend({
   }.property('alnRanges', 'mrcaSlice',
              'selectedSequences.@each',
              'regex'),
+
+  ranges: function(key, val, previousValue) {
+    if (arguments.length > 1) {
+      this.set('_ranges', val);
+    }
+    var ranges = this.get('_ranges');
+    ranges.sort(function(a, b) { return a[0] - b[0]; });
+    return ranges;
+  }.property('ranges'),
 
   alnRanges: function() {
     // convert reference ranges to aligment ranges
@@ -245,7 +254,6 @@ export default Ember.ObjectController.extend({
 
     setRanges: function(ranges) {
       checkRanges(ranges, this.get('refLen'));
-      ranges.sort(function(a, b) { return a[0] - b[0]; });
       this.set('ranges', ranges);
     },
 
@@ -253,7 +261,6 @@ export default Ember.ObjectController.extend({
       checkRange(range, this.get('refLen'));
       var ranges = this.get('ranges').slice(0);
       ranges.push(range);
-      ranges.sort(function(a, b) { return a[0] - b[0]; });
       this.set('ranges', ranges);
     },
 
@@ -321,6 +328,7 @@ function addHighlights(groups, regex) {
   for (var i=0; i<groups.length; i++) {
     var seqs = groups[i].sequences;
     for (var j=0; j<seqs.length; j++) {
+      // FIXME: remove ranges crossing split barriers
       seqs[j].highlights = regexRanges(regex, seqs[j].sequence);
     }
   }
