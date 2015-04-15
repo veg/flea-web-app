@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {oneIndex, zeroIndex} from '../utils/utils';
+import {oneIndex} from '../utils/utils';
 
 export default Ember.Component.extend({
 

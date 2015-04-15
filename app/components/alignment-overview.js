@@ -40,14 +40,13 @@ export default Ember.Component.extend({
     this.drawAxis();
     this.makeBrush();
 
-    var shiftKey;
     var self = this;
     var key = function() {
       self.set('shiftKey', d3.event.shiftKey);
-    }
+    };
 
-    d3.select(window).on("keydown", key)
-    d3.select(window).on("keyup", key)
+    d3.select(window).on("keydown", key);
+    d3.select(window).on("keyup", key);
   },
 
   drawLabels: function() {
@@ -66,7 +65,7 @@ export default Ember.Component.extend({
       } else {
         self.sendAction('setRanges', [range]);
       }
-    }
+    };
 
     var text = svg.selectAll("text")
         .data(regions, function(d) {return d.name;});
@@ -127,7 +126,7 @@ export default Ember.Component.extend({
     var svg = d3.select('#' + this.get('elementId')).select('.main').select('.brush');
 
     var x = this.get('x');
-    var brush = d3.svg.brush()
+    var brush = d3.svg.brush();
 
     var brushend = function() {
       var extent = brush.extent();
@@ -135,7 +134,7 @@ export default Ember.Component.extend({
         return d3.round(i, 0);
       });
       var range = [transformIndex(alnRange[0], map, false),
-                   transformIndex(alnRange[1], map, false) + 1]
+                   transformIndex(alnRange[1], map, false) + 1];
       if (self.get('shiftKey')) {
         self.sendAction('addRange', range);
       } else {
@@ -143,7 +142,7 @@ export default Ember.Component.extend({
       }
       brush.clear();
       svg.call(brush);
-    }
+    };
 
     brush.x(x)
       .on("brushend", brushend);
