@@ -106,23 +106,42 @@ export default Ember.Component.extend({
   }.property('width'),
 
   makeBrush: function() {
+    var shiftKey;
+    d3.select(window).on("keydown", function() {
+      shiftKey = d3.event.shiftKey;
+    });
+
+    d3.select(window).on("keyup", function() {
+      shiftKey = d3.event.shiftKey;
+    });
+
     var self = this;
     var map = this.get('alnToRefCoords');
 
-    var brushend = function() {
-      var extent = brush.extent();
-      var alnRange = extent.map(d3.round);
-      var range = [transformIndex(alnRange[0], map, false),
-                   transformIndex(alnRange[1], map, true)]
-      self.sendAction('setRanges', [range]);
-    }
+    var svg = d3.select('#' + this.get('elementId')).select('.main').select('.brush');
 
     var x = this.get('x');
     var brush = d3.svg.brush()
-        .x(x)
-        .on("brushend", brushend);
 
-    var svg = d3.select('#' + this.get('elementId')).select('.main').select('.brush');
+    var brushend = function() {
+      var extent = brush.extent();
+      var alnRange = extent.map(function(i) {
+        return d3.round(i, 0);
+      });
+      var range = [transformIndex(alnRange[0], map, false),
+                   transformIndex(alnRange[1], map, false) + 1]
+      if (shiftKey) {
+        self.sendAction('addRange', range);
+      } else {
+        self.sendAction('setRanges', [range]);
+      }
+      brush.clear();
+      svg.call(brush);
+    }
+
+    brush.x(x)
+      .on("brushend", brushend);
+
     svg.call(brush)
       .selectAll('rect')
       .attr('height', this.get('mainHeight'));
@@ -269,7 +288,7 @@ export default Ember.Component.extend({
     var totalWidth = this.get('width');
 
     function dragmove(d) {
-      var dx = d3.round(+d3.event.dx);
+      var dx = d3.round(+d3.event.dx, 0);
       var width = +this.getAttribute('width');
       var x = (+this.getAttribute('x')) + dx;
       if (x >= 0 && x + width + 1 <= totalWidth) {

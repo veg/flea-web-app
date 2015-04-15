@@ -239,11 +239,21 @@ export default Ember.ObjectController.extend({
       var result = refRanges.slice(0);
       result[idx] = [transformIndex(range[0], map, false),
                      transformIndex(range[1], map, true)];
+      result.sort(function(a, b) { return a[0] - b[0]; });
       this.set('ranges', result);
     },
 
     setRanges: function(ranges) {
       checkRanges(ranges, this.get('refLen'));
+      ranges.sort(function(a, b) { return a[0] - b[0]; });
+      this.set('ranges', ranges);
+    },
+
+    addRange: function(range) {
+      checkRange(range, this.get('refLen'));
+      var ranges = this.get('ranges').slice(0);
+      ranges.push(range);
+      ranges.sort(function(a, b) { return a[0] - b[0]; });
       this.set('ranges', ranges);
     }
   }
