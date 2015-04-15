@@ -255,6 +255,13 @@ export default Ember.ObjectController.extend({
       ranges.push(range);
       ranges.sort(function(a, b) { return a[0] - b[0]; });
       this.set('ranges', ranges);
+    },
+
+    rmRange: function(idx) {
+      var ranges = this.get('ranges');
+      this.set('ranges', ranges.filter(function(elt, i) {
+        return i !== idx;
+      }));
     }
   }
 });

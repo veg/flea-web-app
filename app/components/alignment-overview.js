@@ -321,7 +321,13 @@ export default Ember.Component.extend({
       .attr("stroke", "blue")
       .style("fill", "blue")
       .attr("fill-opacity", 0.1)
-      .call(drag);
+      .call(drag)
+      .on('click', function(d,i) {
+        if (d3.event.defaultPrevented) {
+          return;
+        }
+        self.sendAction('rmRange', i);
+      });
 
     rects.exit().remove();
   }.observes('closedRanges', 'width', 'mainHeight')
