@@ -22,6 +22,9 @@ export default Ember.ObjectController.extend({
   regexDefault: pngsRegex,
   _regex: '',
 
+  _threshold: 1,
+  threshold: 1,
+
   markPositive: true,
 
   // in alignment 0-indexed coordinates
@@ -118,13 +121,14 @@ export default Ember.ObjectController.extend({
       elt.date = format_date(elt.date);
     });
     result = addPercent(result);
+    result = filterPercent(result, this.get('threshold'));
     result = addHTML(result);
     result = addHighlights(result, this.get('regex'));
     result = addMask(result, mrca);
     return result;
   }.property('alnRanges', 'mrcaSlice',
              'selectedSequences.@each',
-             'regex'),
+             'regex', 'threshold'),
 
   ranges: function(key, val, previousValue) {
     if (arguments.length > 1) {
@@ -143,8 +147,6 @@ export default Ember.ObjectController.extend({
     var mapLast = this.get('model.frequencies.refToLastAlnCoords');
     var result = ranges.map(function(range) {
       var start = transformIndex(range[0], mapFirst, false);
-
-      // convert to closed endpoint, transform, then convert back to open endpoint
       var stop = transformIndex(range[1], mapLast, true);
       return [start, stop];
     });
@@ -235,6 +237,18 @@ export default Ember.ObjectController.extend({
       this.set('regexValue', this.get('_regexValue'));
     },
 
+    doThreshold: function() {
+      var t = this.get('_threshold').trim();
+      if (t === "") {
+        t = 0;
+      }
+      t = +t;
+      if (t >= 0 && t <= 100) {
+        this.set('_threshold', t);
+        this.set('threshold', t);
+      }
+    },
+
     resetRegex: function() {
       this.set('_regexValue', this.get('regexDefault'));
       this.set('regexValue', this.get('regexDefault'));
@@ -291,6 +305,16 @@ function addPercent(groups) {
     for (var k=0; k<seqs.length; k++) {
       seqs[k].percent = 100 * seqs[k].copyNumber / total;
     }
+  }
+  return groups;
+}
+
+function filterPercent(groups, threshold) {
+  for (var i=0; i<groups.length; i++) {
+    var seqs = groups[i].sequences.filter(function(s) {
+      return s.percent >= threshold;
+    });
+    groups[i].sequences = seqs;
   }
   return groups;
 }

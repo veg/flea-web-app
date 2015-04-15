@@ -15,8 +15,14 @@
           <i class="fa fa-undo"></i>
         </button>
       </div>
+      <span class="input-group-addon">Threshold</span>
+      {{input type="text" class="form-control" value=_threshold
+      placeholder="Threshold %" autofocus="autofocus"
+      focus-out="doThreshold" insert-newline="doThreshold"
+      size="1"
+      }}
       <span class="input-group-addon">
-        Mark positively selected sites
+        Mark selected sites
         {{input type="checkbox" name="markPositive" checked=markPositive}}
       </span>
     </div>
