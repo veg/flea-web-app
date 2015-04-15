@@ -88,6 +88,12 @@ canvas {
     float:left;
 }
 
+.brush .extent {
+    stroke: #fff;
+    fill-opacity: .125;
+    shape-rendering: crispEdges;
+}
+
 .sequence-viewer tr td{
     text-align: right;
 }

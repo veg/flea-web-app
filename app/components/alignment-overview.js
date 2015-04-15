@@ -36,6 +36,7 @@ export default Ember.Component.extend({
     this.drawSelected();
     this.drawRanges();
     this.drawAxis();
+    this.makeBrush();
   },
 
   drawLabels: function() {
@@ -99,12 +100,38 @@ export default Ember.Component.extend({
     });
   }.property('alnRanges'),
 
+  x: function() {
+    return d3.scale.linear().domain([0, this.get('width')])
+      .range([0, this.get('width')]);
+  }.property('width'),
+
+  makeBrush: function() {
+    var self = this;
+    var map = this.get('alnToRefCoords');
+
+    var brushend = function() {
+      var extent = brush.extent();
+      var alnRange = extent.map(d3.round);
+      var range = [transformIndex(alnRange[0], map, false),
+                   transformIndex(alnRange[1], map, true)]
+      self.sendAction('setRanges', [range]);
+    }
+
+    var x = this.get('x');
+    var brush = d3.svg.brush()
+        .x(x)
+        .on("brushend", brushend);
+
+    var svg = d3.select('#' + this.get('elementId')).select('.main').select('.brush');
+    svg.call(brush)
+      .selectAll('rect')
+      .attr('height', this.get('mainHeight'));
+  }.observes('x', 'mainHeight', 'alnToRefCoords'),
+
   drawTrack: function() {
     var w = this.get('width');
     var h = this.get('mainHeight');
     var svg = d3.select('#' + this.get('elementId')).select('.main').select('.track');
-
-    // TODO: brushable to make new range
 
     var coords = [[0, h / 2, w, h / 2],
                  [0, h/3, 0, 2 * h / 3],
@@ -141,8 +168,7 @@ export default Ember.Component.extend({
       return transformIndex(t, r2a, false);
     });
 
-    var x = d3.scale.linear().domain([0, this.get('width')])
-        .range([0, this.get('width')]);
+    var x = this.get('x');
     var xAxis = d3.svg.axis().scale(x).orient("bottom")
         .tickValues(ticks)
         .tickFormat(function(t) { return oneIndex(transformIndex(t, a2r, false)); });
