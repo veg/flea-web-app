@@ -5,8 +5,10 @@
       seqLen=refLen
       predefinedRegions=predefinedRegions
       }}
-      {{input type="text" class="form-control" value=regexValue
-      placeholder="Pattern to highlight" autofocus="autofocus"}}
+      {{input type="text" class="form-control" value=_regexValue
+      placeholder="Pattern to highlight" autofocus="autofocus"
+      focus-out="doRegex" insert-newline="doRegex"
+      }}
       <div class="input-group-btn">
         <button {{action "resetRegex"}} type="button"
           class="btn btn-default btn-sm" title="Reset regexp">

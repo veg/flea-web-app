@@ -17,7 +17,8 @@ export default Ember.ObjectController.extend({
   // range in 0-indexed [start, stop) reference coordinates
   _ranges: [[159, 200]],
 
-  regexValue: pngsRegex,
+  _regexValue: pngsRegex,  // displayed in template
+  regexValue: pngsRegex,  // triggers actual update
   regexDefault: pngsRegex,
   _regex: '',
 
@@ -230,9 +231,15 @@ export default Ember.ObjectController.extend({
   }.property('selectedPositions.[]', 'selectedSequences.@each'),
 
   actions: {
+    doRegex: function() {
+      this.set('regexValue', this.get('_regexValue'));
+    },
+
     resetRegex: function() {
+      this.set('_regexValue', this.get('regexDefault'));
       this.set('regexValue', this.get('regexDefault'));
     },
+
     finalizeSelection: function() {
       this.set('selectedSequences', this.get('_selectedSequences'));
     },
