@@ -2,7 +2,7 @@ import Ember from 'ember';
 import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges} from '../../utils/utils';
 
 
-var pngsRegex = 'N\\-*[^P-]\\-*[ST]\\-*[^P-]';
+var pngsRegex = 'N\\-*[^P^-^|]\\-*[ST]\\-*[^P^-^|]';
 
 
 export default Ember.ObjectController.extend({
