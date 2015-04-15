@@ -21,6 +21,8 @@ export default Ember.Component.extend({
 
   tick: 100,
 
+  shiftKey: false,
+
   width: Ember.computed.alias('alnLen'),
 
   height: function() {
@@ -37,6 +39,15 @@ export default Ember.Component.extend({
     this.drawRanges();
     this.drawAxis();
     this.makeBrush();
+
+    var shiftKey;
+    var self = this;
+    var key = function() {
+      self.set('shiftKey', d3.event.shiftKey);
+    }
+
+    d3.select(window).on("keydown", key)
+    d3.select(window).on("keyup", key)
   },
 
   drawLabels: function() {
@@ -49,8 +60,12 @@ export default Ember.Component.extend({
     var self = this;
 
     var click = function(d) {
-      var ranges = [[d.start, d.stop]];
-      self.sendAction('setRanges', ranges);
+      var range = [d.start, d.stop];
+      if (self.get('shiftKey')) {
+        self.sendAction('addRange', range);
+      } else {
+        self.sendAction('setRanges', [range]);
+      }
     }
 
     var text = svg.selectAll("text")
@@ -106,15 +121,6 @@ export default Ember.Component.extend({
   }.property('width'),
 
   makeBrush: function() {
-    var shiftKey;
-    d3.select(window).on("keydown", function() {
-      shiftKey = d3.event.shiftKey;
-    });
-
-    d3.select(window).on("keyup", function() {
-      shiftKey = d3.event.shiftKey;
-    });
-
     var self = this;
     var map = this.get('alnToRefCoords');
 
@@ -130,7 +136,7 @@ export default Ember.Component.extend({
       });
       var range = [transformIndex(alnRange[0], map, false),
                    transformIndex(alnRange[1], map, false) + 1]
-      if (shiftKey) {
+      if (self.get('shiftKey')) {
         self.sendAction('addRange', range);
       } else {
         self.sendAction('setRanges', [range]);
