@@ -6,7 +6,7 @@ body {
 }
 
 .nav {
-  font-size: 12pt;
+  font-size: 10pt;
 }
 
 .popover-link {
@@ -95,7 +95,7 @@ canvas {
 }
 
 .sequence-viewer tr td{
-    text-align: right;
+    text-align: left;
 }
 
 .nostretch {
