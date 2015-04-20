@@ -314,9 +314,11 @@ export default Ember.Component.extend({
         .on("drag", dragmove)
         .on("dragend", dragend);
 
-    var rects = svg.selectAll("rect").data(ranges, function(r) { return String(r); });
+    svg.selectAll("rect").remove();
 
-    rects.enter().append("rect")
+    svg.selectAll("rect").data(ranges)
+      .enter()
+      .append("rect")
       .attr("x", function(d) {return d[0];})
       .attr("y", function() {return 0;})
       .attr("idx", function(d, i) {return i;})
@@ -333,8 +335,6 @@ export default Ember.Component.extend({
         }
         self.sendAction('rmRange', i);
       });
-
-    rects.exit().remove();
   }.observes('closedRanges', 'width', 'mainHeight')
 
 });
