@@ -28,7 +28,7 @@ export default Ember.Object.extend({
       var result = [];
       var readCounts = data['readCount'];
       delete data['readCount'];
-      for (var k in data) {
+      for (let k in data) {
         result.push(TurnoverInfo.create({
           date: parse_date(k),
           turnover: data[k],

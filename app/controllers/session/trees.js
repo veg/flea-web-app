@@ -16,7 +16,7 @@ export default Ember.Controller.extend({
   nestedTrees: function() {
     var trees = this.get('model.trees');
     var keys = {};
-    for (var i=0; i < trees.length; i++) {
+    for (let i=0; i < trees.length; i++) {
       var tree = trees[i];
       if (!(tree.region in keys)) {
         keys[tree.region] = {};

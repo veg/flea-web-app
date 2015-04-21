@@ -98,11 +98,11 @@ function singleMetric(all_data, regions, metric) {
   var result = [];
   // TODO: do this more functionally
   // possible with d3.nest?
-  for (var i=0; i<regions.length; i++) {
+  for (let i=0; i<regions.length; i++) {
     var region = regions[i];
     var series = {'name': region};
     var values = [];
-    for (var k=0; k<all_data.length; k++) {
+    for (let k=0; k<all_data.length; k++) {
       if (region === all_data[k]["Segment"]) {
         var datum = {'x': all_data[k].Date,
                      'y': all_data[k][metric]};
@@ -120,11 +120,11 @@ function singleMetric(all_data, regions, metric) {
 // TODO: code duplication
 function singleRegion(all_data, region, metrics) {
   var result = [];
-  for (var i=0; i<metrics.length; i++) {
+  for (let i=0; i<metrics.length; i++) {
     var metric = metrics[i];
     var series = {'name': metric};
     var values = [];
-    for (var k=0; k<all_data.length; k++) {
+    for (let k=0; k<all_data.length; k++) {
       if (region === all_data[k]["Segment"]) {
         var datum = {'x': all_data[k].Date,
                      'y': all_data[k][metric]};

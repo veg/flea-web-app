@@ -9,15 +9,15 @@ export default Ember.Object.extend({
     var url = config.baseURL + 'data/' + session_id + '/trees';
     return request(url).then(function(result) {
       var trees = [];
-      for (var date in result) {
+      for (let date in result) {
         if (!result.hasOwnProperty(date)) {
           continue;
         }
-        for (var region in result[date]) {
+        for (let region in result[date]) {
           if (!result[date].hasOwnProperty(region)) {
             continue;
           }
-          for (var distance in result[date][region]) {
+          for (let distance in result[date][region]) {
             if (!result[date][region].hasOwnProperty(distance)) {
               continue;
             }

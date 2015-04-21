@@ -100,7 +100,7 @@ export default Ember.ObjectController.extend({
               copyNumber: s.copyNumber,
               ids: [s.id]};
     };
-    for (var key in grouped) {
+    for (let key in grouped) {
       if (!grouped.hasOwnProperty(key)) {
         continue;
       }
@@ -161,7 +161,7 @@ export default Ember.ObjectController.extend({
     }
     var counts = {};
     var totals = {};
-    for (var i=0; i<sequences.length; i++ ) {
+    for (let i=0; i<sequences.length; i++ ) {
       var seq = sequences[i];
       var motif = positions.map(idx => seq.sequence[idx]).join('');
       if (!(counts.hasOwnProperty(motif))) {
@@ -177,12 +177,12 @@ export default Ember.ObjectController.extend({
       totals[seq.date] += seq.copyNumber;
     }
     var series = [];
-    for (var m in counts) {
+    for (let m in counts) {
       if (!(counts.hasOwnProperty(m))) {
         continue;
       }
       var points = [];
-      for (var date in totals) {
+      for (let date in totals) {
         if (!(totals.hasOwnProperty(date))) {
           continue;
         }
@@ -197,7 +197,7 @@ export default Ember.ObjectController.extend({
     // take top 9 and combine others
     if (series.length > 10) {
       var maxes = [];
-      for (var j=0; j<series.length; j++) {
+      for (let j=0; j<series.length; j++) {
         var trajectory = series[j];
         var tmax = _.max(trajectory.values.map(v => v.y));
         maxes.push({name: trajectory.name, max: tmax});
@@ -211,9 +211,9 @@ export default Ember.ObjectController.extend({
       var rest_series = split_series[1];
       // now combine others
       var combined = rest_series[0].values;
-      for (var k=1; k<rest_series.length; k++) {
+      for (let k=1; k<rest_series.length; k++) {
         var curve = rest_series[k].values;
-        for (var n=0; n<curve.length; n++) {
+        for (let n=0; n<curve.length; n++) {
           combined[n].y += curve[n].y;
         }
       }
@@ -286,13 +286,13 @@ export default Ember.ObjectController.extend({
 
 
 function addPercent(groups) {
-  for (var i=0; i<groups.length; i++) {
+  for (let i=0; i<groups.length; i++) {
     var seqs = groups[i].sequences;
     var total = 0;
-    for (var j=0; j<seqs.length; j++) {
+    for (let j=0; j<seqs.length; j++) {
       total += seqs[j].copyNumber;
     }
-    for (var k=0; k<seqs.length; k++) {
+    for (let k=0; k<seqs.length; k++) {
       seqs[k].percent = 100 * seqs[k].copyNumber / total;
     }
   }
@@ -300,7 +300,7 @@ function addPercent(groups) {
 }
 
 function filterPercent(groups, threshold) {
-  for (var i=0; i<groups.length; i++) {
+  for (let i=0; i<groups.length; i++) {
     var seqs = groups[i].sequences.filter(s => s.percent >= threshold);
     groups[i].sequences = seqs;
   }
@@ -310,14 +310,14 @@ function filterPercent(groups, threshold) {
 function collapse(seqs) {
   var groups = _.groupBy(seqs, s => s.sequence);
   var result = [];
-  for (var key in groups) {
+  for (let key in groups) {
     if (!groups.hasOwnProperty(key)) {
       continue;
     }
     var group = groups[key];
     var ids = [];
     var number = 0;
-    for (var i=0; i<group.length; i++) {
+    for (let i=0; i<group.length; i++) {
       ids.push(group[i].ids[0]);
       number += group[i].copyNumber;
     }
@@ -331,9 +331,9 @@ function collapse(seqs) {
 }
 
 function addHTML(groups) {
-  for (var i=0; i<groups.length; i++) {
+  for (let i=0; i<groups.length; i++) {
     var seqs = groups[i].sequences;
-    for (var j=0; j<seqs.length; j++) {
+    for (let j=0; j<seqs.length; j++) {
       seqs[j].html = htmlTable1D(seqs[j].ids, ['Sequence ID']);
     }
   }
@@ -342,9 +342,9 @@ function addHTML(groups) {
 
 
 function addHighlights(groups, regex) {
-  for (var i=0; i<groups.length; i++) {
+  for (let i=0; i<groups.length; i++) {
     var seqs = groups[i].sequences;
-    for (var j=0; j<seqs.length; j++) {
+    for (let j=0; j<seqs.length; j++) {
       // FIXME: remove ranges crossing split barriers
       seqs[j].highlights = regexRanges(regex, seqs[j].sequence);
     }
@@ -353,9 +353,9 @@ function addHighlights(groups, regex) {
 }
 
 function addMask(groups, mrca) {
-  for (var i=0; i<groups.length; i++) {
+  for (let i=0; i<groups.length; i++) {
     var seqs = groups[i].sequences;
-    for (var j=0; j<seqs.length; j++) {
+    for (let j=0; j<seqs.length; j++) {
       var seq = seqs[j];
       seqs[j].mask = seq.sequence.split('').map((aa, idx) => aa === mrca[idx]);
     }

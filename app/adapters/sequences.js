@@ -19,7 +19,7 @@ export default Ember.Object.extend({
     var url = config.baseURL + 'data/' + session_id + '/sequences';
     return request(url).then(function(result) {
       var sequences = [];
-      for (var prop in result) {
+      for (let prop in result) {
         if (!result.hasOwnProperty(prop)) {
           continue;
         }
@@ -29,7 +29,7 @@ export default Ember.Object.extend({
         }
         if (prop === "Combined") {
           var combined = result[prop];
-          for (var cid in combined) {
+          for (let cid in combined) {
             if (!combined.hasOwnProperty(cid)) {
               continue;
             }
@@ -41,12 +41,12 @@ export default Ember.Object.extend({
         }
         var date = prop;
         var timepoint = result[prop];
-        for (var type in timepoint) {
+        for (let type in timepoint) {
           if (!timepoint.hasOwnProperty(type)) {
             continue;
           }
           var seqs = timepoint[type];
-          for (var id in seqs) {
+          for (let id in seqs) {
             if (!seqs.hasOwnProperty(id)) {
               continue;
             }

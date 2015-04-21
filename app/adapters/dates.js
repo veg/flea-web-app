@@ -9,7 +9,7 @@ export default Ember.Object.extend({
     var url = config.baseURL + 'data/' + session_id + '/dates';
     return request(url).then(function(result) {
       var new_result = {};
-      for (var d in result) {
+      for (let d in result) {
         if (!(result.hasOwnProperty(d))) {
           continue;
         }

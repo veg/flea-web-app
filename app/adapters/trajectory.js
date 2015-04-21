@@ -10,7 +10,7 @@ export default Ember.Object.extend({
     return request(url).then(function(result) {
       result.forEach (function (d) {
         d.Date = parse_date(String(d.Date));
-        for (var k in d) {
+        for (let k in d) {
           if (!d.hasOwnProperty(k)) {
             continue;
           }

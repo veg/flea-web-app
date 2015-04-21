@@ -70,7 +70,7 @@ export default Ember.Component.extend({
       // FIXME: why are these sometimes strings???
       var ranges = this.get('ranges');
       var seqLen = this.get('seqLen');
-      for (var r=0; r<ranges.length; r++) {
+      for (let r=0; r<ranges.length; r++) {
         var start = ranges[r][0];
         var stop = ranges[r][1];
         if ((0 <= start + offset) &&

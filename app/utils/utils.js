@@ -27,7 +27,7 @@ export var htmlTable = function(data, header) {
   if (header) {
     result += '<thead>';
     result += '<trow>';
-    for (var k=0; k<header.length; k++) {
+    for (let k=0; k<header.length; k++) {
       result += '<th>';
       result += header[k];
       result += '</th>';
@@ -36,9 +36,9 @@ export var htmlTable = function(data, header) {
     result += '</thead>';
   }
   result += '<tbody>';
-  for (var i=0; i<data.length; i++) {
+  for (let i=0; i<data.length; i++) {
     result += '<tr>';
-    for (var j=0; j<data[i].length; j++) {
+    for (let j=0; j<data[i].length; j++) {
       result += '<td>';
       result += data[i][j];
       result += '</td>';
@@ -70,7 +70,7 @@ export var sumArray = function(collection, accessor) {
       return a;
     };
   }
-  for (var i=0; i<collection.length; i++) {
+  for (let i=0; i<collection.length; i++) {
     total += accessor(collection[i]);
   }
   return total;
@@ -111,7 +111,7 @@ export var checkRange = function(range, len) {
 };
 
 export var checkRanges = function(ranges, len) {
-  for (var i=0; i<ranges.length; i++) {
+  for (let i=0; i<ranges.length; i++) {
     checkRange(ranges[i], len);
   }
 };

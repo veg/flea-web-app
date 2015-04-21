@@ -206,7 +206,7 @@ export default Ember.Component.extend({
     var start = -1;
     var stop = -1;
     var len = map.length;
-    for (var i=1; i<map.length; i++) {
+    for (let i=1; i<map.length; i++) {
       if (!current && map[i - 1] === map[i]) {
         current = true;
         start = i;

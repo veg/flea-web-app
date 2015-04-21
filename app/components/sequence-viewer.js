@@ -23,10 +23,10 @@ export default Ember.Component.extend({
     var positive_positions = this.get('positiveSelection')[0];
     // TODO: there is surely a more elegent way of building this html
     var ranges = this.get('alnRanges');
-    for (var i=0; i<ranges.length; i++) {
+    for (let i=0; i<ranges.length; i++) {
       var start = ranges[i][0];
       var stop = ranges[i][1];
-      for (var s=start; s < stop; s++) {
+      for (let s=start; s < stop; s++) {
         var hs = oneIndex(map[s]);
         var str = "";
         if (hs < 10) {
@@ -68,10 +68,10 @@ export default Ember.Component.extend({
     var positions = this.get('positiveSelection')[0];
     var ranges = this.get('alnRanges');
     var result = new Ember.Set();
-    for (var r=0; r<ranges.length; r++) {
+    for (let r=0; r<ranges.length; r++) {
       var start = ranges[r][0];
       var stop = ranges[r][1];
-      for (var i = 0; i < positions.length; i++) {
+      for (let i = 0; i < positions.length; i++) {
         // could do binary search to speed this up
         var pos = positions[i];
         if (start <= pos && pos <= stop) {

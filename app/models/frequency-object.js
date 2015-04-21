@@ -9,7 +9,7 @@ export default Ember.Object.extend({
     // both 0-indexed.
     var data = this.get('data');
     var coords = [];
-    for (var k in data) {
+    for (let k in data) {
       if (data.hasOwnProperty(k)) {
         coords.push([zeroIndex(parseInt(k)), zeroIndex(parseInt(data[k]['HXB2']))]);
       }
@@ -26,7 +26,7 @@ export default Ember.Object.extend({
     var refLen = alnToRef[alnToRef.length - 1] + 1;
     var result = new Array(refLen);
     var aln_index = 0;
-    for (var ref_index=0; ref_index<result.length; ref_index++) {
+    for (let ref_index=0; ref_index<result.length; ref_index++) {
       while (alnToRef[aln_index] < ref_index) {
         aln_index += 1;
       }
@@ -41,7 +41,7 @@ export default Ember.Object.extend({
     var refLen = alnToRef[alnToRef.length - 1] + 1;
     var result = new Array(refLen);
     var aln_index = 0;
-    for (var ref_index=0; ref_index<result.length; ref_index++) {
+    for (let ref_index=0; ref_index<result.length; ref_index++) {
       // advance aln_index as much as possible
       while (alnToRef[aln_index] <= ref_index && alnToRef[aln_index + 1] <= ref_index) {
         aln_index += 1;

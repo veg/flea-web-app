@@ -13,7 +13,7 @@ export default Ember.Controller.extend({
   mabNames: function() {
     var json = this.get('model.neutralization');
     var result = [];
-    for (var mab_name in json) {
+    for (let mab_name in json) {
       if (json.hasOwnProperty(mab_name)) {
         result.push(mab_name);
       }
@@ -28,14 +28,14 @@ export default Ember.Controller.extend({
 
     var mab_table = {};
     var names = this.get('mabNames');
-    for (var i=0; i<names.length; i++) {
+    for (let i=0; i<names.length; i++) {
       var mab_name = names[i];
       if (!json.hasOwnProperty(mab_name)) {
         continue;
       }
       var predictions = json[mab_name]['predictions'];
       var table_entry = ensureHas(mab_table, mab_name, {});
-      for (var j=0; j<predictions.length; j++) {
+      for (let j=0; j<predictions.length; j++) {
         var seq = predictions[j];
         if (!(seq.id in seq_id_to_date)) {
           // FIXME: what to do with internal nodes?
@@ -46,7 +46,7 @@ export default Ember.Controller.extend({
         var elt = ensureHas(table_entry, date, {});
         var new_feats = ensureHas(elt, 'features', []);
         var features = seq.features;
-        for (var k=0; k<features.length; k++) {
+        for (let k=0; k<features.length; k++) {
           new_feats.push({name: features[k],
                           value: value > 0});
         }
@@ -58,7 +58,7 @@ export default Ember.Controller.extend({
   sortedDates: function() {
     var d = this.get('model.dates');
     var result = [];
-    for (var k in d) {
+    for (let k in d) {
       if(d.hasOwnProperty(k)) {
         result.push(new Date(k));
       }
@@ -84,7 +84,7 @@ export default Ember.Controller.extend({
     var data = this.get('mabFeatures');
     var dates = this.get('sortedDates');
     var result = [];
-    for (var mname in data) {
+    for (let mname in data) {
       if (!(data.hasOwnProperty(mname))) {
         continue;
       }
@@ -92,7 +92,7 @@ export default Ember.Controller.extend({
       row.push({value: mname,
                 style: "",
                 html: ""});
-      for (var i=0; i<dates.length; i++) {
+      for (let i=0; i<dates.length; i++) {
         var date = dates[i];
         if (!(data[mname].hasOwnProperty(date))) {
           continue;
@@ -119,7 +119,7 @@ export default Ember.Controller.extend({
         }, {});
         var header = ['feature', 'susceptible', 'resistant'];
         var body = [];
-        for (var name in reduced) {
+        for (let name in reduced) {
           if (reduced.hasOwnProperty(name)) {
             body.push([name, reduced[name][0], reduced[name][1]]);
           }

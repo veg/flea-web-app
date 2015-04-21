@@ -39,7 +39,7 @@ export default Ember.Object.extend({
     var url = config.baseURL + 'data/' + session_id + '/rates';
     return request(url).then(function(result) {
       var new_result = [];
-      for (var name in result) {
+      for (let name in result) {
         if (result.hasOwnProperty(name)) {
           var d = name;
           var array = eval(result[name]);  // FIXME: remove eval

@@ -89,7 +89,7 @@ export default Ember.Component.extend({
 
     if (this.get('addCombined') && names[0] !== "Combined") {
       var zeros = [];
-      for (var i=0; i < n_sites; i++) {
+      for (let i=0; i < n_sites; i++) {
         zeros.push(0);
       }
       data1 = addFront(zeros, data1);
@@ -109,7 +109,7 @@ export default Ember.Component.extend({
     if (data1.length !== names.length) {
       throw "data1 and names have different lengths";
     }
-    for (var j=0; j<n_plots; j++) {
+    for (let j=0; j<n_plots; j++) {
       if (data1[j].length !== n_sites) {
         throw "data vector lengths are inconsistent";
       }
@@ -132,7 +132,7 @@ export default Ember.Component.extend({
 
     function brushed() {
       x.domain(brush.empty() ? x_overall.domain() : brush.extent());
-      for (var k = 0; k < focus_plots.length; k++) {
+      for (let k = 0; k < focus_plots.length; k++) {
         focus_plots[k].select("._pos_dS").attr("d", area_objects[k][0]);
         if (two_d) {
           focus_plots[k].select("._pos_dN").attr("d", area_objects[k][1]);
@@ -185,7 +185,7 @@ export default Ember.Component.extend({
     var focus_plots  = [];
     var area_objects = [];
 
-    for (var plot_id = 0; plot_id < names.length; plot_id++) {
+    for (let plot_id = 0; plot_id < names.length; plot_id++) {
       var plot_svg = svg.append ("g")
           .attr("transform", "translate(0," + (height_each * plot_id) + ")");
       var local_areas = [];
