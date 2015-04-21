@@ -190,16 +190,16 @@ export default Ember.Component.extend({
           .attr("transform", "translate(0," + (height_each * plot_id) + ")");
       var local_areas = [];
       local_areas[0] = d3.svg.area()
-        .x(function(d,i) { return x(i+1); })
-        .y0(function() {  return y(0); })
-        .y1(function(d) {  return y(d); })
+        .x((d,i) => x(i+1))
+        .y0(() => y(0))
+        .y1(d => y(d))
         .interpolate('step');
 
       if (two_d) {
         local_areas[1] = d3.svg.area()
-          .x(function(d,i) { return x(i+1); })
-          .y0(function(d) {  return y(-d); })
-          .y1(function() {  return y(0); })
+          .x((d,i) =>x(i+1))
+          .y0(d => y(-d))
+          .y1(() => y(0))
           .interpolate('step');
       }
 
@@ -238,13 +238,13 @@ export default Ember.Component.extend({
           .data(positions[plot_id])
           .enter()
           .append("circle")
-          .attr ("cx", function (d) {return x(d);})
-          .attr ("cy", function () {return y(0);})
+          .attr ("cx", d => x(d))
+          .attr ("cy", () => y(0))
           .attr ("r", 4)
           .attr ("class", "selected_site")
           .attr("clip-path", "url(" + url + "#clip)")
           .append("title")
-          .text (function (d) { return "Codon " + d; });
+          .text (d => "Codon " + d);
       }
     }
 
@@ -295,7 +295,7 @@ export default Ember.Component.extend({
             .attr("y", 2*legend_dim.spacer)
             .attr("x", i*(legend_dim.spacer + legend_dim.margin + legend_dim.x_step) + legend_dim.spacer + legend_dim.font/4)
             .style("fill", me_colors[i])
-            .text(function (d) {return d;});
+            .text(d);
         });
     }
   }

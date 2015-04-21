@@ -25,9 +25,7 @@ export default Ember.Component.extend({
 
   makeText: function() {
     var ranges = this.get('myRanges');
-    var text = ranges.map(function(range) {
-      return oneIndex(range[0]) + "-" + range[1];
-    }).join(';');
+    var text = ranges.map(range => oneIndex(range[0]) + "-" + range[1]).join(';');
     this.set('rangeText', text);
   },
 
@@ -61,9 +59,7 @@ export default Ember.Component.extend({
     });
     this.set('myRanges', ranges);
 
-    if (_.all(ranges.map(function(range) {
-      return range[0] < range[1];
-    }))) {
+    if (_.all(ranges.map(range => range[0] < range[1]))) {
       this.set('ranges', ranges);
       this.set('myRanges', ranges);
     }

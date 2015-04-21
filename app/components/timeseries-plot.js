@@ -42,7 +42,7 @@ export default Ember.Component.extend({
     var margin = this.get('_margin');
     var names = this.get('seriesNames');
     if (this.get('legendRight') && (names.length > 0)) {
-      var longest = Math.max.apply(null, names.map(function(n) {return n.length;}));
+      var longest = Math.max.apply(null, names.map(n => n.length));
       margin.right = 20 + 10 * longest;
     }
     return margin;
@@ -73,21 +73,17 @@ export default Ember.Component.extend({
   seriesNames: function() {
     var data = this.get('data');
     var data2 = this.get('data2');
-    var names1 =  data.map(function (d) { return d.name; });
-    var names2 =  data2.map(function (d) { return d.name; });
+    var names1 = data.map(d => d.name);
+    var names2 = data2.map(d => d.name);
     return names1.concat(names2);
   }.property('data.[]', 'data2.[]'),
 
   dates: function() {
     var data = this.get('data');
     // TODO: surely there is a better way?
-    var result = data.map(function(d) {
-      return d.values.map(function(e) {
-        return e.x;
-      });
-    });
+    var result = data.map(d => d.values.map(e => e.x));
     result = d3.set(d3.merge(result)).values();
-    return result.map(function(d) {return new Date(d);});
+    return result.map(d => new Date(d));
   }.property('data.[]'),
 
   xDomain: function() {
@@ -100,7 +96,7 @@ export default Ember.Component.extend({
 
   xScale: function() {
     var domain = this.get('xDomain');
-    domain = domain.map(function(d) {return new Date(d);});
+    domain = domain.map(d => new Date(d));
     var result = d3.time.scale()
         .domain(domain)
         .range([0, this.get('innerWidth')]);
@@ -108,16 +104,11 @@ export default Ember.Component.extend({
   }.property('innerWidth', 'xDomain'),
 
   _yScale: function(data) {
-    var maxValue = d3.max(data, function(d) {
-      return d3.max(d.values, function(v) { return v.y; });
-    });
+    var maxValue = d3.max(data, d => d3.max(d.values, v => v.y));
     var minValue = this.get('ymin');
     if (minValue === null) {
-      minValue = d3.min(data, function(d) {
-        return d3.min(d.values, function(v) { return v.y; });
-      });
+      minValue = d3.min(data, d => d3.min(d.values, v => v.y));
     }
-
     return d3.scale.linear()
       .range([this.get('innerHeight'), 0])
       .domain([minValue, maxValue]);
@@ -139,8 +130,8 @@ export default Ember.Component.extend({
     var xScale = this.get('xScale'),
         yScale = this.get('yScale');
     return d3.svg.line()
-      .x(function(d) { return xScale(d.x); })
-      .y(function(d) { return yScale(d.y); })
+      .x(d => xScale(d.x))
+      .y(d => yScale(d.y))
       .interpolate(this.get('interpolation'));
   }.property('xScale', 'yScale'),
 
@@ -148,8 +139,8 @@ export default Ember.Component.extend({
     var xScale = this.get('xScale'),
         yScale = this.get('yScale2');
     return d3.svg.line()
-      .x(function(d) { return xScale(d.x); })
-      .y(function(d) { return yScale(d.y); })
+      .x(d => xScale(d.x))
+      .y(d => yScale(d.y))
       .interpolate(this.get('interpolation'));
   }.property('xScale', 'yScale2'),
 
@@ -176,14 +167,14 @@ export default Ember.Component.extend({
     var colors = this.get('colors');
 
     var paths = svg.select(classname).selectAll('path')
-        .data(data, function(d) {return d.name;});
+        .data(data, d => d.name);
 
     paths.enter()
       .append("path")
       .attr("class", "timeseries_line");
 
-    paths.attr("d", function(d) { return line(d.values); })
-      .style("stroke", function(d) { return colors(d.name); });
+    paths.attr("d", d => line(d.values))
+      .style("stroke", d => colors(d.name));
 
     paths.exit().remove();
   },
@@ -228,24 +219,24 @@ export default Ember.Component.extend({
         .attr("transform", "translate("+legend_dim.x+","+legend_dim.y+")");
 
     var legend_parts = legend.selectAll('.legend_panel');
-    legend_parts.data(labels, function(d) {return d;})
+    legend_parts.data(labels, d => d)
       .enter()
       .append('g')
       .attr('class', 'legend_panel')
-      .each(function(d, i0) {
+      .each(function(d, idx) {
         var g = d3.select(this);
         g.append("rect")
           .attr("x", legend_dim.spacer)
-          .attr("y", i0*(legend_dim.spacer + legend_dim.margin))
+          .attr("y", idx*(legend_dim.spacer + legend_dim.margin))
           .attr("width", legend_dim.spacer)
           .attr("height", legend_dim.spacer)
-          .style("fill", function () { return colors(d);});
+          .style("fill", () => colors(d));
         g.append("text")
           .attr("x", 2*legend_dim.spacer + legend_dim.font/4)
-          .attr("y", (i0+1)*(legend_dim.spacer + legend_dim.margin) - legend_dim.margin - (legend_dim.spacer / 2) + legend_dim.font / 2)
-          .style("fill", function () {return colors(d);})
+          .attr("y", (idx+1)*(legend_dim.spacer + legend_dim.margin) - legend_dim.margin - (legend_dim.spacer / 2) + legend_dim.font / 2)
+          .style("fill", () => colors(d))
           .attr('font-family', 'monospace')
-          .text(function (d) {return d;});
+          .text(d => d);
       });
   }
 

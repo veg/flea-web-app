@@ -19,10 +19,7 @@ export default Ember.Component.extend({
   nodeNamer: function() {
     var seq_ids_to_dates = this.get('seq_ids_to_dates');
     if (this.get('showDates')) {
-      var f = function(data) {
-        return format_date(seq_ids_to_dates[data.name.toUpperCase()]);
-      };
-      return f;
+      return data => format_date(seq_ids_to_dates[data.name.toUpperCase()]);
     } else {
       return null;
     }
@@ -40,7 +37,7 @@ export default Ember.Component.extend({
   didInsertElement: function() {
     var tree_widget = d3.layout.phylotree("body")
         .size([this.get('height'), this.get('width')])
-        .separation (function () {return 0;})
+        .separation(() => 0)
         .style_nodes (this.get('nodeColorizer'))
         .branch_name (this.get('nodeNamer'));
 

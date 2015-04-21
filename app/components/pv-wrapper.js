@@ -75,9 +75,7 @@ export default Ember.Component.extend({
         gradient = pv.color.gradient(['darkblue', 'white', 'darkred']);
       }
       var range = maxval - minval;
-      data = _.map(data, function(d) {
-        return (d - minval) / range;
-      });
+      data = _.map(data, d => (d - minval) / range);
     }
     structure.eachResidue(function(res) {
       var ref_coord = res.num();
