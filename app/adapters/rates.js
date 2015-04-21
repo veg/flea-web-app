@@ -13,9 +13,9 @@ var RatesObject = Ember.Object.extend({
 
   sortedRates: function () {
     var rates = this.get('data');
-    var timepoints = rates.filter(function(d) {return d.date !== 'Combined';});
-    var combined = rates.filter(function(d) {return d.date === 'Combined';});
-    timepoints.sort(function (a,b) {return a.date - b.date;});
+    var timepoints = rates.filter(d => d.date !== 'Combined');
+    var combined = rates.filter(d => d.date === 'Combined');
+    timepoints.sort((a,b) => a.date - b.date);
     timepoints.splice(0, 0, combined[0]);
     return timepoints;
   }.property('data.@each'),
@@ -23,22 +23,15 @@ var RatesObject = Ember.Object.extend({
   // _positive_selection
   positiveSelection: function() {
     var data = this.get('sortedRates');
-    return data.map(function(d) {
-      return positive_selection_positions(d.rates);
-    });
+    return data.map(d => positive_selection_positions(d.rates));
   }.property('sortedRates'),
 });
 
 
-// 1-based indexing
 function positive_selection_positions (mx) {
-  return mx.map (function (d, i) {
-    return [i, d[2]];
-  }).filter (function (d) {
-    return d [1] >= 0.95;
-  }).map (function (d) {
-    return d[0];
-  });
+  return mx.map((d, i) => [i, d[2]])
+    .filter(d => d[1] >= 0.95)
+    .map(d => d[0]);
 }
 
 export default Ember.Object.extend({

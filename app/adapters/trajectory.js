@@ -11,6 +11,9 @@ export default Ember.Object.extend({
       result.forEach (function (d) {
         d.Date = parse_date(String(d.Date));
         for (var k in d) {
+          if (!d.hasOwnProperty(k)) {
+            continue;
+          }
           if (k !== "Segment" && k !== "Date") {
             d[k] = +d[k];
           }

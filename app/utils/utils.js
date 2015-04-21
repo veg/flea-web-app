@@ -15,7 +15,7 @@ export var parse_date = d3.time.format("%Y%m%d").parse;
 export var format_date = d3.time.format("%B %Y");
 
 export var htmlTable1D = function(data, header) {
-  return htmlTable(data.map(function(elt) { return [elt]; }), header);
+  return htmlTable(data.map(elt => [elt]), header);
 };
 
 

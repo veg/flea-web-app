@@ -14,8 +14,8 @@ export default Ember.Object.extend({
         coords.push([zeroIndex(parseInt(k)), zeroIndex(parseInt(data[k]['HXB2']))]);
       }
     }
-    coords.sort (function (a,b) {return a[0] - b[0];});
-    return coords.map (function (d) {return d[1];});
+    coords.sort((a,b) => a[0] - b[0]);
+    return coords.map(d => d[1]);
   }.property('data.@each'),
 
   refToFirstAlnCoords: function () {

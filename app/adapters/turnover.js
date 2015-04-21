@@ -16,7 +16,7 @@ var TurnoverObject = Ember.Object.extend({
 
   sortedTurnover: function() {
     var data = this.get('data');
-    data.sort(function (a,b) {return a.date - b.date;});
+    data.sort((a,b) => a.date - b.date);
     return data;
   }.property('data')
 });
