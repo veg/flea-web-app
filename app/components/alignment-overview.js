@@ -68,33 +68,33 @@ export default Ember.Component.extend({
     };
 
     var text = svg.selectAll("text")
-        .data(regions, function(d) {return d.name;});
+        .data(regions, d => d.name);
 
     text
       .enter()
       .append("text")
       .style("text-anchor", "middle")
       .style('dominant-baseline', 'middle')
-      .attr("x", function(d) { return transformIndex(d.start, map, false) + (transformIndex(d.stop, map, true) - transformIndex(d.start, map, false)) / 2; })
-      .attr("y", function(d) { return h; })
-      .text( function (d) { return d.name; })
+      .attr("x", d => transformIndex(d.start, map, false) + (transformIndex(d.stop, map, true) - transformIndex(d.start, map, false)) / 2)
+      .attr("y", () => h)
+      .text( d => d.name)
       .attr("font-family", "sans-serif")
       .attr("font-size", "8px");
 
     text.exit().remove();
 
     var rects = svg.selectAll("rect")
-        .data(regions, function(d) {return d.name;});
+        .data(regions, d => d.name);
 
     rects
       .enter()
       .append("rect")
       .on('click', click)
       .style("cursor", "pointer")
-      .attr("x", function(d) {return transformIndex(d.start, map, false); })
-      .attr("y", function(d) {return 0; })
-      .attr("width", function(d) {return transformIndex(d.stop, map, true) - transformIndex(d.start, map, false) - 1; })
-      .attr("height", function(d) {return height; })
+      .attr("x", d => transformIndex(d.start, map, false))
+      .attr("y", d => 0)
+      .attr("width", d => transformIndex(d.stop, map, true) - transformIndex(d.start, map, false) - 1)
+      .attr("height", d => height)
       .attr("stroke-width", 1)
       .attr("stroke", "black")
       .attr("fill-opacity", 0);
@@ -109,9 +109,7 @@ export default Ember.Component.extend({
   }.observes('labelHeight'),
 
   closedRanges: function() {
-    return this.get('alnRanges').map(function(r) {
-      return [r[0], r[1] - 1];
-    });
+    return this.get('alnRanges').map(r => [r[0], r[1] - 1]);
   }.property('alnRanges'),
 
   x: function() {
@@ -167,10 +165,10 @@ export default Ember.Component.extend({
         .append("line");
 
     lines
-      .attr("x1", function(d) {return d[0];})
-      .attr("y1", function(d) {return d[1];})
-      .attr("x2", function(d) {return d[2];})
-      .attr("y2", function(d) {return d[3];})
+      .attr("x1", d => d[0])
+      .attr("y1", d => d[1])
+      .attr("x2", d => d[2])
+      .attr("y2", d => d[3])
       .attr("stroke-width", 1)
       .attr("stroke", "black");
   }.observes('width', 'mainHeight'),
@@ -183,19 +181,15 @@ export default Ember.Component.extend({
     var nTicks = Math.max(Math.floor(a2r[a2r.length - 1] / tick), 0);
 
     // 0-indexed reference ticks we want, but they may not actually be available
-    var wanted = _.range(1, nTicks + 1).map(function(i) {
-      return zeroIndex(i * tick);
-    });
+    var wanted = _.range(1, nTicks + 1).map(i => zeroIndex(i * tick));
 
     // transform to closest possible alignment indices
-    var ticks = wanted.map(function(t) {
-      return transformIndex(t, r2a, false);
-    });
+    var ticks = wanted.map(t => transformIndex(t, r2a, false));
 
     var x = this.get('x');
     var xAxis = d3.svg.axis().scale(x).orient("bottom")
         .tickValues(ticks)
-        .tickFormat(function(t) { return oneIndex(transformIndex(t, a2r, false)); });
+        .tickFormat(t => oneIndex(transformIndex(t, a2r, false)));
     var svg = d3.select('#' + this.get('elementId')).select('.axis');
 
     svg
@@ -234,13 +228,13 @@ export default Ember.Component.extend({
     var insertions = this.get('insertions');
     var h = this.get('mainHeight') / 2;
 
-    var lines = svg.selectAll("line").data(insertions, function(r) { return String(r); });
+    var lines = svg.selectAll("line").data(insertions, r => String(r));
 
     lines.enter().append("line")
-      .attr("x1", function(d) {return d[0];})
-      .attr("y1", function() {return h;})
-      .attr("x2", function(d) {return d[1];})
-      .attr("y2", function() {return h;})
+      .attr("x1", d => d[0])
+      .attr("y1", () => h)
+      .attr("x2", d => d[1])
+      .attr("y2", () => h)
       .attr("stroke-width", 3)
       .attr("stroke", "black");
 
@@ -257,10 +251,10 @@ export default Ember.Component.extend({
     var lines = svg.selectAll("line").data(posns, function(p) { return p; });
 
     lines.enter().append("line")
-      .attr("x1", function(d) {return d;})
-      .attr("y1", function() {return h / 3;})
-      .attr("x2", function(d) {return d;})
-      .attr("y2", function() {return 2 * h / 3;})
+      .attr("x1", d => d)
+      .attr("y1", () => h / 3)
+      .attr("x2", d => d)
+      .attr("y2", () => 2 * h / 3)
       .attr("stroke-width", 1)
       .attr("stroke", "green");
 
@@ -272,13 +266,13 @@ export default Ember.Component.extend({
     var h = this.get('mainHeight');
     var posns = this.get('selectedPositions').toArray();
 
-    var lines = svg.selectAll("line").data(posns, function(p) { return p; });
+    var lines = svg.selectAll("line").data(posns, p => p);
 
     lines.enter().append("line")
-      .attr("x1", function(d) {return d;})
-      .attr("y1", function() {return 0;})
-      .attr("x2", function(d) {return d;})
-      .attr("y2", function() {return h;})
+      .attr("x1", d => d)
+      .attr("y1", () => 0)
+      .attr("x2", d => d)
+      .attr("y2", () => h)
       .attr("stroke-width", 1)
       .attr("stroke", "red");
 
@@ -319,11 +313,11 @@ export default Ember.Component.extend({
     svg.selectAll("rect").data(ranges)
       .enter()
       .append("rect")
-      .attr("x", function(d) {return d[0];})
-      .attr("y", function() {return 0;})
-      .attr("idx", function(d, i) {return i;})
-      .attr("width", function(d) {return d[1] - d[0];})
-      .attr("height", function() {return h;})
+      .attr("x", d => d[0])
+      .attr("y", () => 0)
+      .attr("idx", (d, i) => i)
+      .attr("width", d => d[1] - d[0])
+      .attr("height", () => h)
       .attr("stroke-width", 1)
       .attr("stroke", "blue")
       .style("fill", "blue")
