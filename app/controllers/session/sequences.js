@@ -75,9 +75,7 @@ export default Ember.ObjectController.extend({
   }.property('model.sequences.@each'),
 
   toSlices: function(seq, ranges) {
-    return ranges.map(function(range) {
-      return seq.slice(range[0], range[1]);
-    }).join('|');
+    return ranges.map(range => seq.slice(range[0], range[1])).join('|');
   },
 
   mrcaSlice: function() {
@@ -95,9 +93,7 @@ export default Ember.ObjectController.extend({
     var result = [];
     var ranges = this.get('alnRanges');
     var mrca = this.get('mrcaSlice');
-    var grouped = _.groupBy(sequences, function(s) {
-      return s.get('date');
-    });
+    var grouped = _.groupBy(sequences, s => s.get('date'));
     var slice = function(s) {
       var result = self.toSlices(s.sequence, ranges);
       return {sequence: result,
@@ -110,13 +106,11 @@ export default Ember.ObjectController.extend({
       }
       var final_seqs = grouped[key].map(slice);
       final_seqs = collapse(final_seqs);
-      final_seqs.sort(function(a, b) {
-        return b.copyNumber - a.copyNumber;
-      });
+      final_seqs.sort((a, b) => b.copyNumber - a.copyNumber);
       result.push({'date': new Date(key),
                    'sequences': final_seqs});
     }
-    result.sort(function(a, b) {return a.date - b.date;});
+    result.sort((a, b) => a.date - b.date);
     result.forEach(function(elt) {
       elt.date = format_date(elt.date);
     });
@@ -135,7 +129,7 @@ export default Ember.ObjectController.extend({
       this.set('_ranges', val);
     }
     var ranges = this.get('_ranges');
-    ranges.sort(function(a, b) { return a[0] - b[0]; });
+    ranges.sort((a, b) => a[0] - b[0]);
     return ranges;
   }.property('ranges'),
 
@@ -161,7 +155,7 @@ export default Ember.ObjectController.extend({
     if (sequences === 'empty') {
       sequences = this.get('observedSequences');
     }
-    var positions = this.get('selectedPositions').toArray().sort(function(a, b) {return (a - b);});
+    var positions = this.get('selectedPositions').toArray().sort((a, b) => a - b);
     if (positions.length === 0) {
       return [];
     }
@@ -169,9 +163,7 @@ export default Ember.ObjectController.extend({
     var totals = {};
     for (var i=0; i<sequences.length; i++ ) {
       var seq = sequences[i];
-      var motif = positions.map(function(idx) {
-        return seq.sequence[idx];
-      }).join('');
+      var motif = positions.map(idx => seq.sequence[idx]).join('');
       if (!(counts.hasOwnProperty(motif))) {
         counts[motif] = {};
       }
@@ -207,14 +199,14 @@ export default Ember.ObjectController.extend({
       var maxes = [];
       for (var j=0; j<series.length; j++) {
         var trajectory = series[j];
-        var tmax = _.max(trajectory.values.map(function(v) { return v.y; }));
+        var tmax = _.max(trajectory.values.map(v => v.y));
         maxes.push({name: trajectory.name, max: tmax});
       }
-      maxes.sort(function(a, b) { return b.max - a.max; });
-      var split_names = _.partition(maxes.map(function(v) {return v.name;}),
-                                    function(value, index) {return index < 9;});
+      maxes.sort((a, b) => b.max - a.max);
+      var split_names = _.partition(maxes.map(v => v.name),
+                                    (value, index) => index < 9);
       var top9 = split_names[0];
-      var split_series = _.partition(series, function(elt) {return _.includes(top9, elt.name);});
+      var split_series = _.partition(series, elt => _.includes(top9, elt.name));
       var first_series = split_series[0];
       var rest_series = split_series[1];
       // now combine others
@@ -269,7 +261,7 @@ export default Ember.ObjectController.extend({
       var result = refRanges.slice(0);
       result[idx] = [transformIndex(range[0], map, false),
                      transformIndex(range[1], map, true)];
-      result.sort(function(a, b) { return a[0] - b[0]; });
+      result.sort((a, b) => a[0] - b[0]);
       this.set('ranges', result);
     },
 
@@ -287,9 +279,7 @@ export default Ember.ObjectController.extend({
 
     rmRange: function(idx) {
       var ranges = this.get('ranges');
-      this.set('ranges', ranges.filter(function(elt, i) {
-        return i !== idx;
-      }));
+      this.set('ranges', ranges.filter((elt, i) => i !== idx));
     }
   }
 });
@@ -311,18 +301,14 @@ function addPercent(groups) {
 
 function filterPercent(groups, threshold) {
   for (var i=0; i<groups.length; i++) {
-    var seqs = groups[i].sequences.filter(function(s) {
-      return s.percent >= threshold;
-    });
+    var seqs = groups[i].sequences.filter(s => s.percent >= threshold);
     groups[i].sequences = seqs;
   }
   return groups;
 }
 
 function collapse(seqs) {
-  var groups = _.groupBy(seqs, function(s) {
-    return s.sequence;
-  });
+  var groups = _.groupBy(seqs, s => s.sequence);
   var result = [];
   for (var key in groups) {
     if (!groups.hasOwnProperty(key)) {
@@ -371,9 +357,7 @@ function addMask(groups, mrca) {
     var seqs = groups[i].sequences;
     for (var j=0; j<seqs.length; j++) {
       var seq = seqs[j];
-      seqs[j].mask = seq.sequence.split('').map(function(aa, idx) {
-        return aa === mrca[idx];
-      });
+      seqs[j].mask = seq.sequence.split('').map((aa, idx) => aa === mrca[idx]);
     }
   }
   return groups;

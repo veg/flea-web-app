@@ -109,7 +109,7 @@ function singleMetric(all_data, regions, metric) {
         values.push(datum);
       }
     }
-    values.sort (function (a,b) {return a.x - b.x;});
+    values.sort((a,b) => a.x - b.x);
     series['values'] = values;
     result.push(series);
   }
@@ -131,7 +131,7 @@ function singleRegion(all_data, region, metrics) {
         values.push(datum);
       }
     }
-    values.sort (function (a,b) {return a.x - b.x;});
+    values.sort((a,b) => a.x - b.x);
     series['values'] = values;
     result.push(series);
   }

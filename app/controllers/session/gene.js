@@ -33,11 +33,7 @@ export default Ember.Controller.extend({
   }.property('selectedMetric'),
 
   getRate: function(data, idx) {
-    var result = data.map(function(d) {
-      return d.rates.map(function(r) {
-        return r[idx];
-      });
-    });
+    var result = data.map(d => d.rates.map(r => r[idx]));
     return result;
   },
 
@@ -58,9 +54,7 @@ export default Ember.Controller.extend({
 
   turnover: function() {
     var turnover = this.get('model.turnover.sortedTurnover');
-    return turnover.map(function(elt) {
-      return elt.turnover;
-    });
+    return turnover.map(elt => elt.turnover);
   }.property('model.turnover.sortedTurnover'),
 
   addCombined: function() {
@@ -121,9 +115,7 @@ export default Ember.Controller.extend({
     });
     // take only reference coordinates
     var coordMap = this.get('model.frequencies.refToFirstAlnCoords');
-    var result = _.map(coordMap, function(alnCoord) {
-      return ratios[alnCoord] || 0;
-    });
+    var result = _.map(coordMap, alnCoord => ratios[alnCoord] || 0);
     return result;
   }.property('model.frequencies.refToFirstAlnCoords',
              'meanDN', 'meanDS', 'entropy', 'turnover', 'selectedTimepointIdx',
@@ -131,9 +123,7 @@ export default Ember.Controller.extend({
 
   timepoints: function() {
     var sorted = this.get('model.rates.sortedRates');
-    var result = sorted.map(function(d) {
-      return d.date;
-    });
+    var result = sorted.map(d => d.date);
     if (this.get('selectedMetric') === "Turnover") {
       result.splice(0, 2);
     }

@@ -63,14 +63,14 @@ export default Ember.Controller.extend({
         result.push(new Date(k));
       }
     }
-    result.sort(function(a, b) {return a < b ? -1 : 1;});
+    result.sort((a, b) => a < b ? -1 : 1);
     return result;
   }.property('model.dates.@each'),
 
   // TODO: move these to the view?
   headerNames: function() {
     var dates = this.get('sortedDates');
-    var result = dates.map(function(d) {return format_date(d);});
+    var result = dates.map(d => format_date(d));
     result.splice(0, 0, 'mab');
     return result;
   }.property('sortedDate.@each'),
@@ -102,8 +102,8 @@ export default Ember.Controller.extend({
         var resistant = [];
         var susceptible = [];
         if (feats.length > 0) {
-          resistant = feats.filter(function(d) { return d.value; });
-          susceptible = feats.filter(function(d) { return !d.value; });
+          resistant = feats.filter(d => d.value);
+          susceptible = feats.filter(d => !d.value);
           frac = resistant.length / (resistant.length + susceptible.length);
         }
         var reduced = feats.reduce(function(acc, f) {
