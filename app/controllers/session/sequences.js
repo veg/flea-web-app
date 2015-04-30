@@ -43,17 +43,6 @@ export default Ember.ObjectController.extend({
     return this.get('_regex');
   }.property('regexValue'),
 
-  // TODO: do not hard-code
-  // note: these are 0-indexed [start, stop) reference coordinates
-  predefinedRegions: [
-    {name: 'V1', start: 130, stop: 156},
-    {name: 'V2', start: 156, stop: 196},
-    {name: 'V3', start: 295, stop: 330},
-    {name: 'V4', start: 384, stop: 418},
-    {name: 'V5', start: 460, stop: 471},
-    {name: 'MPER', start: 661, stop: 683}
-  ],
-
   refLen: Ember.computed.alias('model.frequencies.refToLastAlnCoords.length'),
 
   alnLen: Ember.computed.alias('model.frequencies.alnToRefCoords.length'),

@@ -3,7 +3,7 @@
     <div class="input-group input-group-sm">
       {{sequence-range-controls ranges=ranges
       seqLen=refLen
-      predefinedRegions=predefinedRegions
+      predefinedRegions=model.predefinedRegions
       }}
       {{input type="text" class="form-control" value=_regexValue
       placeholder="Pattern to highlight" autofocus="autofocus"
@@ -50,7 +50,7 @@
     markPositive=markPositive
     positiveSelection=model.rates.positiveSelection
     selectedPositions=selectedPositions
-    predefinedRegions=predefinedRegions
+    predefinedRegions=model.predefinedRegions
     alnToRefCoords=model.frequencies.alnToRefCoords
     refToAlnCoords=model.frequencies.refToFirstAlnCoords
     updateRange="updateAlnRange"
