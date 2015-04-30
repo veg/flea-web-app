@@ -11,6 +11,7 @@ export default Ember.Object.extend({
     var coords = [];
     for (let k in data) {
       if (data.hasOwnProperty(k)) {
+        // TODO: change data format to rename 'HXB2' to 'reference'
         coords.push([zeroIndex(parseInt(k)), zeroIndex(parseInt(data[k]['HXB2']))]);
       }
     }

@@ -39,7 +39,7 @@ export default Ember.Component.extend({
         if (last_hs === hs) {
           str = " - ";
         }
-        var _class = 'hxb2_coord';
+        var _class = 'ref_coord';
         if (this.get('selectedPositions').contains(s)) {
           _class += ' selected_position';
         }
@@ -55,7 +55,7 @@ export default Ember.Component.extend({
         last_hs = hs;
       }
       if (ranges.length > 1 && i < ranges.length - 1) {
-        result.push({_class: 'hxb2_coord seperator',
+        result.push({_class: 'ref_coord seperator',
                      dataCoord: '',
                      html: '|<br/>|<br/>|'});
       }
