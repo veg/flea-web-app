@@ -47,4 +47,3 @@ export default Ember.Select.extend({
     this.$().multiselect('rebuild');
   }.observes('allowMultiple')
 });
-Ember.Handlebars.helper('bootstrap-multiselect', Ember.BootstrapMultiselect);

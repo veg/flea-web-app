@@ -3,7 +3,7 @@
     <label for="evo_regions">Region(s) to plot</label>
   </div>
   <div class="form-group">
-    {{view bootstrap-multiselect
+    {{view "bootstrap-multiselect"
       multiple=true
       content=regions
       selection=selectedRegions
@@ -16,7 +16,7 @@
     <label for="evo_metrics">Evolutionary metrics</label>
   </div>
   <div class="form-group">
-    {{view bootstrap-multiselect
+    {{view "bootstrap-multiselect"
       multiple=true
       content=evoMetrics
       selection=selectedEvoMetrics
@@ -38,7 +38,7 @@
     <label for="_pheno_metrics">Phenotype metrics</label>
   </div>
   <div class="form-group">
-    {{view bootstrap-multiselect
+    {{view "bootstrap-multiselect"
       multiple=true
       content=phenoMetrics
       selection=selectedPhenoMetrics
