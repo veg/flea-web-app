@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Handlebars.makeBoundHelper(function(sequence, ranges, mask) {
-  var escaped = sequence.split('').map(Handlebars.Utils.escapeExpression);
+  var escaped = sequence.split('').map(Ember.Handlebars.Utils.escapeExpression);
   var range_idx = 0;
   var result = escaped.map(function(aa, idx) {
     var html_str = '';
