@@ -51,8 +51,12 @@ export default Ember.Component.extend({
           var copynum = Math.sqrt(parseFloat (m[1]));
           return copynum;
         } catch (e) {}
-        return null;});
+        return 1;
+      });
       tree_widget.options ({'draw-size-bubbles' : true}, false);
+      tree_widget.options ({'min-bubble-size' : .1}, false);
+      tree_widget.options ({'max-bubble-size' : 3}, false);
+      tree_widget.update_scale();
     } else {
       tree_widget.options ({'draw-size-bubbles' : false}, false);
     }
