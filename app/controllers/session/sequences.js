@@ -79,6 +79,7 @@ export default Ember.ObjectController.extend({
     if (sequences === 'empty') {
       sequences = this.get('observedSequences');
     }
+    var copynumbers = this.get('model.copynumbers');
     var result = [];
     var ranges = this.get('alnRanges');
     var mrca = this.get('mrcaSlice');
@@ -86,7 +87,7 @@ export default Ember.ObjectController.extend({
     var slice = function(s) {
       var result = self.toSlices(s.sequence, ranges);
       return {sequence: result,
-              copyNumber: s.copyNumber,
+              copyNumber: copynumbers[s.id],
               ids: [s.id]};
     };
     for (let key in grouped) {
@@ -110,6 +111,7 @@ export default Ember.ObjectController.extend({
     result = addMask(result, mrca);
     return result;
   }.property('alnRanges', 'mrcaSlice',
+             'model.copynumbers',
              'selectedSequences.@each',
              'regex', 'threshold'),
 
@@ -141,6 +143,7 @@ export default Ember.ObjectController.extend({
 
   aaTrajectories: function() {
     var sequences = this.get('selectedSequences');
+    var copynumbers = this.get('model.copynumbers');
     if (sequences === 'empty') {
       sequences = this.get('observedSequences');
     }
@@ -159,11 +162,11 @@ export default Ember.ObjectController.extend({
       if (!(counts[motif].hasOwnProperty(seq.date))) {
         counts[motif][seq.date] = 0;
       }
-      counts[motif][seq.date] += seq.copyNumber;
+      counts[motif][seq.date] += copynumbers[seq.id];
       if (!(totals.hasOwnProperty(seq.date))) {
         totals[seq.date] = 0;
       }
-      totals[seq.date] += seq.copyNumber;
+      totals[seq.date] += copynumbers[seq.id];
     }
     var series = [];
     for (let m in counts) {

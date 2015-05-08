@@ -63,7 +63,9 @@
 
 <div class='row'>
   <div class='col-md-12' id='_tree_enclosure'>
-    {{phylotree-widget tree=tree seq_ids_to_dates=seqIdToDate
+    {{phylotree-widget tree=tree
+    seq_ids_to_dates=seqIdToDate
+    copynumbers=model.copynumbers
     sortState=sortState spaceState=spaceState
     showDates=showDates
     do_copy_number=true

@@ -63,18 +63,6 @@ export default Ember.Object.extend({
 
 
 
-// TODO: do not encode copy number in name
-var copy_re = /_([0-9]+)$/;
-
-function copyNumber(name) {
-  var cpn = copy_re.exec(name);
-  if (cpn) {
-    return parseInt(cpn[1]);
-  } else {
-    return 1;
-  }
-}
-
 function make_seq(id, date, sequence, type) {
   // FIXME: null dates are a problem everywhere!
   if (date !== null) {
@@ -83,7 +71,6 @@ function make_seq(id, date, sequence, type) {
   return Ember.Object.create({
     id: id,
     date: date,
-    copyNumber: copyNumber(id),
     sequence: sequence,
     type: type,
     selected: true  // used to filter sequences

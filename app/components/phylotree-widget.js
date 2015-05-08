@@ -13,6 +13,7 @@ export default Ember.Component.extend({
 
   tree: null,
   seq_ids_to_dates: null,
+  copynumbers: null,
 
   do_copy_number: false,
 
@@ -44,13 +45,11 @@ export default Ember.Component.extend({
     tree_widget.node_span ('equal');
 
     if (this.get('do_copy_number')) {
-      var copy_re = /_([0-9]+)$/;
+      var copynumbers = this.get('copynumbers');
       tree_widget.node_span (function (a) {
-        var m = copy_re.exec (a.name);
-        try {
-          var copynum = Math.sqrt(parseFloat (m[1]));
-          return copynum;
-        } catch (e) {}
+        if (copynumbers.hasOwnProperty(a.name)) {
+          return Math.sqrt(copynumbers[a.name]);
+        }
         return 1;
       });
       tree_widget.options ({'draw-size-bubbles' : true}, false);
