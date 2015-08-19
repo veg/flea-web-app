@@ -4,6 +4,12 @@ import {zeroIndex} from '../utils/utils';
 export default Ember.Object.extend({
   data: [],
 
+  refRange: function() {
+    // 0-indexed [start, stop) reference coordinates
+    var alnToRef = this.get('alnToRefCoords');
+    return [alnToRef[0], alnToRef[alnToRef.length - 1] + 1];
+  }.property('alnToRefCoords'),
+
   alnToRefCoords: function () {
     // maps from alignment coordinates to reference coordinates
     // both 0-indexed.
@@ -19,36 +25,38 @@ export default Ember.Object.extend({
     return coords.map(d => d[1]);
   }.property('data.@each'),
 
+  refToAlnCoords: function() {
+    var alnToRef = this.get('alnToRefCoords');
+    var [start, stop] = this.get('refRange');
+    var toFirst = new Array(stop + 1);
+    var toLast = new Array(stop + 1);
+    var last_ref_index = -1;
+    for (let aln_index=0; aln_index<alnToRef.length; aln_index++) {
+      var ref_index = alnToRef[aln_index];
+      toLast[ref_index] = aln_index;
+      if (ref_index != last_ref_index) {
+        toFirst[ref_index] = aln_index;
+      }
+      // fill in missing values
+      if (last_ref_index > -1) {
+        for (let missing_ref_index=last_ref_index + 1; missing_ref_index < ref_index; missing_ref_index++) {
+          toFirst[missing_ref_index] = aln_index;
+          toLast[missing_ref_index] = aln_index - 1;
+        }
+      }
+      last_ref_index = ref_index;
+    }
+    return [toFirst, toLast];
+  }.observes('alnToRefCoords'),
+
   refToFirstAlnCoords: function () {
     // inverse of alnToRefCoords.
     // maps reference coordinates to alignment coordinates
     // both 0-indexed
-    var alnToRef = this.get('alnToRefCoords');
-    var refLen = alnToRef[alnToRef.length - 1] + 1;
-    var result = new Array(refLen);
-    var aln_index = 0;
-    for (let ref_index=0; ref_index<result.length; ref_index++) {
-      while (alnToRef[aln_index] < ref_index) {
-        aln_index += 1;
-      }
-      result[ref_index] = aln_index;
-    }
-    return result;
+    return this.refToAlnCoords()[0];
   }.property('alnToRefCoords'),
 
   refToLastAlnCoords: function () {
-    // TODO: code duplication
-    var alnToRef = this.get('alnToRefCoords');
-    var refLen = alnToRef[alnToRef.length - 1] + 1;
-    var result = new Array(refLen);
-    var aln_index = 0;
-    for (let ref_index=0; ref_index<result.length; ref_index++) {
-      // advance aln_index as much as possible
-      while (alnToRef[aln_index] <= ref_index && alnToRef[aln_index + 1] <= ref_index) {
-        aln_index += 1;
-      }
-      result[ref_index] = aln_index;
-    }
-    return result;
+    return this.refToAlnCoords()[1];
   }.property('alnToRefCoords')
 });
