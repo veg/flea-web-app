@@ -96,13 +96,14 @@ export var transformIndex = function(idx, map, open) {
 };
 
 
-export var checkRange = function(range, len) {
-  var start = range[0];
-  var stop = range[1];
-  if (start < 0) {
+export var checkRange = function(range, targetRange) {
+  // ensure range [a, b) falls inside [c, d).
+  var [start, stop] = range;
+  var [tstart, tstop] = targetRange;
+  if (start < tstart || start > tstop) {
     throw "invalid start position";
   }
-  if (stop > len) {
+  if (stop < tstart || stop > tstop) {
     throw "invalid stop position";
   }
   if (start >= stop) {
@@ -110,9 +111,10 @@ export var checkRange = function(range, len) {
   }
 };
 
-export var checkRanges = function(ranges, len) {
+
+export var checkRanges = function(ranges, targetRange) {
   for (let i=0; i<ranges.length; i++) {
-    checkRange(ranges[i], len);
+    checkRange(ranges[i], targetRange);
   }
 };
 

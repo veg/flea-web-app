@@ -43,9 +43,9 @@ export default Ember.ObjectController.extend({
     return this.get('_regex');
   }.property('regexValue'),
 
-  refLen: Ember.computed.alias('model.frequencies.refToLastAlnCoords.length'),
-
-  alnLen: Ember.computed.alias('model.frequencies.alnToRefCoords.length'),
+  alnLegalRange: function() {
+    return [0, this.get('model.frequencies.alnToRefCoords.length')];
+  }.property('model.frequencies.alnToRefCoords.length'),
 
   filterSequenceTypes: function(seqs, type) {
     return seqs.filter(function(seq) {
@@ -63,6 +63,11 @@ export default Ember.ObjectController.extend({
     return this.filterSequenceTypes(seqs, 'MRCA')[0];
   }.property('model.sequences.@each'),
 
+  reference: function() {
+    var seqs = this.get('model.sequences');
+    return this.filterSequenceTypes(seqs, 'Reference')[0];
+  }.property('model.sequences.@each'),
+
   toSlices: function(seq, ranges) {
     return ranges.map(range => seq.slice(range[0], range[1])).join('|');
   },
@@ -71,6 +76,12 @@ export default Ember.ObjectController.extend({
     var mrca = this.get('mrca');
     var ranges = this.get('alnRanges');
     return this.toSlices(mrca.sequence, ranges);
+  }.property('mrca', 'alnRanges'),
+
+  refSlice: function() {
+    var ref = this.get('reference');
+    var ranges = this.get('alnRanges');
+    return this.toSlices(ref.sequence, ranges);
   }.property('mrca', 'alnRanges'),
 
   groupedSequences: function() {
@@ -127,7 +138,7 @@ export default Ember.ObjectController.extend({
   alnRanges: function() {
     // convert reference ranges to aligment ranges
     var ranges = this.get('ranges');
-    checkRanges(ranges, this.get('refLen'));
+    checkRanges(ranges, this.get('model.frequencies.refRange'));
     var mapFirst = this.get('model.frequencies.refToFirstAlnCoords');
     var mapLast = this.get('model.frequencies.refToLastAlnCoords');
     var result = ranges.map(function(range) {
@@ -135,7 +146,7 @@ export default Ember.ObjectController.extend({
       var stop = transformIndex(range[1], mapLast, true);
       return [start, stop];
     });
-    checkRanges(result, this.get('alnLen'));
+    checkRanges(result, this.get('alnLegalRange'));
     return result;
   }.property('ranges',
              'model.frequencies.refToFirstAlnCoords',
@@ -243,7 +254,7 @@ export default Ember.ObjectController.extend({
     },
 
     updateAlnRange: function(idx, range) {
-      checkRange(range, this.get('alnLen'));
+      checkRange(range, this.get('alnLegalRange'));
       var alnRanges = this.get('alnRanges');
       var map = this.get('model.frequencies.alnToRefCoords');
       var refRanges = this.get('ranges');
@@ -258,12 +269,12 @@ export default Ember.ObjectController.extend({
     },
 
     setRanges: function(ranges) {
-      checkRanges(ranges, this.get('refLen'));
+      checkRanges(ranges, this.get('model.frequencies.refRange'));
       this.set('ranges', ranges);
     },
 
     addRange: function(range) {
-      checkRange(range, this.get('refLen'));
+      checkRange(range, this.get('model.frequencies.refRange'));
       var ranges = this.get('ranges').slice(0);
       ranges.push(range);
       this.set('ranges', ranges);

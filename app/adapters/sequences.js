@@ -27,6 +27,11 @@ export default Ember.Object.extend({
           sequences.push(make_seq("mrca", null, result[prop], "MRCA"));
           continue;
         }
+        if (prop === "Reference") {
+          sequences.push(make_seq("reference", null, result[prop], "Reference"));
+          continue;
+        }
+
         if (prop === "Combined") {
           var combined = result[prop];
           for (let cid in combined) {

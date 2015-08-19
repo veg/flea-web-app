@@ -9,7 +9,7 @@ export default Ember.Component.extend({
   ranges: [],
 
   // updated from template
-  seqLen: 1,
+  validRange: [0, 1],
 
   myRanges: [],
   rangeText: '',
@@ -44,16 +44,15 @@ export default Ember.Component.extend({
   toController: function() {
     var ranges = this.get('myRanges');
 
-    var seqLen = +this.get('seqLen');
+    var [vstart, vstop] = this.get('validRange');
 
     ranges = ranges.map(function(range) {
-      var start = range[0];
-      var stop = range[1];
-      if (start < 0) {
-        start = 0;
+      var [start, stop] = range;
+      if (start < vstart) {
+        start = vstart;
       }
-      if (stop > seqLen) {
-        stop = seqLen;
+      if (stop > vstop) {
+        stop = vstop;
       }
       return [start, stop];
     });
@@ -69,13 +68,12 @@ export default Ember.Component.extend({
     moveRanges: function(offset) {
       // FIXME: why are these sometimes strings???
       var ranges = this.get('ranges');
-      var seqLen = this.get('seqLen');
+      var [vstart, vstop] = this.get('validRange');
       for (let r=0; r<ranges.length; r++) {
-        var start = ranges[r][0];
-        var stop = ranges[r][1];
-        if ((0 <= start + offset) &&
+        var [start, stop] = ranges[r];
+        if ((vstart <= start + offset) &&
           (start + offset <= stop + offset) &&
-          (stop + offset <= seqLen)) {
+          (stop + offset <= vstop)) {
           ranges[r][0] = start + offset;
           ranges[r][1] = stop + offset;
         }
