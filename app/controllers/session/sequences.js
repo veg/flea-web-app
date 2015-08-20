@@ -43,7 +43,7 @@ export default Ember.ObjectController.extend({
     return this.get('_regex');
   }.property('regexValue'),
 
-  alnLegalRange: function() {
+  validAlnRange: function() {
     return [0, this.get('model.frequencies.alnToRefCoords.length')];
   }.property('model.frequencies.alnToRefCoords.length'),
 
@@ -146,7 +146,7 @@ export default Ember.ObjectController.extend({
       var stop = transformIndex(range[1], mapLast, true);
       return [start, stop];
     });
-    checkRanges(result, this.get('alnLegalRange'));
+    checkRanges(result, this.get('validAlnRange'));
     return result;
   }.property('ranges',
              'model.frequencies.refToFirstAlnCoords',
@@ -260,7 +260,7 @@ export default Ember.ObjectController.extend({
     },
 
     updateAlnRange: function(idx, range) {
-      checkRange(range, this.get('alnLegalRange'));
+      checkRange(range, this.get('validAlnRange'));
       var alnRanges = this.get('alnRanges');
       var map = this.get('model.frequencies.alnToRefCoords');
       var refRanges = this.get('ranges');

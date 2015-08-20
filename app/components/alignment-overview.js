@@ -14,7 +14,7 @@ export default Ember.Component.extend({
   attributeBindings: ['width', 'height'],
 
   alnRanges: null,
-  alnLen: 1,
+  validAlnRange: 1,
   selectedPositions: null,
   predefinedRegions: null,
   alnToRefCoords: null,
@@ -25,7 +25,9 @@ export default Ember.Component.extend({
 
   shiftKey: false,
 
-  width: Ember.computed.alias('alnLen'),
+  width: function() {
+    return this.get('validAlnRange')[1];
+  }.property('validAlnRange'),
 
   height: function() {
     return this.get('labelHeight') + this.get('mainHeight') + this.get('axisHeight');
@@ -74,7 +76,8 @@ export default Ember.Component.extend({
         .data(regions, d => d.name);
 
     var width = function(start, stop) {
-      return mapLast[stop] - mapFirst[start];
+      // FIXME: should not have to subtract 1 here
+      return mapLast[stop] - mapFirst[start] - 1;
     }
 
     text
@@ -82,7 +85,7 @@ export default Ember.Component.extend({
       .append("text")
       .style("text-anchor", "middle")
       .style('dominant-baseline', 'middle')
-      .attr("x", d => mapFirst[d.start] + width(d.start, d.stop))
+      .attr("x", d => mapFirst[d.start] + width(d.start, d.stop) / 2)
       .attr("y", () => h)
       .text( d => d.name)
       .attr("font-family", "sans-serif")
@@ -185,18 +188,24 @@ export default Ember.Component.extend({
     var a2r = this.get('alnToRefCoords');
     var tick = this.get('tick');
 
-    var nTicks = Math.max(Math.floor(a2r[a2r.length - 1] / tick), 0);
+    var first = a2r[0];
+    var last = a2r[a2r.length - 1];
 
-    // 0-indexed reference ticks we want, but they may not actually be available
-    var wanted = _.range(1, nTicks + 1).map(i => zeroIndex(i * tick));
+    // 1-indexed reference ticks we want
+    var wanted = _.range(Math.ceil(first / tick) * tick, 1 + Math.floor(last / tick) * tick, tick);
+
+    // convert to 0-indexing and add first and last positions
+    wanted = wanted.map(v => zeroIndex(v));
+    wanted.unshift(first);
+    wanted.push(last);
 
     // transform to closest possible alignment indices
-    var ticks = wanted.map(t => transformIndex(t, r2a, false));
+    var ticks = wanted.map(t => r2a[t]);
 
     var x = this.get('x');
     var xAxis = d3.svg.axis().scale(x).orient("bottom")
         .tickValues(ticks)
-        .tickFormat(t => oneIndex(transformIndex(t, a2r, false)));
+        .tickFormat(t => oneIndex(a2r[t]));
     var svg = d3.select('#' + this.get('elementId')).select('.axis');
 
     svg
