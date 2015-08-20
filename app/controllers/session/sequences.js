@@ -227,6 +227,12 @@ export default Ember.ObjectController.extend({
     return series;
   }.property('selectedPositions.[]', 'selectedSequences.@each'),
 
+  validPredefinedRegions: function() {
+    var [start, stop] = this.get('model.frequencies.refRange');
+    var regions = this.get('model.predefinedRegions');
+    return regions.filter(r => r.start >= start && r.stop <= stop);
+  }.property('model.predefinedRegions', 'model.frequencies.refRange'),
+
   actions: {
     doRegex: function() {
       this.set('regexValue', this.get('_regexValue'));
