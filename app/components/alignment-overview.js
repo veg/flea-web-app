@@ -18,6 +18,8 @@ export default Ember.Component.extend({
   selectedPositions: null,
   predefinedRegions: null,
   alnToRefCoords: null,
+  refToFirstAlnCoords: null,
+  refToLastAlnCoords: null,
 
   tick: 100,
 
@@ -50,7 +52,8 @@ export default Ember.Component.extend({
   },
 
   drawLabels: function() {
-    var map = this.get('refToAlnCoords');
+    var mapFirst = this.get('refToFirstAlnCoords');
+    var mapLast = this.get('refToLastAlnCoords');
     var regions = this.get('predefinedRegions');
     var svg = d3.select('#' + this.get('elementId')).select('.labels');
 
@@ -70,12 +73,16 @@ export default Ember.Component.extend({
     var text = svg.selectAll("text")
         .data(regions, d => d.name);
 
+    var width = function(start, stop) {
+      return mapLast[stop] - mapFirst[start];
+    }
+
     text
       .enter()
       .append("text")
       .style("text-anchor", "middle")
       .style('dominant-baseline', 'middle')
-      .attr("x", d => transformIndex(d.start, map, false) + (transformIndex(d.stop, map, true) - transformIndex(d.start, map, false)) / 2)
+      .attr("x", d => mapFirst[d.start] + width(d.start, d.stop))
       .attr("y", () => h)
       .text( d => d.name)
       .attr("font-family", "sans-serif")
@@ -91,9 +98,9 @@ export default Ember.Component.extend({
       .append("rect")
       .on('click', click)
       .style("cursor", "pointer")
-      .attr("x", d => transformIndex(d.start, map, false))
+      .attr("x", d => transformIndex(d.start, mapFirst, false))
       .attr("y", d => 0)
-      .attr("width", d => transformIndex(d.stop, map, true) - transformIndex(d.start, map, false) - 1)
+      .attr("width", d => width(d.start, d.stop))
       .attr("height", d => height)
       .attr("stroke-width", 1)
       .attr("stroke", "black")
@@ -101,7 +108,7 @@ export default Ember.Component.extend({
 
     rects.exit().remove();
 
-  }.observes('predefinedRegions', 'labelHeight', 'refToAlnCoords'),
+  }.observes('predefinedRegions', 'labelHeight', 'refToFirstAlnCoords', 'refToLastAlnCoords'),
 
   transformMain: function (){
     d3.select('#' + this.get('elementId')).select('.main')
@@ -174,7 +181,7 @@ export default Ember.Component.extend({
   }.observes('width', 'mainHeight'),
 
   drawAxis: function() {
-    var r2a = this.get('refToAlnCoords');
+    var r2a = this.get('refToFirstAlnCoords');
     var a2r = this.get('alnToRefCoords');
     var tick = this.get('tick');
 
@@ -196,7 +203,7 @@ export default Ember.Component.extend({
       .attr("class", "x axis")
       .attr("transform", "translate(0," + (this.get('labelHeight') + this.get('mainHeight')) + ")")
       .call(xAxis);
-  }.observes('width', 'mainHeight', 'labelHeight'),
+  }.observes('width', 'mainHeight', 'labelHeight', 'refToFirstAlnCoords'),
 
   insertions: function() {
     // 0-indexed [start, stop] intervals
