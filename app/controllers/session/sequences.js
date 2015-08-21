@@ -109,8 +109,12 @@ export default Ember.ObjectController.extend({
     var grouped = _.groupBy(sequences, s => s.get('date'));
     var slice = function(s) {
       var result = self.toSlices(s.sequence, ranges);
+      var cn = 0;
+      if (s.id in copynumbers) {
+        cn = copynumbers[s.id];
+      }
       return {sequence: result,
-              copyNumber: copynumbers[s.id],
+              copyNumber: cn,
               ids: [s.id]};
     };
     for (let key in grouped) {
