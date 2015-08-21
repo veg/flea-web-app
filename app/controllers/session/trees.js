@@ -102,7 +102,7 @@ export default Ember.Controller.extend({
   seqIdToDate: function() {
     var seqs = this.get('model.sequences');
     return seqs.reduce(function(acc, s) {
-      acc[s['id']] = s['date'];
+      acc[s['id'].toUpperCase()] = s['date'];
       return acc;
     }, {});
   }.property('model.sequences.@each'),
