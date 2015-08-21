@@ -65,8 +65,20 @@ export default Ember.ObjectController.extend({
 
   reference: function() {
     var seqs = this.get('model.sequences');
-    return this.filterSequenceTypes(seqs, 'Reference')[0];
-  }.property('model.sequences.@each'),
+    var ref = this.filterSequenceTypes(seqs, 'Reference')[0];
+    // replace repeats with '-'
+    var map = this.get('model.frequencies.alnToRefCoords');
+    var newSeq = [ref.sequence[0]];
+    for (var k=1; k<map.length; k++ ) {
+      if (map[k] === map[k - 1]) {
+        newSeq.push('-')
+      } else {
+        newSeq.push(ref.sequence[k]);
+      }
+    }
+    ref.sequence = newSeq.join('');
+    return ref;
+  }.property('model.sequences.@each', 'model.frequencies.alnToRefCoords'),
 
   toSlices: function(seq, ranges) {
     return ranges.map(range => seq.slice(range[0], range[1])).join('|');
