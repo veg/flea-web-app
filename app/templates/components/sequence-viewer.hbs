@@ -21,21 +21,21 @@
   <tbody>
     <tr>
       <td class="seq-cell">Reference</td>
-      <td class="seq-cell"><span class="reference">{{amino-acid reference}}</span></td>
+      <td class="seq-cell sequence"><span class="reference">{{amino-acid reference}}</span></td>
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
     </tr>
 
     <tr>
       <td class="seq-cell">MRCA</td>
-      <td class="seq-cell"><span class="mrca">{{amino-acid mrca}}</span></td>
+      <td class="seq-cell sequence"><span class="mrca">{{amino-acid mrca}}</span></td>
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
     </tr>
     {{#each groupedSequences}}
     <tr>
       <td class="seq-cell">{{date}}</td>
-      <td class="seq-cell">
+      <td class="seq-cell sequence">
         <ul class="list-unstyled">
           {{#each seq in sequences}}
           <li>{{amino-acid seq.sequence seq.highlights seq.mask}}</li>
