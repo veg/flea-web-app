@@ -322,7 +322,7 @@ export default Ember.Component.extend({
 
     function dragmove(d) {
       var dx = d3.round(+d3.event.dx, 0);
-      var width = +this.getAttribute('innerWidth');
+      var width = +this.getAttribute('width');
       var x = (+this.getAttribute('x')) + dx;
       if (x >= 0 && x + width + 1 <= totalWidth) {
         d3.select(this)
@@ -333,7 +333,7 @@ export default Ember.Component.extend({
     function dragend(d) {
       var idx = +this.getAttribute('idx');
       var start = (+this.getAttribute('x'));
-      var width = +this.getAttribute('innerWidth');
+      var width = +this.getAttribute('width');
       var range = [start, start + width + 1];
       self.sendAction('updateRange', idx, range);
     }
