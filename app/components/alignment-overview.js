@@ -212,10 +212,19 @@ export default Ember.Component.extend({
     // 1-indexed reference ticks we want
     var wanted = _.range(Math.ceil(first / tick) * tick, 1 + Math.floor(last / tick) * tick, tick);
 
+    // need to remove 0 if it is present; will add later if necessary
+    if (wanted[0] === 0) {
+      wanted[0] = 1;
+    }
+
     // convert to 0-indexing and add first and last positions
     wanted = wanted.map(v => zeroIndex(v));
-    wanted.unshift(first);
-    wanted.push(last);
+    if (wanted[0] !== first) {
+      wanted.unshift(first);
+    }
+    if (wanted[wanted.length - 1] !== last) {
+      wanted.push(last);
+    }
 
     // transform to closest possible alignment indices
     var ticks = wanted.map(t => r2a[t]);
