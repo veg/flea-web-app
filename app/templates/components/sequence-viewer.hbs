@@ -19,13 +19,14 @@
     <td class="seq-cell"></td>
   </thead>
   <tbody>
+    {{#if reference}}
     <tr>
       <td class="seq-cell">Reference</td>
       <td class="seq-cell sequence"><span class="reference">{{amino-acid reference}}</span></td>
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
     </tr>
-
+    {{/if}}
     <tr>
       <td class="seq-cell">MRCA</td>
       <td class="seq-cell sequence"><span class="mrca">{{amino-acid mrca}}</span></td>

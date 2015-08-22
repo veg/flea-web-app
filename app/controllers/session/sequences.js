@@ -65,6 +65,9 @@ export default Ember.ObjectController.extend({
 
   reference: function() {
     var seqs = this.get('model.sequences');
+    if (!_.some(seqs, s => s.type === 'Reference')) {
+      return '';
+    }
     var ref = this.filterSequenceTypes(seqs, 'Reference')[0];
     // replace repeats with '-'
     var map = this.get('model.frequencies.alnToRefCoords');
@@ -92,6 +95,9 @@ export default Ember.ObjectController.extend({
 
   refSlice: function() {
     var ref = this.get('reference');
+    if (ref.length === 0) {
+      return "";
+    }
     var ranges = this.get('alnRanges');
     return this.toSlices(ref.sequence, ranges);
   }.property('mrca', 'alnRanges'),
