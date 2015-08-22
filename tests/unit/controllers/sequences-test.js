@@ -1,7 +1,4 @@
-import {
-  moduleFor,
-  test
-} from 'ember-qunit';
+import { moduleFor, test } from 'ember-qunit';
 
 import FrequencyObject from "../../../models/frequency-object";
 
@@ -17,7 +14,7 @@ var data = {1 : {HXB2: 1},
             7: {HXB2: 8}
            };
 
-test('it computes single alignment range', function() {
+test('it computes single alignment range', function(assert) {
   var controller = this.subject();
   var model = new FrequencyObject();
   model.set('data', data);
@@ -25,10 +22,10 @@ test('it computes single alignment range', function() {
   controller.set('ranges', [[0, 2]]);
   var expected = [[0, 4]];
   var result = controller.get('alnRanges');
-  deepEqual(result, expected);
+  assert.deepEqual(result, expected);
 });
 
-test('it computes multiple alignment ranges', function() {
+test('it computes multiple alignment ranges', function(assert) {
   var controller = this.subject();
   var model = new FrequencyObject();
   model.set('data', data);
@@ -36,5 +33,5 @@ test('it computes multiple alignment ranges', function() {
   controller.set('ranges', [[0, 2], [2, 8]]);
   var expected = [[0, 4], [4, 7]];
   var result = controller.get('alnRanges');
-  deepEqual(result, expected);
+  assert.deepEqual(result, expected);
 });

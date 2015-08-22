@@ -119,9 +119,9 @@ export default Ember.Controller.extend({
         }, {});
         var header = ['feature', 'susceptible', 'resistant'];
         var body = [];
-        for (let name in reduced) {
-          if (reduced.hasOwnProperty(name)) {
-            body.push([name, reduced[name][0], reduced[name][1]]);
+        for (let key in reduced) {
+          if (reduced.hasOwnProperty(key)) {
+            body.push([key, reduced[key][0], reduced[key][1]]);
           }
         }
         var color = red_white(frac);

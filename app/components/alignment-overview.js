@@ -90,7 +90,7 @@ export default Ember.Component.extend({
     var width = function(start, stop) {
       // FIXME: should not have to subtract 1 here
       return mapLast[stop] - mapFirst[start] - 1;
-    }
+    };
 
     text
       .enter()
@@ -114,9 +114,9 @@ export default Ember.Component.extend({
       .on('click', click)
       .style("cursor", "pointer")
       .attr("x", d => transformIndex(d.start, mapFirst, false))
-      .attr("y", d => 0)
+      .attr("y", () => 0)
       .attr("width", d => width(d.start, d.stop))
-      .attr("height", d => height)
+      .attr("height", () => height)
       .attr("stroke-width", 1)
       .attr("stroke", "black")
       .attr("fill-opacity", 0);
@@ -329,7 +329,7 @@ export default Ember.Component.extend({
     var self = this;
     var totalWidth = this.get('innerWidth');
 
-    function dragmove(d) {
+    function dragmove() {
       var dx = d3.round(+d3.event.dx, 0);
       var width = +this.getAttribute('width');
       var x = (+this.getAttribute('x')) + dx;
@@ -339,7 +339,7 @@ export default Ember.Component.extend({
       }
     }
 
-    function dragend(d) {
+    function dragend() {
       var idx = +this.getAttribute('idx');
       var start = (+this.getAttribute('x'));
       var width = +this.getAttribute('width');

@@ -39,12 +39,12 @@ export default Ember.Object.extend({
     var url = config.baseURL + 'data/' + session_id + '/rates';
     return request(url).then(function(result) {
       var new_result = [];
-      for (let name in result) {
-        if (result.hasOwnProperty(name)) {
-          var d = name;
-          var array = eval(result[name]);  // FIXME: remove eval
-          if (name !== "Combined") {
-            d = parse_date(name);
+      for (let key in result) {
+        if (result.hasOwnProperty(key)) {
+          var d = key;
+          var array = eval(result[key]);  // FIXME: remove eval
+          if (key !== "Combined") {
+            d = parse_date(key);
           }
           new_result.push(RateInfo.create({
             date: d,

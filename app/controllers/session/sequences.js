@@ -74,7 +74,7 @@ export default Ember.ObjectController.extend({
     var newSeq = [ref.sequence[0]];
     for (var k=1; k<map.length; k++ ) {
       if (map[k] === map[k - 1]) {
-        newSeq.push('-')
+        newSeq.push('-');
       } else {
         newSeq.push(ref.sequence[k]);
       }
@@ -148,7 +148,7 @@ export default Ember.ObjectController.extend({
              'selectedSequences.@each',
              'regex', 'threshold'),
 
-  ranges: function(key, val, previousValue) {
+  ranges: function(key, val) {
     if (arguments.length > 1) {
       this.set('_ranges', val);
     }
@@ -283,7 +283,6 @@ export default Ember.ObjectController.extend({
 
     updateAlnRange: function(idx, range) {
       checkRange(range, this.get('validAlnRange'));
-      var alnRanges = this.get('alnRanges');
       var map = this.get('model.frequencies.alnToRefCoords');
       var refRanges = this.get('ranges');
 

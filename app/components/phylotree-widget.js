@@ -53,7 +53,7 @@ export default Ember.Component.extend({
         return 1;
       });
       tree_widget.options ({'draw-size-bubbles' : true}, false);
-      tree_widget.options ({'min-bubble-size' : .1}, false);
+      tree_widget.options ({'min-bubble-size' : 0.1}, false);
       tree_widget.options ({'max-bubble-size' : 3}, false);
       tree_widget.update_scale();
     } else {

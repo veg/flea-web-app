@@ -27,14 +27,14 @@ export default Ember.Object.extend({
 
   refToAlnCoords: function() {
     var alnToRef = this.get('alnToRefCoords');
-    var [start, stop] = this.get('refRange');
-    var toFirst = new Array(stop + 1);
-    var toLast = new Array(stop + 1);
+    var stop = this.get('refRange')[1];
+    var toFirst = new Array(stop);
+    var toLast = new Array(stop);
     var last_ref_index = -1;
     for (let aln_index=0; aln_index<alnToRef.length; aln_index++) {
       var ref_index = alnToRef[aln_index];
       toLast[ref_index] = aln_index;
-      if (ref_index != last_ref_index) {
+      if (ref_index !== last_ref_index) {
         toFirst[ref_index] = aln_index;
       }
       // fill in missing values
