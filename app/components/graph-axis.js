@@ -39,7 +39,7 @@ export default Ember.Component.extend({
   },
 
   onD3AxisChange: function() {
-    if (this.state !== 'inDOM') {
+    if (this._state !== 'inDOM') {
       return;
     }
 

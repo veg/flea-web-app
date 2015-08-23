@@ -53,7 +53,7 @@ export default Ember.Component.extend({
 
   onChartChange: function() {
     // FIXME: this gets called multiple times
-    if (this.state !== 'inDOM') {
+    if (this._state !== 'inDOM') {
       return;
     }
     this._updateChart();

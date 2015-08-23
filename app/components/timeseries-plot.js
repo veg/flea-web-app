@@ -186,7 +186,7 @@ export default Ember.Component.extend({
   },
 
   onChartChange: function() {
-    if (this.state !== 'inDOM') {
+    if (this._state !== 'inDOM') {
       return;
     }
     this._updateChart();
