@@ -39,7 +39,7 @@
       <td class="seq-cell sequence">
         <ul class="list-unstyled">
           {{#each group.sequences as |seq|}}
-          <li>{{amino-acid seq.sequence seq.highlights seq.mask}}</li>
+          <li>{{amino-acid seq.sequence ranges=seq.highlights mask=seq.mask}}</li>
           {{/each}}
         </ul>
       </td>
