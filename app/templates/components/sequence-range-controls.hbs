@@ -28,7 +28,7 @@
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Predefined
     <span class="caret"></span></button>
   <ul class="dropdown-menu">
-    {{#each region in predefinedRegions}}
+    {{#each predefinedRegions as |region|}}
     <li>
       <a {{action "setRange" region.start region.stop}} class="seq-predef">
         {{region.name}}

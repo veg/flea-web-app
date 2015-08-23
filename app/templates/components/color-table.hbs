@@ -1,15 +1,15 @@
 <table class="table table-hover table-condensed">
   <thead>
     <tr>
-      {{#each h in header}}
+      {{#each header as |h|}}
       <td>{{h}}</td>
       {{/each}}
     </tr>
   </thead>
   <tbody>
-    {{#each row in data}}
+    {{#each data as |row|}}
     <tr>
-      {{#each elt in row}}
+      {{#each row as |elt|}}
       <td {{bind-attr style=elt.style}}>
         {{#bootstrap-popover title="" dataContent=elt.html}}
         {{elt.value}}

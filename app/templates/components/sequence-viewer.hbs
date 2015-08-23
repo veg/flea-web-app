@@ -7,7 +7,7 @@
       </div>
     </td>
     <td class="seq-cell ref-coords">
-    {{#each elt in refHTML}}
+    {{#each refHTML as |elt|}}
     <span {{bind-attr class=elt._class}}
           {{bind-attr data-coord=elt.dataCoord}}
           {{action "togglePosition" elt.dataCoord}}>
@@ -33,19 +33,19 @@
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
     </tr>
-    {{#each group in groupedSequences}}
+    {{#each groupedSequences as |group|}}
     <tr>
       <td class="seq-cell">{{group.date}}</td>
       <td class="seq-cell sequence">
         <ul class="list-unstyled">
-          {{#each seq in group.sequences}}
+          {{#each group.sequences as |seq|}}
           <li>{{amino-acid seq.sequence seq.highlights seq.mask}}</li>
           {{/each}}
         </ul>
       </td>
       <td class="seq-cell">
         <ul class="list-unstyled">
-          {{#each seq in group.sequences}}
+          {{#each group.sequences as |seq|}}
           <li>
             {{#bootstrap-popover title="" dataContent=seq.html placement="right"}}
             {{seq.copyNumber}}
@@ -56,7 +56,7 @@
       </td>
       <td class="seq-cell">
         <ul class="list-unstyled">
-          {{#each seq in group.sequences}}
+          {{#each group.sequences as |seq|}}
           <li>{{format-percent seq.percent}}%</li>
           {{/each}}
         </ul>
