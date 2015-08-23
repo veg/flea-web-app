@@ -10,7 +10,7 @@
     {{#each data as |row|}}
     <tr>
       {{#each row as |elt|}}
-      <td {{bind-attr style=elt.style}}>
+      <td style="{{elt.style}}">
         {{#bootstrap-popover title="" dataContent=elt.html}}
         {{elt.value}}
         {{/bootstrap-popover}}

@@ -8,8 +8,8 @@
     </td>
     <td class="seq-cell ref-coords">
     {{#each refHTML as |elt|}}
-    <span {{bind-attr class=elt._class}}
-          {{bind-attr data-coord=elt.dataCoord}}
+    <span class="{{elt._class}}"
+          data-coord="{{elt.dataCoord}}"
           {{action "togglePosition" elt.dataCoord}}>
       {{{elt.html}}}
     </span>
