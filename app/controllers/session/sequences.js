@@ -261,7 +261,7 @@ export default Ember.Controller.extend({
     },
 
     doThreshold: function() {
-      var t = this.get('_threshold').trim();
+      var t = this.get('_threshold');
       if (t === "") {
         t = 0;
       }

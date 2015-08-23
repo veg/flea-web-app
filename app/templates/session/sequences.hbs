@@ -16,7 +16,8 @@
         </button>
       </div>
       <span class="input-group-addon">Threshold %</span>
-      {{input type="text" class="form-control" value=_threshold
+      {{input type="number" class="form-control" value=_threshold
+      min="0" max="100" step="0.01"
       placeholder="%" autofocus="autofocus"
       focus-out="doThreshold" insert-newline="doThreshold"
       size="1"
