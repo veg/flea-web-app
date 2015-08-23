@@ -17,7 +17,7 @@ export default Ember.Controller.extend({
   currentPath: function() {
     var base = this.get('controllers.application.baseURL');
     var path = this.get('controllers.application.currentPath');
-    var session_id = this.get('controllers.session.session_id');
+    var session_id = this.get('controllers.session.model.session_id');
     path = path.replace('session', session_id).replace('.', '/');
     return base + path;
   }.property('controllers.application.baseURL',

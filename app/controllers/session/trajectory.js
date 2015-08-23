@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-export default Ember.ObjectController.extend({
+export default Ember.Controller.extend({
 
   // TODO: populate these on the fly
   regions: ['gp160', 'signal', 'c1', 'v1', 'v2',

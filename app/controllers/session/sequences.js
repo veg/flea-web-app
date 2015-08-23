@@ -5,7 +5,7 @@ import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, check
 var pngsRegex = 'N\\-*[^P^-^|]\\-*[ST]\\-*[^P^-^|]';
 
 
-export default Ember.ObjectController.extend({
+export default Ember.Controller.extend({
 
   // set by selector component
   _selectedSequences: [],
