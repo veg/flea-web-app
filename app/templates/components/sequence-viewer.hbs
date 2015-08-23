@@ -33,19 +33,19 @@
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
     </tr>
-    {{#each groupedSequences}}
+    {{#each group in groupedSequences}}
     <tr>
-      <td class="seq-cell">{{date}}</td>
+      <td class="seq-cell">{{group.date}}</td>
       <td class="seq-cell sequence">
         <ul class="list-unstyled">
-          {{#each seq in sequences}}
+          {{#each seq in group.sequences}}
           <li>{{amino-acid seq.sequence seq.highlights seq.mask}}</li>
           {{/each}}
         </ul>
       </td>
       <td class="seq-cell">
         <ul class="list-unstyled">
-          {{#each seq in sequences}}
+          {{#each seq in group.sequences}}
           <li>
             {{#bootstrap-popover title="" dataContent=seq.html placement="right"}}
             {{seq.copyNumber}}
@@ -56,7 +56,7 @@
       </td>
       <td class="seq-cell">
         <ul class="list-unstyled">
-          {{#each seq in sequences}}
+          {{#each seq in group.sequences}}
           <li>{{format-percent seq.percent}}%</li>
           {{/each}}
         </ul>
