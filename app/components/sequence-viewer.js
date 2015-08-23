@@ -6,7 +6,7 @@ export default Ember.Component.extend({
   // bound to controller
   groupedSequences: {},
   alnToRef: null,
-  selectedPositions: new Ember.Set(),
+  selectedPositions: [],
 
   selectDefault: false,
 
@@ -67,7 +67,7 @@ export default Ember.Component.extend({
   selectAllPositive: function () {
     var positions = this.get('positiveSelection')[0];
     var ranges = this.get('alnRanges');
-    var result = new Ember.Set();
+    var result = [];
     for (let r=0; r<ranges.length; r++) {
       var start = ranges[r][0];
       var stop = ranges[r][1];
@@ -75,7 +75,7 @@ export default Ember.Component.extend({
         // could do binary search to speed this up
         var pos = positions[i];
         if (start <= pos && pos <= stop) {
-          result.add(pos);
+          result.push(pos);
         }
         if (pos > stop) {
           break;
@@ -88,10 +88,11 @@ export default Ember.Component.extend({
   actions: {
     togglePosition: function(pos) {
       pos = +pos;
-      if (this.get('selectedPositions').contains(pos)) {
-        this.get('selectedPositions').remove(pos);
+      var selected = this.get('selectedPositions');
+      if (selected.contains(pos)) {
+        selected.removeObject(pos);
       } else {
-        this.get('selectedPositions').add(pos);
+        selected.addObject(pos);
       }
     },
     clearPositions: function() {

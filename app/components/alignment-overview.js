@@ -307,7 +307,7 @@ export default Ember.Component.extend({
   drawSelected: function() {
     var svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.selected');
     var h = this.get('mainHeight');
-    var posns = this.get('selectedPositions').toArray();
+    var posns = this.get('selectedPositions');
 
     var lines = svg.selectAll("line").data(posns, p => p);
 

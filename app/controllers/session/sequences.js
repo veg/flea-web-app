@@ -28,7 +28,7 @@ export default Ember.Controller.extend({
   markPositive: true,
 
   // in alignment 0-indexed coordinates
-  selectedPositions: new Ember.Set(),
+  selectedPositions: [],
 
   regex: function() {
     var value = this.get('regexValue');
@@ -180,7 +180,7 @@ export default Ember.Controller.extend({
     if (sequences === 'empty') {
       sequences = this.get('observedSequences');
     }
-    var positions = this.get('selectedPositions').toArray().sort((a, b) => a - b);
+    var positions = _.values(this.get('selectedPositions')).sort((a, b) => a - b);
     if (positions.length === 0) {
       return [];
     }
