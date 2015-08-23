@@ -11,7 +11,7 @@ export default Ember.Component.extend({
 
   selectedName: function() {
     return this.get('names')[this.get('selectedIdx')];
-  }.property('names.length', 'names.@each', 'selectedIdx'),
+  }.property('names.length', 'names.[]', 'selectedIdx'),
 
   maxIdx: function() {
     this.set('selectedIdx', 0);

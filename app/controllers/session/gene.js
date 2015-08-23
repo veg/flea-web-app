@@ -142,7 +142,7 @@ export default Ember.Controller.extend({
       return format_date(name);
     });
     return names;
-  }.property('timepoints.@each'),
+  }.property('timepoints.[]'),
 
   selectedName: function() {
     return this.get('names')[this.get('selectedTimepointIdx')];

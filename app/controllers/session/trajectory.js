@@ -48,8 +48,8 @@ export default Ember.Controller.extend({
     var regions = this.get('selectedRegions');
     var metrics = this.get('selectedEvoMetrics');
     return prepData(all_data, regions, metrics);
-  }.property('model', 'selectedRegions.@each',
-             'selectedEvoMetrics.@each'),
+  }.property('model', 'selectedRegions.[]',
+             'selectedEvoMetrics.[]'),
 
   _phenoData: function(index) {
     var all_data = this.get('model');
@@ -68,8 +68,8 @@ export default Ember.Controller.extend({
     var result = this._phenoData(0);
     return result;
   }.property('model',
-             'selectedRegions.@each',
-             'selectedPhenoMetrics.@each'),
+             'selectedRegions.[]',
+             'selectedPhenoMetrics.[]'),
 
   phenoData2: function() {
     var result = [];
@@ -78,8 +78,8 @@ export default Ember.Controller.extend({
     }
     return result;
   }.property('model',
-             'selectedRegions.@each',
-             'selectedPhenoMetrics.@each')
+             'selectedRegions.[]',
+             'selectedPhenoMetrics.[]')
 });
 
 

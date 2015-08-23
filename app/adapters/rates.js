@@ -18,7 +18,7 @@ var RatesObject = Ember.Object.extend({
     timepoints.sort((a,b) => a.date - b.date);
     timepoints.splice(0, 0, combined[0]);
     return timepoints;
-  }.property('data.@each'),
+  }.property('data.[]'),
 
   // _positive_selection
   positiveSelection: function() {

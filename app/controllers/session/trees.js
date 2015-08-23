@@ -33,7 +33,7 @@ export default Ember.Controller.extend({
       }
     }
     return keys;
-  }.property('model.trees.@each'),
+  }.property('model.trees.[]'),
 
   genomicRegions: function() {
     var trees = this.get('nestedTrees');
@@ -105,7 +105,7 @@ export default Ember.Controller.extend({
       acc[s['id'].toUpperCase()] = s['date'];
       return acc;
     }, {});
-  }.property('model.sequences.@each'),
+  }.property('model.sequences.[]'),
 
   actions: {
     setSortState: function(val) {

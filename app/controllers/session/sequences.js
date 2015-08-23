@@ -56,12 +56,12 @@ export default Ember.Controller.extend({
   observedSequences: function() {
     var seqs = this.get('model.sequences');
     return this.filterSequenceTypes(seqs, 'Observed');
-  }.property('model.sequences.@each'),
+  }.property('model.sequences.[]'),
 
   mrca: function() {
     var seqs = this.get('model.sequences');
     return this.filterSequenceTypes(seqs, 'MRCA')[0];
-  }.property('model.sequences.@each'),
+  }.property('model.sequences.[]'),
 
   reference: function() {
     var seqs = this.get('model.sequences');
@@ -81,7 +81,7 @@ export default Ember.Controller.extend({
     }
     ref.sequence = newSeq.join('');
     return ref;
-  }.property('model.sequences.@each', 'model.frequencies.alnToRefCoords'),
+  }.property('model.sequences.[]', 'model.frequencies.alnToRefCoords'),
 
   toSlices: function(seq, ranges) {
     return ranges.map(range => seq.slice(range[0], range[1])).join('|');
@@ -145,7 +145,7 @@ export default Ember.Controller.extend({
     return result;
   }.property('alnRanges', 'mrcaSlice',
              'model.copynumbers',
-             'selectedSequences.@each',
+             'selectedSequences.[]',
              'regex', 'threshold'),
 
   ranges: function(key, val) {
@@ -247,7 +247,7 @@ export default Ember.Controller.extend({
     }
     // TODO: sort by date each motif became prevalent
     return series;
-  }.property('selectedPositions.[]', 'selectedSequences.@each'),
+  }.property('selectedPositions.[]', 'selectedSequences.[]'),
 
   validPredefinedRegions: function() {
     var [start, stop] = this.get('model.frequencies.refRange');

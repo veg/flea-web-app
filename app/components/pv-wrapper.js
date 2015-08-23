@@ -86,7 +86,7 @@ export default Ember.Component.extend({
     var colorOp = pv.color.byResidueProp('customData', gradient);
     geometry.colorBy(colorOp);
     this.get('viewer').requestRedraw();
-  }.observes('data.@each', 'structure', 'geometry'),
+  }.observes('data.[]', 'structure', 'geometry'),
 
   labelResidues: function() {
     var viewer = this.get('viewer');

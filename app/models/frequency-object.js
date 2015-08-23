@@ -23,7 +23,7 @@ export default Ember.Object.extend({
     }
     coords.sort((a,b) => a[0] - b[0]);
     return coords.map(d => d[1]);
-  }.property('data.@each'),
+  }.property('data.[]'),
 
   refToAlnCoords: function() {
     var alnToRef = this.get('alnToRefCoords');
