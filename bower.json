@@ -30,13 +30,13 @@
     "jquery": "^1.11.3",
     "loader.js": "ember-cli/loader.js#3.2.1",
     "qunit": "~1.18.0",
-    "bootstrap": "~3.3.2",
-    "d3": "~3.5.3",
-    "bootstrap-multiselect": "~0.9.10",
-    "font-awesome": "~4.3.0",
-    "lodash": "~3.0.1",
-    "moment": "~2.9.0",
-    "phylotree": "https://github.com/kemaleren/phylotree.js.git#node_scaling",
-    "bio-pv-1.5.0": "https://github.com/biasmv/pv/releases/download/v1.5.0/bio-pv-1.5.0.zip"
+    "bootstrap": "~3.3.5",
+    "d3": "~3.5.6",
+    "bootstrap-multiselect": "~0.9.13",
+    "font-awesome": "~4.4.0",
+    "lodash": "~3.10.1",
+    "moment": "~2.10.0",
+    "bio-pv": "https://github.com/biasmv/pv/releases/download/v1.8.1/bio-pv-1.8.1.tgz",
+    "phylotree": "https://github.com/kemaleren/phylotree.js.git#node_scaling"
   }
 }

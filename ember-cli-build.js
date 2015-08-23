@@ -61,7 +61,7 @@ module.exports = function(defaults) {
   app.import('bower_components/phylotree/phylotree.js');
   app.import('bower_components/phylotree/phylotree.css');
   
-  app.import('bower_components/bio-pv-1.5.0/js/bio-pv.min.js');
+  app.import('bower_components/bio-pv/bio-pv.min.js');
   
   
   return app.toTree();
