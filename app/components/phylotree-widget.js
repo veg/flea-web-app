@@ -75,10 +75,10 @@ export default Ember.Component.extend({
   }.observes('tree', 'treeWidget'),
 
   sort: function() {
-    var state = this.get('sortState');
-    if (state === "ascending") {
+    var sort_state = this.get('sortState');
+    if (sort_state === "ascending") {
       this.sortNodes(true);
-    } else if (state === "descending") {
+    } else if (sort_state === "descending") {
       this.sortNodes(false);
     } else {
       this.sortOriginal();
@@ -106,13 +106,13 @@ export default Ember.Component.extend({
   },
 
   space: function() {
-    var state = this.get('spaceState');
-    if (state === "neutral") {
+    var space_state = this.get('spaceState');
+    if (space_state === "neutral") {
       return;
     }
-    else if (state === "compress") {
+    else if (space_state === "compress") {
       this.compressSpacing();
-    } else if (state === "expand") {
+    } else if (space_state === "expand") {
       this.expandSpacing();
     }
     this.set("spaceState", "neutral");

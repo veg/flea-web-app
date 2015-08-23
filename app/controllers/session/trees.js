@@ -108,11 +108,11 @@ export default Ember.Controller.extend({
   }.property('model.sequences.@each'),
 
   actions: {
-    setSortState: function(state) {
-      this.set('sortState', state);
+    setSortState: function(val) {
+      this.set('sortState', val);
     },
-    setSpaceState: function(state) {
-      this.set('spaceState', state);
+    setSpaceState: function(val) {
+      this.set('spaceState', val);
     }
   }
 });
