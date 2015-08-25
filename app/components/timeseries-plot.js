@@ -73,15 +73,16 @@ export default Ember.Component.extend({
     var names1 = data.map(d => d.name);
     var names2 = data2.map(d => d.name);
     return names1.concat(names2);
-  }.property('data.[]', 'data2.[]'),
+  }.property('data.[].name', 'data2.[].name'),
 
   dates: function() {
     var data = this.get('data');
     // TODO: surely there is a better way?
     var result = data.map(d => d.values.map(e => e.x));
     result = d3.set(d3.merge(result)).values();
-    return result.map(d => new Date(d));
-  }.property('data.[]'),
+    result = result.map(d => new Date(d));
+    return result;
+  }.property('data.[].values.[].x'),
 
   xDomain: function() {
     return d3.extent(this.get('dates'));
@@ -113,11 +114,11 @@ export default Ember.Component.extend({
 
   yScale: function () {
     return this._yScale(this.get('data'));
-  }.property('innerHeight', 'data.[]', 'ymin'),
+  }.property('innerHeight', 'data.[].values.[].y', 'ymin'),
 
   yScale2: function () {
     return this._yScale(this.get('data2'));
-  }.property('innerHeight', 'data2.[]', 'ymin'),
+  }.property('innerHeight', 'data2.[].values.[].y', 'ymin'),
 
   yAxisTransform: function() {
     return 'translate(%@, 0)'.fmt(this.get('innerWidth'));
@@ -186,8 +187,9 @@ export default Ember.Component.extend({
     if (this._state !== 'inDOM') {
       return;
     }
+    // FIXME: this should use Ember.run.once(), but for some reason it does not work
     this._updateChart();
-  }.observes('data', 'd3Line', 'seriesNames', 'xScale', 'yScale', 'yScale2'),
+  }.observes('data', 'seriesNames', 'd3Line', 'd3Line2', 'xScale', 'yScale', 'yScale2'),
 
   // TODO: make legends into seperate component?
   _updateLegend: function() {
