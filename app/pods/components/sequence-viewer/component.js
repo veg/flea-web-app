@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {oneIndex} from '../utils/utils';
+import {oneIndex} from 'flea-app/utils/utils';
 
 export default Ember.Component.extend({
 

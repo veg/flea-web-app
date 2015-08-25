@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {format_date, htmlTable} from '../../utils/utils';
+import {format_date, htmlTable} from 'flea-app/utils/utils';
 
 var float2 = d3.format (".2f");
 

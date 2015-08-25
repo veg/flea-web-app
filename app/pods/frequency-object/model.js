@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {zeroIndex} from '../utils/utils';
+import {zeroIndex} from 'flea-app/utils/utils';
 
 export default Ember.Object.extend({
   data: [],

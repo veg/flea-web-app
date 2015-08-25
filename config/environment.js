@@ -3,6 +3,7 @@
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'flea-app',
+    podModulePrefix: 'flea-app/pods',
     environment: environment,
     baseURL: '/',
     locationType: 'auto',

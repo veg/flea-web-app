@@ -1,6 +1,5 @@
 import Ember from 'ember';
-
-import {zeroIndex, oneIndex, transformIndex} from '../utils/utils';
+import {zeroIndex, oneIndex, transformIndex} from 'flea-app/utils/utils';
 
 
 // FIXME: use an x-axis to scale to div width

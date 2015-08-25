@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges} from '../../utils/utils';
+import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges} from 'flea-app/utils/utils';
 
 
 var pngsRegex = 'N\\-*[^P^-^|]\\-*[ST]\\-*[^P^-^|]';

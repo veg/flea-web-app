@@ -1,4 +1,4 @@
-import Store from 'flea-app/models/store';
+import Store from 'flea-app/pods/store/model';
 
 export default {
   name: 'inject-store',

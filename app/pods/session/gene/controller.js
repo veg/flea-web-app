@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {parse_date, format_date, isString} from '../../utils/utils';
+import {parse_date, format_date, isString} from 'flea-app/utils/utils';
 
 export default Ember.Controller.extend({
 

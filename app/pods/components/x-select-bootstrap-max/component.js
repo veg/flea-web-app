@@ -1,4 +1,4 @@
-import XSelectBootstrap from './x-select-bootstrap';
+import XSelectBootstrap from '../x-select-bootstrap/component';
 
 export default XSelectBootstrap.extend({
   maxSelected: -1,

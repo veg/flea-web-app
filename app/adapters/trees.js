@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import config from '../config/environment';
 import request from 'ic-ajax';
-import {parse_date} from '../utils/utils';
+import {parse_date} from 'flea-app/utils/utils';
 
 export default Ember.Object.extend({
 
