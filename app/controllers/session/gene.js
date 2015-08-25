@@ -205,6 +205,12 @@ export default Ember.Controller.extend({
       if (value) {
         this.set('selectedMetric', value);
       }
+    },
+
+    selectTimepointIdx: function(value) {
+      if (value) {
+        this.set('selectedTimepointIdx', value);
+      }
     }
   }
 });
