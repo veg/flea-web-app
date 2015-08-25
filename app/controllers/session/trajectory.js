@@ -25,22 +25,30 @@ export default Ember.Controller.extend({
                  "IsoelectricPoint",],
   selectedPhenoMetrics: ['Length', 'PNGS'],
 
-  multipleRegions: function () {
+  maxRegions: function () {
     var m = ((this.get('selectedEvoMetrics.length') > 1) ||
              this.get('selectedPhenoMetrics.length') > 1);
     if (m) {
-      return false;
+      return 1;
     }
-    return true;
+    return 10;
   }.property('selectedEvoMetrics.length',
              'selectedPhenoMetrics.length'),
 
-  multipleMetrics: function () {
+  maxEvoMetrics: function () {
     var r = (this.get('selectedRegions.length') > 1);
     if (r) {
-      return false;
+      return 1;
     }
-    return true;
+    return 4;
+  }.property('selectedRegions.length'),
+
+  maxPhenoMetrics: function () {
+    var r = (this.get('selectedRegions.length') > 1);
+    if (r) {
+      return 1;
+    }
+    return 2;
   }.property('selectedRegions.length'),
 
   evoData: function() {
@@ -79,7 +87,30 @@ export default Ember.Controller.extend({
     return result;
   }.property('model',
              'selectedRegions.[]',
-             'selectedPhenoMetrics.[]')
+             'selectedPhenoMetrics.[]'),
+
+  handleSelection: function(key, values) {
+    if (values) {
+      if (typeof values === 'string' || values instanceof String) {
+        values = [values];
+      }
+      this.set(key, values);
+    }
+  },
+
+  actions: {
+    selectRegions: function(values) {
+      this.handleSelection('selectedRegions', values);
+    },
+
+    selectEvoMetrics: function(values) {
+      this.handleSelection('selectedEvoMetrics', values);
+    },
+
+    selectPhenoMetrics: function(values) {
+      this.handleSelection('selectedPhenoMetrics', values);
+    }
+  }
 });
 
 

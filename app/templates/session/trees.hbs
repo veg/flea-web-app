@@ -4,21 +4,27 @@
       <span class="input-group-addon">
         Genomic region
       </span>
-      {{view "select" class="form-control"
-          content=genomicRegions
-          value=selectedGenomicRegion}}
+      {{#x-select-bootstrap value=selectedGenomicRegion action="selectGenomicRegion"}}
+      {{#each genomicRegions as |region|}}
+      {{#x-option value=region}}{{region}}{{/x-option}}
+      {{/each}}
+      {{/x-select-bootstrap}}
       <span class="input-group-addon">
         Time point
       </span>
-      {{view "select" class="form-control"
-          content=timePoints
-          value=selectedTimePoint}}
+      {{#x-select-bootstrap value=selectedTimePoint action="selectTimePoint"}}
+      {{#each timePoints as |tp|}}
+      {{#x-option value=tp}}{{tp}}{{/x-option}}
+      {{/each}}
+      {{/x-select-bootstrap}}
       <span class="input-group-addon">
         Distance measure
       </span>
-      {{view "select" class="form-control"
-          content=distanceMeasures
-          value=selectedDistanceMeasure}}
+      {{#x-select-bootstrap value=selectedDistanceMeasure action="selectDistanceMeasure"}}
+      {{#each distanceMeasures as |measure|}}
+      {{#x-option value=measure}}{{measure}}{{/x-option}}
+      {{/each}}
+      {{/x-select-bootstrap}}
       <span class="input-group-addon"
             title="Update the tree when the region selected in the sequence panel changes">
         Link to selected region

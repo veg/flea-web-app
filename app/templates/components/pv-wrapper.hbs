@@ -13,13 +13,11 @@
   </span>
   <span class="input-group-addon">
     <label>Slab mode</label>
-    {{view "bootstrap-multiselect"
-      multiple=false
-      content=slabModes
-      selection=slabMode
-      allowMultiple=false
-      id="slab_mode"
-    }}
+    {{#x-select-bootstrap makeMulti=true value=slabMode action="selectSlabMode" id="slab_mode"}}
+    {{#each slabModes as |mode|}}
+    {{#x-option value=mode}}{{mode}}{{/x-option}}
+    {{/each}}
+    {{/x-select-bootstrap}}
   </span>
 </div>
 

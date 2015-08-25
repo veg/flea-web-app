@@ -3,26 +3,24 @@
     <label for="evo_regions">Region(s) to plot</label>
   </div>
   <div class="form-group">
-    {{view "bootstrap-multiselect"
-      multiple=true
-      content=regions
-      selection=selectedRegions
-      allowMultiple=multipleRegions
-      id="evo_regions"
-    }}
+    {{#x-select-bootstrap-max multiple=true value=selectedRegions maxSelected=maxRegions
+    action="selectRegions" id="evo_regions"}}
+    {{#each regions as |region|}}
+    {{#x-option value=region}}{{region}}{{/x-option}}
+    {{/each}}
+    {{/x-select-bootstrap-max}}
   </div>
 
   <div class="form-group">
     <label for="evo_metrics">Evolutionary metrics</label>
   </div>
   <div class="form-group">
-    {{view "bootstrap-multiselect"
-      multiple=true
-      content=evoMetrics
-      selection=selectedEvoMetrics
-      allowMultiple=multipleMetrics
-      id="evo_metrics"
-    }}
+    {{#x-select-bootstrap-max multiple=true value=selectedEvoMetrics maxSelected=maxEvoMetrics
+    action="selectEvoMetrics" id="evo_metrics"}}
+    {{#each evoMetrics as |metric|}}
+    {{#x-option value=metric}}{{metric}}{{/x-option}}
+    {{/each}}
+    {{/x-select-bootstrap-max}}
   </div>
 
 </div>
@@ -38,14 +36,12 @@
     <label for="_pheno_metrics">Phenotype metrics</label>
   </div>
   <div class="form-group">
-    {{view "bootstrap-multiselect"
-      multiple=true
-      content=phenoMetrics
-      selection=selectedPhenoMetrics
-      allowMultiple=multipleMetrics
-      maxSelected=2
-      id="_pheno_metrics"
-    }}
+    {{#x-select-bootstrap-max multiple=true value=selectedPhenoMetrics maxSelected=maxPhenoMetrics
+    action="selectPhenoMetrics" id="pheno_metrics"}}
+    {{#each phenoMetrics as |metric|}}
+    {{#x-option value=metric}}{{metric}}{{/x-option}}
+    {{/each}}
+    {{/x-select-bootstrap-max}}
   </div>
 </div>
 

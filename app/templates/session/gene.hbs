@@ -21,13 +21,11 @@
     <div class="input-group input-group-sm">
       <span class="input-group-addon">
         <label for="evo_regions">Metrics(s) to plot</label>
-        {{view "bootstrap-multiselect"
-        multiple=false
-        content=metrics
-        selection=selectedMetric
-        allowMultiple=false
-        id="gene_metrics"
-        }}
+        {{#x-select-bootstrap makeMulti=true value=selectedMetric action="selectMetric" id="gene_metrics"}}
+        {{#each metrics as |metric|}}
+        {{#x-option value=metric}}{{metric}}{{/x-option}}
+        {{/each}}
+        {{/x-select-bootstrap}}
       </span>
       <span class="input-group-addon">
         <label>Mark positively selected sites</label>

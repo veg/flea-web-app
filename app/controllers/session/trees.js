@@ -113,6 +113,21 @@ export default Ember.Controller.extend({
     },
     setSpaceState: function(val) {
       this.set('spaceState', val);
+    },
+    selectGenomicRegion: function(value) {
+      if (value) {
+        this.set('selectedGenomicRegion', value);
+      }
+    },
+    selectTimePoint: function(value) {
+      if (value) {
+        this.set('selectedTimePoint', value);
+      }
+    },
+    selectDistanceMeasure: function(value) {
+      if (value) {
+        this.set('selectedDistanceMeasure', value);
+      }
     }
   }
 });

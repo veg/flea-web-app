@@ -108,5 +108,13 @@ export default Ember.Component.extend({
       });
     }
     this.get('viewer').requestRedraw();
-  }.observes('shouldLabel')
+  }.observes('shouldLabel'),
+
+  actions: {
+    selectSlabMode: function(value) {
+      if (value) {
+        this.set('slabMode', value);
+      }
+    }
+  }
 });

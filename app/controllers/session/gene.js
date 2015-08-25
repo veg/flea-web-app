@@ -198,6 +198,12 @@ export default Ember.Controller.extend({
       } else{
         this.startPlayback();
       }
+    },
+
+    selectMetric: function(value) {
+      if (value) {
+        this.set('selectedMetric', value);
+      }
     }
   }
 });

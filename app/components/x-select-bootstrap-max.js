@@ -1,13 +1,13 @@
-import Ember from 'ember';
+import XSelectBootstrap from './x-select-bootstrap';
 
-export default Ember.Select.extend({
-  allowMultiple: true,
+export default XSelectBootstrap.extend({
   maxSelected: -1,
+  multiple: true,
 
   didInsertElement: function () {
+    this.setInitial();
     this.$().multiselect();
     this.updateDisabled();
-    this.updateMultiple();
   },
 
   updateDisabled: function() {
@@ -15,8 +15,7 @@ export default Ember.Select.extend({
     // number of option
     var maxSelected = this.get('maxSelected');
     if (maxSelected > 0) {
-      var length = this.get('selection.length');
-      if (length >= maxSelected) {
+      if (this.get('value.length') >= maxSelected) {
         // Disable all other checkboxes.
         var nonSelectedOptions = this.$('option').filter(function() {
           return !$(this).is(':selected');
@@ -36,14 +35,5 @@ export default Ember.Select.extend({
         });
       }
     }
-  }.observes('selection.length', 'maxSelected'),
-
-  updateMultiple: function() {
-    if (this.get('allowMultiple')) {
-      this.$().attr('multiple', 'multiple');
-    } else {
-      this.$().removeAttr('multiple');
-    }
-    this.$().multiselect('rebuild');
-  }.observes('allowMultiple')
+  }.observes('value.length', 'maxSelected'),
 });
