@@ -35,6 +35,12 @@ export default Ember.Controller.extend({
   }.property('selectedEvoMetrics.length',
              'selectedPhenoMetrics.length'),
 
+  // TODO: multiselect component, not controller, should handle this
+  // and the if/else xselect selection in the template.
+  multipleRegions: function() {
+    return this.get('maxRegions') > 1;
+  }.property('maxRegions'),
+
   maxEvoMetrics: function () {
     var r = (this.get('selectedRegions.length') > 1);
     if (r) {
@@ -43,6 +49,10 @@ export default Ember.Controller.extend({
     return 4;
   }.property('selectedRegions.length'),
 
+  multipleEvoMetrics: function() {
+    return this.get('maxEvoMetrics') > 1;
+  }.property('maxEvoMetrics'),
+
   maxPhenoMetrics: function () {
     var r = (this.get('selectedRegions.length') > 1);
     if (r) {
@@ -50,6 +60,10 @@ export default Ember.Controller.extend({
     }
     return 2;
   }.property('selectedRegions.length'),
+
+  multiplePhenoMetrics: function() {
+    return this.get('maxPhenoMetrics') > 1;
+  }.property('maxPhenoMetrics'),
 
   evoData: function() {
     var all_data = this.get('model');
