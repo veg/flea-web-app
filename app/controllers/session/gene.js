@@ -12,17 +12,18 @@ export default Ember.Controller.extend({
 
   playing: false,
 
-  needs: ['application', 'session'],
+  application: Ember.inject.controller(),
+  session: Ember.inject.controller(),
 
   currentPath: function() {
-    var base = this.get('controllers.application.baseURL');
-    var path = this.get('controllers.application.currentPath');
-    var session_id = this.get('controllers.session.model.session_id');
+    var base = this.get('application.baseURL');
+    var path = this.get('application.currentPath');
+    var session_id = this.get('session.model.session_id');
     path = path.replace('session', session_id).replace('.', '/');
     return base + path;
-  }.property('controllers.application.baseURL',
-             'controllers.application.currentPath',
-             'controllers.session.session_id'),
+  }.property('application.baseURL',
+             'application.currentPath',
+             'session.session_id'),
 
   labels: function() {
     var metric = this.get('selectedMetric');
