@@ -49,9 +49,6 @@ export default Ember.Component.extend({
   }.property('seriesNames.[]', 'legendRight'),
 
   didInsertElement: function() {
-    // TOOD: is this necessary?
-    this.set('width', this.$().width());
-    this.set('height', this.$().height());
     this._updateChart();
   },
 

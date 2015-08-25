@@ -11,7 +11,7 @@
 <span class="input-group-addon">Range</span>
 {{input type="string" class="form-control" value=rangeText
   placeholder="reference coordinate range (e.g. 160-200)"
-  autofocus="autofocus" focus-out="display" insert-newline="display"
+  autofocus="autofocus" focus-out="handleTextSubmit" insert-newline="handleTextSubmit"
 }}
 <div class="input-group-btn">
   <button {{action "moveRanges" 1}} type="button" class="btn btn-default btn-sm" title="Move right">

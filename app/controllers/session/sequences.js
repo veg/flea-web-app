@@ -13,9 +13,8 @@ export default Ember.Controller.extend({
   // set from _selectedSequences in finalizeSelection action
   selectedSequences: 'empty',
 
-  // TODO: maybe these should be in a View instead
   // range in 0-indexed [start, stop) reference coordinates
-  _ranges: [[159, 200]],
+  ranges: [[159, 200]],
 
   _regexValue: pngsRegex,  // displayed in template
   regexValue: pngsRegex,  // triggers actual update
@@ -148,18 +147,15 @@ export default Ember.Controller.extend({
              'selectedSequences.[]',
              'regex', 'threshold'),
 
-  ranges: function(key, val) {
-    if (arguments.length > 1) {
-      this.set('_ranges', val);
-    }
-    var ranges = this.get('_ranges');
+  sortedRanges: function() {
+    var ranges = this.get('ranges');
     ranges.sort((a, b) => a[0] - b[0]);
     return ranges;
   }.property('ranges'),
 
   alnRanges: function() {
     // convert reference ranges to aligment ranges
-    var ranges = this.get('ranges');
+    var ranges = this.get('sortedRanges');
     checkRanges(ranges, this.get('model.frequencies.refRange'));
     var mapFirst = this.get('model.frequencies.refToFirstAlnCoords');
     var mapLast = this.get('model.frequencies.refToLastAlnCoords');
@@ -284,7 +280,7 @@ export default Ember.Controller.extend({
     updateAlnRange: function(idx, range) {
       checkRange(range, this.get('validAlnRange'));
       var map = this.get('model.frequencies.alnToRefCoords');
-      var refRanges = this.get('ranges');
+      var refRanges = this.get('sortedRanges');
 
       // shallow copy, so we have a different object. Ensures that
       // calling this.set() triggers computed properties.
@@ -302,13 +298,13 @@ export default Ember.Controller.extend({
 
     addRange: function(range) {
       checkRange(range, this.get('model.frequencies.refRange'));
-      var ranges = this.get('ranges').slice(0);
+      var ranges = this.get('sortedRanges').slice(0);
       ranges.push(range);
       this.set('ranges', ranges);
     },
 
     rmRange: function(idx) {
-      var ranges = this.get('ranges');
+      var ranges = this.get('sortedRanges');
       this.set('ranges', ranges.filter((elt, i) => i !== idx));
     }
   }

@@ -2,50 +2,24 @@ import Ember from 'ember';
 import {oneIndex} from '../utils/utils';
 
 export default Ember.Component.extend({
-
   tagName: '',
-
-  // bound to controller; 0-indexed
-  ranges: [],
 
   // updated from template
   validRange: [0, 1],
 
-  myRanges: [],
   rangeText: '',
 
-  fromController: function() {
-    this.updateFromController();
-  }.on('didInsertElement'),
+  computedText: function() {
+    var ranges = this.get('ranges');
+    return ranges.map(range => oneIndex(range[0]) + "-" + range[1]).join(';');
+  }.property('ranges', 'ranges.length', 'ranges.[]', 'ranges.[].[]'),
 
-  updateFromController: function() {
-    this.set('myRanges', this.get('ranges'));
-    this.makeText();
-  }.observes('ranges'),
+  updateText: function() {
+    this.set('rangeText', this.get('computedText'));
+  }.observes('computedText').on('init'),
 
-  makeText: function() {
-    var ranges = this.get('myRanges');
-    var text = ranges.map(range => oneIndex(range[0]) + "-" + range[1]).join(';');
-    this.set('rangeText', text);
-  },
-
-  parseText: function () {
-    var text = this.get('rangeText');
-    var ranges = text.split(';').map(function(a) {
-      var parts = a.split('-');
-      if (parts.length !== 2) {
-        throw "wrong number of ranges";
-      }
-      return [(+parts[0]) - 1, +parts[1]];
-    });
-    this.set('myRanges', ranges);
-  },
-
-  toController: function() {
-    var ranges = this.get('myRanges');
-
+  toController: function(ranges) {
     var [vstart, vstop] = this.get('validRange');
-
     ranges = ranges.map(function(range) {
       var [start, stop] = range;
       if (start < vstart) {
@@ -56,11 +30,9 @@ export default Ember.Component.extend({
       }
       return [start, stop];
     });
-    this.set('myRanges', ranges);
 
     if (_.all(ranges.map(range => range[0] < range[1]))) {
-      this.set('ranges', ranges);
-      this.set('myRanges', ranges);
+      this.sendAction('setRanges', ranges);
     }
   },
 
@@ -78,19 +50,28 @@ export default Ember.Component.extend({
           ranges[r][1] = stop + offset;
         }
       }
-      this.set('myRanges', ranges);
-      this.toController();
+      this.toController(ranges);
     },
 
     setRange: function(start, stop) {
-      this.set('myRanges', [[start, stop]]);
-      this.makeText();
-      this.toController();
+      var ranges = [[start, stop]];
+      this.toController(ranges);
     },
 
-    display: function() {
-      this.parseText();
-      this.toController();
+    handleTextSubmit: function() {
+      var text = this.get('rangeText');
+      try {
+        var ranges = text.split(';').map(function(a) {
+          var parts = a.split('-');
+          if (parts.length !== 2) {
+            throw "wrong number of ranges";
+          }
+          return [(+parts[0]) - 1, +parts[1]];
+        });
+        this.toController(ranges);
+      } catch (err) {
+        // TODO: notify user of failed parse
+      }
     }
   }
 });

@@ -1,9 +1,10 @@
 <div class = "row">
   <div class = "col-md-12">
     <div class="input-group input-group-sm">
-      {{sequence-range-controls ranges=ranges
+      {{sequence-range-controls ranges=sortedRanges
       validRange=model.frequencies.refRange
       predefinedRegions=validPredefinedRegions
+      setRanges="setRanges"
       }}
       {{input type="text" class="form-control" value=_regexValue
       placeholder="Pattern to highlight" autofocus="autofocus"
