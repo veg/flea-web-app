@@ -3,9 +3,9 @@ import {format_date} from '../../utils/utils';
 
 export default Ember.Controller.extend({
 
-  _selectedGenomicRegion: '',
-  _selectedTimePoint: '',
-  _selectedDistanceMeasure: '',
+  _genomicRegion: '',
+  _timePoint: '',
+  _distanceMeasure: '',
 
   linkeToSelection: true,
   showDates: true,
@@ -42,7 +42,7 @@ export default Ember.Controller.extend({
 
   timePoints: function() {
     var trees = this.get('nestedTrees');
-    var region = this.get('selectedGenomicRegion');
+    var region = this.get('genomicRegion');
     var dates = Object.keys(trees[region]);
     var idx = dates.indexOf("Combined");
     if (idx > 0) {
@@ -50,52 +50,71 @@ export default Ember.Controller.extend({
       dates.splice(0, 0, dates.splice(idx, 1)[0]);
     }
     return dates;
-  }.property('nestedTrees', 'selectedGenomicRegion'),
+  }.property('nestedTrees', 'genomicRegion'),
 
   distanceMeasures: function() {
     var trees = this.get('nestedTrees');
-    var region = this.get('selectedGenomicRegion');
-    var date = this.get('selectedTimePoint');
+    var region = this.get('genomicRegion');
+    var date = this.get('timePoint');
     return Object.keys(trees[region][date]);
-  }.property('nestedTrees', 'selectedGenomicRegion', 'selectedTimePoint'),
+  }.property('nestedTrees', 'genomicRegion', 'timePoint'),
 
-  handleSelection: function(options, hidden, key, value) {
-    if (value === undefined) {
-      if (!(_.includes(options, this.get(hidden)))) {
-        this.set(hidden, options[0]);
-      }
-    } else {
-      if (_.includes(options, value)) {
-        this.set(hidden, value);
-      } else {
-        this.set(hidden, options[0]);
-      }
+  handleGet: function(name) {
+    var value = this.get('_' + name);
+    var options = this.get(name + 's');
+    if (!(_.includes(options, value))) {
+      return options[0];
     }
-    return this.get(hidden);
+    return value;
   },
 
-  selectedGenomicRegion: function(key, value) {
-    return this.handleSelection(this.get('genomicRegions'), '_selectedGenomicRegion', key, value);
-  }.property('genomicRegions'),
+  handleSet: function(name, value) {
+    var options = this.get(name + 's');
+    if (!(_.includes(options, value))) {
+      this.set('_' + name, options[0]);
+      return options[0];
+    }
+    this.set('_' + name, value);
+    return value;
+  },
 
-  selectedTimePoint: function(key, value) {
-    return this.handleSelection(this.get('timePoints'), '_selectedTimePoint', key, value);
-  }.property('timePoints'),
+  genomicRegion: Ember.computed('genomicRegions', '_genomicRegion', {
+    get: function() {
+      return this.handleGet('genomicRegion');
+    },
+    set: function(key, value) {
+      return this.handleSet('genomicRegion', value);
+    }
+  }),
 
-  selectedDistanceMeasure: function(key, value) {
-    return this.handleSelection(this.get('distanceMeasures'), '_selectedDistanceMeasure', key, value);
-  }.property('distanceMeasures'),
+  timePoint: Ember.computed('timePoints', '_timePoint', {
+    get: function() {
+      return this.handleGet('timePoint');
+    },
+    set: function(key, value) {
+      return this.handleSet('timePoint', value);
+    }
+  }),
+
+  distanceMeasure: Ember.computed('distanceMeasures', '_distanceMeasure', {
+    get: function() {
+      return this.handleGet('distanceMeasure');
+    },
+    set: function(key, value) {
+      return this.handleSet('distanceMeasure', value);
+    }
+  }),
 
   tree: function() {
-    var region = this.get('selectedGenomicRegion');
-    var date = this.get('selectedTimePoint');
-    var distance = this.get('selectedDistanceMeasure');
+    var region = this.get('genomicRegion');
+    var date = this.get('timePoint');
+    var distance = this.get('distanceMeasure');
     var tree = this.get('nestedTrees')[region][date][distance];
     return tree;
   }.property('nestedTrees',
-             'selectedGenomicRegion',
-             'selectedTimePoints',
-             'selectedDistanceMeasure'),
+             'genomicRegion',
+             'timePoints',
+             'distanceMeasure'),
 
   // FIXME: code duplication. Same function used in neutralization controller.
   // Where to put this to share it?
@@ -116,17 +135,17 @@ export default Ember.Controller.extend({
     },
     selectGenomicRegion: function(value) {
       if (value) {
-        this.set('selectedGenomicRegion', value);
+        this.set('genomicRegion', value);
       }
     },
     selectTimePoint: function(value) {
       if (value) {
-        this.set('selectedTimePoint', value);
+        this.set('timePoint', value);
       }
     },
     selectDistanceMeasure: function(value) {
       if (value) {
-        this.set('selectedDistanceMeasure', value);
+        this.set('distanceMeasure', value);
       }
     }
   }

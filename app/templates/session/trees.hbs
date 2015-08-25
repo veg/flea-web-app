@@ -4,7 +4,7 @@
       <span class="input-group-addon">
         Genomic region
       </span>
-      {{#x-select-bootstrap value=selectedGenomicRegion action="selectGenomicRegion"}}
+      {{#x-select-bootstrap value=genomicRegion action="selectGenomicRegion"}}
       {{#each genomicRegions as |region|}}
       {{#x-option value=region}}{{region}}{{/x-option}}
       {{/each}}
@@ -12,7 +12,7 @@
       <span class="input-group-addon">
         Time point
       </span>
-      {{#x-select-bootstrap value=selectedTimePoint action="selectTimePoint"}}
+      {{#x-select-bootstrap value=timePoint action="selectTimePoint"}}
       {{#each timePoints as |tp|}}
       {{#x-option value=tp}}{{tp}}{{/x-option}}
       {{/each}}
@@ -20,7 +20,7 @@
       <span class="input-group-addon">
         Distance measure
       </span>
-      {{#x-select-bootstrap value=selectedDistanceMeasure action="selectDistanceMeasure"}}
+      {{#x-select-bootstrap value=distanceMeasure action="selectDistanceMeasure"}}
       {{#each distanceMeasures as |measure|}}
       {{#x-option value=measure}}{{measure}}{{/x-option}}
       {{/each}}
