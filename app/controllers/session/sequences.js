@@ -306,6 +306,13 @@ export default Ember.Controller.extend({
     rmRange: function(idx) {
       var ranges = this.get('sortedRanges');
       this.set('ranges', ranges.filter((elt, i) => i !== idx));
+    },
+
+    setSelectedPositions: function(positions) {
+      var stop = this.get('validAlnRange')[1];
+      if (positions && _.every(positions, p => (p >= 0 && p < stop))) {
+        this.set('selectedPositions', positions);
+      }
     }
   }
 });

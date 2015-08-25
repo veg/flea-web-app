@@ -76,22 +76,31 @@ export default Ember.Component.extend({
         }
       }
     }
-    this.set('selectedPositions', result);
+    this.sendSelected(result);
+  },
+
+  sendSelected: function(positions) {
+    this.sendAction('setSelectedPositions', positions);
   },
 
   actions: {
     togglePosition: function(pos) {
       pos = +pos;
       var selected = this.get('selectedPositions');
-      if (selected.contains(pos)) {
-        selected.removeObject(pos);
+      var index = selected.indexOf(pos);
+      if (index > -1) {
+        selected.splice(index, 1);
       } else {
-        selected.addObject(pos);
+        selected.push(pos);
       }
+      // need copy to trigger update
+      this.sendSelected(selected.slice());
     },
+
     clearPositions: function() {
-      this.get('selectedPositions').clear();
+      this.sendSelected([]);
     },
+
     selectPositiveClicked: function() {
       this.selectAllPositive();
     }
