@@ -56,8 +56,8 @@ export default Ember.Component.extend({
     if (this._state !== 'inDOM') {
       return;
     }
-    this._updateChart();
-  }.observes('name.[]', 'data1', 'data2', 'positions',
+    Ember.run.once(this, '_updateChart');
+  }.observes('names.[]', 'data1', 'data2', 'positions',
              'labels.[]', 'width', 'height', 'heightEach', 'margin', 'yMax',
              'labelHeight', 'addCombined'),
 
