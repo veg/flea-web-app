@@ -187,9 +187,14 @@ export default Ember.Component.extend({
     if (this._state !== 'inDOM') {
       return;
     }
-    // FIXME: this should use Ember.run.once(), but for some reason it does not work
-    this._updateChart();
-  }.observes('data', 'seriesNames', 'd3Line', 'd3Line2', 'xScale', 'yScale', 'yScale2'),
+    Ember.run.once(this, '_updateChart');
+  }.observes('data.[].name',
+             'data.[].values.[].x',
+             'data.[].values.[].y',
+             'data2.[].name',
+             'data2.[].values.[].x',
+             'data2.[].values.[].y',
+             'seriesNames', 'd3Line', 'd3Line2', 'xScale', 'yScale', 'yScale2'),
 
   // TODO: make legends into seperate component?
   _updateLegend: function() {
