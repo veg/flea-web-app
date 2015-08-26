@@ -107,6 +107,10 @@ export default Ember.Component.extend({
     if (minValue === null) {
       minValue = d3.min(data, d => d3.min(d.values, v => v.y));
     }
+    if (minValue === maxValue) {
+      maxValue += 1;
+      minValue = Math.max(0, minValue - 1);
+    }
     return d3.scale.linear()
       .range([this.get('innerHeight'), 0])
       .domain([minValue, maxValue]);
