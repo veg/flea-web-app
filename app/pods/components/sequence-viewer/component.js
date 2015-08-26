@@ -38,9 +38,11 @@ export default Ember.Component.extend({
           _class += ' selected_position';
         }
         str = str.split('').join("<br/>");
+        str += '<br/>';
         if (this.get('markPositive')) {
+          str += (positive_positions.indexOf(s) >=0) ? "+" : "<br/>";
+        } else {
           str += '<br/>';
-          str += (positive_positions.indexOf(s) >=0) ? "+" : "";
         }
 
         result.push({_class: _class,
