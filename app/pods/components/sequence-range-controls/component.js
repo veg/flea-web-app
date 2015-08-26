@@ -3,6 +3,7 @@ import {oneIndex} from 'flea-app/utils/utils';
 
 export default Ember.Component.extend({
   tagName: '',
+  inputClass: "input-valid",
 
   // updated from template
   validRange: [0, 1],
@@ -59,6 +60,7 @@ export default Ember.Component.extend({
     },
 
     handleTextSubmit: function() {
+      this.set('inputClass', 'input-valid');
       var text = this.get('rangeText');
       try {
         var ranges = text.split(';').map(function(a) {
@@ -70,7 +72,7 @@ export default Ember.Component.extend({
         });
         this.toController(ranges);
       } catch (err) {
-        // TODO: notify user of failed parse
+        this.set('inputClass', 'input-invalid');
       }
     }
   }
