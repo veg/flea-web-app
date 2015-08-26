@@ -57,7 +57,9 @@ export default Ember.Component.extend({
 
     var self = this;
     var key = function() {
-      self.set('shiftKey', d3.event.shiftKey);
+      if (self._state === "inDOM") {
+        self.set('shiftKey', d3.event.shiftKey);
+      }
     };
 
     d3.select(window).on("keydown", key);
