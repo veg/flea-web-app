@@ -368,3 +368,8 @@ TODO: install with bower instead
         -webkit-transform: scaleY(1.0);
     }
 }
+
+.input-invalid {
+    background-color: #ffdddd;
+    border: 2px solid #ffdddd;
+}

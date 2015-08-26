@@ -6,13 +6,14 @@
       predefinedRegions=validPredefinedRegions
       setRanges="setRanges"
       }}
-      {{input type="text" class="form-control" value=_regexValue
+      {{input type="text" class="form-control" value=_pattern
+      classNameBindings="patternClass"
       placeholder="Pattern to highlight" autofocus="autofocus"
-      focus-out="doRegex" insert-newline="doRegex"
+      focus-out="doPattern" insert-newline="doPattern"
       }}
       <div class="input-group-btn">
-        <button {{action "resetRegex"}} type="button"
-          class="btn btn-default btn-sm" title="Reset regexp">
+        <button {{action "resetPattern"}} type="button"
+          class="btn btn-default btn-sm" title="Reset pattern">
           <i class="fa fa-undo"></i>
         </button>
       </div>

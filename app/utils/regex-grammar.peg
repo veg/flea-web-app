@@ -1,0 +1,23 @@
+/*
+ * Grammar for simplified motif highlighting.
+ * Use PEG.js to compile this to parser.js.
+ */
+
+start
+  = part+
+
+part
+  = amino
+  / charset
+
+amino
+  = value:[A-Z] post:postmod { return {"type": "amino", "value": value, "postmod": post}; }
+
+charset
+  = "[" pre:premod value:[A-Z]+ "]" post:postmod { return {"type": "include", "value": value.join(""), "premod": pre, "postmod": post}; }
+
+premod
+  = val:[^]? {return val ? val : "";}
+
+postmod
+  = val:[*+]? {return val ? val : "";}

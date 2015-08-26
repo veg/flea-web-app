@@ -1,8 +1,9 @@
 import Ember from 'ember';
 import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges} from 'flea-app/utils/utils';
+import parser from 'flea-app/utils/parser';
 
 
-var pngsRegex = 'N\\-*[^P^-^|]\\-*[ST]\\-*[^P^-^|]';
+var pngsPattern = 'N[^P][ST][^P]';
 
 
 export default Ember.Controller.extend({
@@ -16,10 +17,11 @@ export default Ember.Controller.extend({
   // range in 0-indexed [start, stop) reference coordinates
   ranges: [[159, 200]],
 
-  _regexValue: pngsRegex,  // displayed in template
-  regexValue: pngsRegex,  // triggers actual update
-  regexDefault: pngsRegex,
-  _regex: '',
+  _pattern: pngsPattern,  // displayed in template
+  pattern: pngsPattern,  // triggers actual update
+  patternDefault: pngsPattern,
+  _regex: '',  // cache latest valid regexp
+  patternClass: 'input-valid',
 
   _threshold: 1,
   threshold: 1,
@@ -29,18 +31,38 @@ export default Ember.Controller.extend({
   // in alignment 0-indexed coordinates
   selectedPositions: [],
 
+  // parses simple grammar and builds RegExp that takes gaps and pipes
+  // into account
   regex: function() {
-    var value = this.get('regexValue');
+    this.set('patternClass', 'input-valid');
+    var value = this.get('pattern');
     if (value.length === 0) {
       return ".^";
     }
     try {
-      new RegExp(value, 'g');
-      this.set('_regex', value);
+      var result = [];
+      var parsed = parser.parse(value);
+      for (let i=0; i<parsed.length; i++) {
+        var part = parsed[i];
+        if (part.type === "amino") {
+          result.push(part.value + part.postmod);
+        } else {
+          var partvalue = part.value;
+          if (part.premod === "^") {
+            partvalue += "\|\-";
+          }
+          result.push("[" + part.premod + partvalue + "]" + part.postmod);
+        }
+      }
+      result = result.join("-*");
+      // try making a RegExp, so exception will get thrown if it fails
+      new RegExp(result, 'g');
+      this.set('_regex', result);
     } catch(err) {
+      this.set('patternClass', 'input-invalid');
     }
     return this.get('_regex');
-  }.property('regexValue'),
+  }.property('pattern'),
 
   validAlnRange: function() {
     return [0, this.get('model.frequencies.alnToRefCoords.length')];
@@ -252,8 +274,8 @@ export default Ember.Controller.extend({
   }.property('model.predefinedRegions', 'model.frequencies.refRange'),
 
   actions: {
-    doRegex: function() {
-      this.set('regexValue', this.get('_regexValue'));
+    doPattern: function() {
+      this.set('pattern', this.get('_pattern'));
     },
 
     doThreshold: function() {
@@ -268,9 +290,9 @@ export default Ember.Controller.extend({
       }
     },
 
-    resetRegex: function() {
-      this.set('_regexValue', this.get('regexDefault'));
-      this.set('regexValue', this.get('regexDefault'));
+    resetPattern: function() {
+      this.set('_pattern', this.get('patternDefault'));
+      this.set('pattern', this.get('patternDefault'));
     },
 
     finalizeSelection: function() {
@@ -378,7 +400,6 @@ function addHighlights(groups, regex) {
   for (let i=0; i<groups.length; i++) {
     var seqs = groups[i].sequences;
     for (let j=0; j<seqs.length; j++) {
-      // FIXME: remove ranges crossing split barriers
       seqs[j].highlights = regexRanges(regex, seqs[j].sequence);
     }
   }
