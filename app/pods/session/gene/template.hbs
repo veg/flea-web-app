@@ -9,7 +9,7 @@
   </button>
   </div>
   <div class="col-sm-9">
-    {{range-selector values=timepoints selectedIdxChanged="selectTimepointIdx"}}
+    {{range-selector values=timepoints selectedIdx=selectedTimepointIdx selectedIdxChanged="selectTimepointIdx"}}
   </div>
   <div class="col-sm-2 flea-value">
     <output>{{selectedName}}</output>

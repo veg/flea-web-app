@@ -202,13 +202,13 @@ export default Ember.Controller.extend({
     },
 
     selectMetric: function(value) {
-      if (value) {
+      if (value != null) {
         this.set('selectedMetric', value);
       }
     },
 
     selectTimepointIdx: function(value) {
-      if (value) {
+      if (value != null) {
         this.set('selectedTimepointIdx', value);
       }
     }

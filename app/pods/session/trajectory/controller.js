@@ -104,7 +104,7 @@ export default Ember.Controller.extend({
              'selectedPhenoMetrics.[]'),
 
   handleSelection: function(key, values) {
-    if (values) {
+    if (values != null) {
       if (typeof values === 'string' || values instanceof String) {
         values = [values];
       }
