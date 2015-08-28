@@ -13,7 +13,7 @@ Router.map(function() {
     this.route('gene', {path: '/gene'});
     this.route('sequences', {path: '/sequences'});
     this.route('trees', {path: '/trees'});
-    this.route('neutralization', {path: '/neutralization'});
+    // this.route('neutralization', {path: '/neutralization'});
   });
 });
 
