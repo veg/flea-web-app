@@ -6,7 +6,7 @@ export default Ember.Route.extend({
     return Ember.RSVP.hash({
       rates: this.store.find('rates', session_id),
       structure: this.store.find('structure', session_id),
-      frequencies: this.store.find('frequencies', session_id),
+      coordinates: this.store.find('coordinates', session_id),
       turnover: this.store.find('turnover', session_id)
     });
   },

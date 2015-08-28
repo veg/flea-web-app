@@ -65,8 +65,8 @@ export default Ember.Controller.extend({
   }.property('pattern'),
 
   validAlnRange: function() {
-    return [0, this.get('model.frequencies.alnToRefCoords.length')];
-  }.property('model.frequencies.alnToRefCoords.length'),
+    return [0, this.get('model.coordinates.alnToRefCoords.length')];
+  }.property('model.coordinates.alnToRefCoords.length'),
 
   filterSequenceTypes: function(seqs, type) {
     return seqs.filter(function(seq) {
@@ -91,7 +91,7 @@ export default Ember.Controller.extend({
     }
     var ref = this.filterSequenceTypes(seqs, 'Reference')[0];
     // replace repeats with '-'
-    var map = this.get('model.frequencies.alnToRefCoords');
+    var map = this.get('model.coordinates.alnToRefCoords');
     var newSeq = [ref.sequence[0]];
     for (var k=1; k<map.length; k++ ) {
       if (map[k] === map[k - 1]) {
@@ -102,7 +102,7 @@ export default Ember.Controller.extend({
     }
     ref.sequence = newSeq.join('');
     return ref;
-  }.property('model.sequences.[]', 'model.frequencies.alnToRefCoords'),
+  }.property('model.sequences.[]', 'model.coordinates.alnToRefCoords'),
 
   toSlices: function(seq, ranges) {
     return ranges.map(range => seq.slice(range[0], range[1])).join('|');
@@ -178,9 +178,9 @@ export default Ember.Controller.extend({
   alnRanges: function() {
     // convert reference ranges to aligment ranges
     var ranges = this.get('sortedRanges');
-    checkRanges(ranges, this.get('model.frequencies.refRange'));
-    var mapFirst = this.get('model.frequencies.refToFirstAlnCoords');
-    var mapLast = this.get('model.frequencies.refToLastAlnCoords');
+    checkRanges(ranges, this.get('model.coordinates.refRange'));
+    var mapFirst = this.get('model.coordinates.refToFirstAlnCoords');
+    var mapLast = this.get('model.coordinates.refToLastAlnCoords');
     var result = ranges.map(function(range) {
       var start = transformIndex(range[0], mapFirst, false);
       var stop = transformIndex(range[1], mapLast, true);
@@ -189,8 +189,8 @@ export default Ember.Controller.extend({
     checkRanges(result, this.get('validAlnRange'));
     return result;
   }.property('ranges',
-             'model.frequencies.refToFirstAlnCoords',
-             'model.frequencies.refToLastAlnCoords'),
+             'model.coordinates.refToFirstAlnCoords',
+             'model.coordinates.refToLastAlnCoords'),
 
   aaTrajectories: function() {
     var sequences = this.get('selectedSequences');
@@ -268,10 +268,10 @@ export default Ember.Controller.extend({
   }.property('selectedPositions.[]', 'selectedSequences.[]'),
 
   validPredefinedRegions: function() {
-    var [start, stop] = this.get('model.frequencies.refRange');
+    var [start, stop] = this.get('model.coordinates.refRange');
     var regions = this.get('model.predefinedRegions');
     return regions.filter(r => r.start >= start && r.stop <= stop);
-  }.property('model.predefinedRegions', 'model.frequencies.refRange'),
+  }.property('model.predefinedRegions', 'model.coordinates.refRange'),
 
   actions: {
     doPattern: function() {
@@ -301,7 +301,7 @@ export default Ember.Controller.extend({
 
     updateAlnRange: function(idx, range) {
       checkRange(range, this.get('validAlnRange'));
-      var map = this.get('model.frequencies.alnToRefCoords');
+      var map = this.get('model.coordinates.alnToRefCoords');
       var refRanges = this.get('sortedRanges');
 
       // shallow copy, so we have a different object. Ensures that
@@ -314,12 +314,12 @@ export default Ember.Controller.extend({
     },
 
     setRanges: function(ranges) {
-      checkRanges(ranges, this.get('model.frequencies.refRange'));
+      checkRanges(ranges, this.get('model.coordinates.refRange'));
       this.set('ranges', ranges);
     },
 
     addRange: function(range) {
-      checkRange(range, this.get('model.frequencies.refRange'));
+      checkRange(range, this.get('model.coordinates.refRange'));
       var ranges = this.get('sortedRanges').slice(0);
       ranges.push(range);
       this.set('ranges', ranges);

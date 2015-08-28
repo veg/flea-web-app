@@ -14,15 +14,7 @@ export default Ember.Object.extend({
     // maps from alignment coordinates to reference coordinates
     // both 0-indexed.
     var data = this.get('data');
-    var coords = [];
-    for (let k in data) {
-      if (data.hasOwnProperty(k)) {
-        // TODO: change data format to rename 'HXB2' to 'reference'
-        coords.push([zeroIndex(parseInt(k)), zeroIndex(parseInt(data[k]['HXB2']))]);
-      }
-    }
-    coords.sort((a,b) => a[0] - b[0]);
-    return coords.map(d => d[1]);
+    return data.map(c => zeroIndex(c));
   }.property('data.[]'),
 
   refToAlnCoords: function() {

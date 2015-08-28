@@ -115,10 +115,10 @@ export default Ember.Controller.extend({
       return result;
     });
     // take only reference coordinates
-    var coordMap = this.get('model.frequencies.refToFirstAlnCoords');
+    var coordMap = this.get('model.coordinates.refToFirstAlnCoords');
     var result = _.map(coordMap, alnCoord => ratios[alnCoord] || 0);
     return result;
-  }.property('model.frequencies.refToFirstAlnCoords',
+  }.property('model.coordinates.refToFirstAlnCoords',
              'meanDN', 'meanDS', 'entropy', 'turnover', 'selectedTimepointIdx',
              'selectedMetric'),
 
