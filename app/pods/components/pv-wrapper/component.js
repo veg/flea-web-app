@@ -28,11 +28,15 @@ export default Ember.Component.extend({
   }.observes('fog'),
 
   updateSlabMode: function() {
+    Ember.run.once(this, '_updateSlabMode');
+  }.observes('slabMode', 'slabNear', 'slabFar'),
+
+  _updateSlabMode: function() {
     this.get('viewer').slabMode(this.get('slabMode'),
                                 {near: +this.get('slabNear'),
                                  far: +this.get('slabFar')});
     this.get('viewer').requestRedraw();
-  }.observes('slabMode', 'slabNear', 'slabFar'),
+  },
 
   showSlabControls: function() {
     return this.get('slabMode') === 'fixed';
@@ -57,6 +61,10 @@ export default Ember.Component.extend({
   },
 
   updateColors: function() {
+    Ember.run.once(this, '_updateColors');
+  }.observes('data.[]', 'structure', 'geometry'),
+
+  _updateColors() {
     var geometry = this.get('geometry');
     var structure = this.get('structure');
     if (structure === null) {
@@ -86,7 +94,7 @@ export default Ember.Component.extend({
     var colorOp = pv.color.byResidueProp('customData', gradient);
     geometry.colorBy(colorOp);
     this.get('viewer').requestRedraw();
-  }.observes('data.[]', 'structure', 'geometry'),
+  },
 
   labelResidues: function() {
     var viewer = this.get('viewer');
@@ -112,7 +120,7 @@ export default Ember.Component.extend({
 
   actions: {
     selectSlabMode: function(value) {
-      if (value) {
+      if (value != null) {
         this.set('slabMode', value);
       }
     }
