@@ -31,7 +31,6 @@ export default Ember.Component.extend({
     return margin.top + margin.bottom + this.get('nPlots') * this.get('heightEach') + this.get('labelHeight');
   }.property('heightEach', 'margin', 'nPlots', 'labelHeight'),
 
-
   didInsertElement: function() {
     this._updateChart();
   },
@@ -76,6 +75,27 @@ export default Ember.Component.extend({
   }.property('names.length', 'addCombined'),
 
   _updateChart: function() {
+    try {
+      this.__updateChart();
+    } catch (err) {
+      if (err && err.name && err.name === "data consistency error") {
+        this._removeAll();
+        // TODO: do more than just hide the plots.
+      } else {
+        throw err;
+      }
+    }
+  },
+
+  _removeAll: function() {
+    var svg = d3.select('#' + this.get('elementId')).select('.inner');
+
+    svg.selectAll("path").remove();
+    svg.selectAll("g").remove();
+    svg.selectAll("defs").remove();
+  },
+
+  __updateChart: function() {
     var names = this.get('names');
     var data1 = this.get('data1');
     var data2 = this.get('data2');
@@ -104,18 +124,30 @@ export default Ember.Component.extend({
 
     // check data consistency
     if (two_d && data1.length !== data2.length) {
-      throw "data1 and data2 have different lengths";
+      throw {
+        name: "data consistency error",
+        message: "data1 and data2 have different lengths"
+      };
     }
     if (data1.length !== names.length) {
-      throw "data1 and names have different lengths";
+      throw {
+        name: "data consistency error",
+        message: "data1 and names have different lengths"
+      };
     }
     for (let j=0; j<n_plots; j++) {
       if (data1[j].length !== n_sites) {
-        throw "data vector lengths are inconsistent";
+        throw {
+          name: "data consistency error",
+          message: "data vector lengths are inconsistent"
+        };
       }
       if (two_d) {
         if (data2[j].length !== n_sites) {
-          throw "data vector lengths are inconsistent";
+          throw {
+            name: "data consistency error",
+            message: "data vector lengths are inconsistent"
+          };
         }
       }
     }
@@ -143,11 +175,8 @@ export default Ember.Component.extend({
       svg.select(".pos.x.axis").call(xAxis);
     }
 
+    this._removeAll();
     var svg = d3.select('#' + this.get('elementId')).select('.inner');
-
-    svg.selectAll("path").remove();
-    svg.selectAll("g").remove();
-    svg.selectAll("defs").remove();
 
     svg.append("defs").append("clipPath")
       .attr("id", "clip")
