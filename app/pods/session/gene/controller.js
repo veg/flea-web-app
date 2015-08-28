@@ -4,8 +4,8 @@ import {parse_date, format_date, isString} from 'flea-app/utils/utils';
 export default Ember.Controller.extend({
 
   // FIXME: selecting and checking by string value is verbose and error-prone.
-  metrics: ["dNdS", "Turnover", "Entropy"],
-  selectedMetric: "dNdS",
+  _metrics: ["dNdS", "Turnover", "Entropy"],
+  selectedMetric: "Turnover",
   markPositive: true,
 
   selectedTimepointIdx: 0,
@@ -24,6 +24,13 @@ export default Ember.Controller.extend({
   }.property('application.baseURL',
              'application.currentPath',
              'session.session_id'),
+
+  metrics: function() {
+    if (this.get('model.rates.exists')) {
+      return this.get('_metrics');
+    }
+    return ["Turnover"];
+  }.property('model.rates.exists', '_metrics'),
 
   labels: function() {
     var metric = this.get('selectedMetric');
@@ -123,11 +130,12 @@ export default Ember.Controller.extend({
              'selectedMetric'),
 
   timepoints: function() {
+    if (this.get('selectedMetric') === "Turnover") {
+      var turnover = this.get('model.turnover.sortedTurnover');
+      return turnover.map(elt => elt.date);
+    }
     var sorted = this.get('model.rates.sortedRates');
     var result = sorted.map(d => d.date);
-    if (this.get('selectedMetric') === "Turnover") {
-      result.splice(0, 2);
-    }
     return result;
   }.property('model.rates.sortedRates.[].[]', 'selectedMetric'),
 

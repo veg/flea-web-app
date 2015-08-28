@@ -6,7 +6,7 @@ export default Ember.Route.extend({
     if (hyphy) {
       this.transitionTo('session.trajectory');
     } else {
-      this.transitionTo('session.sequences');
+      this.transitionTo('session.gene');
     }
   }
 });
