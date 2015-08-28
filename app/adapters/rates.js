@@ -10,6 +10,7 @@ var RateInfo = Ember.Object.extend({
 
 var RatesObject = Ember.Object.extend({
   data: [],
+  exists: false,
 
   sortedRates: function () {
     var rates = this.get('data');
@@ -22,8 +23,12 @@ var RatesObject = Ember.Object.extend({
 
   // _positive_selection
   positiveSelection: function() {
-    var data = this.get('sortedRates');
-    return data.map(d => positive_selection_positions(d.rates));
+    if (!this.get('exists')) {
+      // FIXME: actually report that it failed
+      return [[]];
+    }
+    var sorted = this.get('sortedRates');
+    return sorted.map(d => positive_selection_positions(d.rates));
   }.property('sortedRates'),
 });
 
@@ -52,7 +57,9 @@ export default Ember.Object.extend({
           }));
         }
       }
-      return RatesObject.create({data: new_result});
+      return RatesObject.create({data: new_result, exists: true});
+    }, function() {
+      return RatesObject.create();
     });
   }
 });
