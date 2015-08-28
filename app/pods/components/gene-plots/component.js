@@ -262,7 +262,7 @@ export default Ember.Component.extend({
       } else {
         focus_plots.push (plot_svg);
       }
-      if (positions.length > 0) {
+      if (plot_id < positions.length) {
         plot_svg.selectAll (".selected_site")
           .data(positions[plot_id])
           .enter()
