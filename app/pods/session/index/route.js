@@ -2,6 +2,11 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   redirect: function() {
-    this.transitionTo('session.trajectory');
+    var hyphy = this.get('model.runinfo.configuration.Tasks.hyphy_analysis');
+    if (hyphy) {
+      this.transitionTo('session.trajectory');
+    } else {
+      this.transitionTo('session.sequences');
+    }
   }
 });
