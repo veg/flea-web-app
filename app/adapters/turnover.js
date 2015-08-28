@@ -12,7 +12,6 @@ var TurnoverInfo = Ember.Object.extend({
 
 var TurnoverObject = Ember.Object.extend({
   data: [],
-  readCounts: [],
 
   sortedTurnover: function() {
     var data = this.get('data');
@@ -26,7 +25,6 @@ export default Ember.Object.extend({
     var url = config.baseURL + 'data/' + session_id + '/turnover';
     return request(url).then(function(data) {
       var result = [];
-      var readCounts = data['readCount'];
       delete data['readCount'];
       for (let k in data) {
         result.push(TurnoverInfo.create({
@@ -36,7 +34,6 @@ export default Ember.Object.extend({
       }
       return TurnoverObject.create({
         data: result,
-        readCounts: readCounts
       });
     });
   }
