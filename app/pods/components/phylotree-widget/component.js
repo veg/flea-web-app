@@ -20,7 +20,13 @@ export default Ember.Component.extend({
   nodeNamer: function() {
     var seq_ids_to_dates = this.get('seq_ids_to_dates');
     if (this.get('showDates')) {
-      return data => format_date(seq_ids_to_dates[data.name.toUpperCase()]);
+      return function(data) {
+        try {
+          return format_date(seq_ids_to_dates[data.name.toUpperCase()]);
+        } catch (err) {
+          return data.name;
+        }
+      };
     } else {
       return null;
     }
