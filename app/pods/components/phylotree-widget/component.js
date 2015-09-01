@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import {format_date} from 'flea-app/utils/utils';
 
 export default Ember.Component.extend({
   tagName: 'svg',
@@ -12,34 +11,26 @@ export default Ember.Component.extend({
   height: 600,
 
   tree: null,
-  seq_ids_to_dates: null,
   copynumbers: null,
-
   do_copy_number: false,
 
+  // parameters
+  seqIdToNodeName: null,
+  seqIdToNodeColor: null,
+
   nodeNamer: function() {
-    var seq_ids_to_dates = this.get('seq_ids_to_dates');
-    if (this.get('showDates')) {
-      return function(data) {
-        try {
-          return format_date(seq_ids_to_dates[data.name.toUpperCase()]);
-        } catch (err) {
-          return data.name;
-        }
-      };
-    } else {
-      return null;
-    }
-  }.property('seq_ids_to_dates', 'showDates'),
+    var map = this.get('seqIdToNodeName');
+    return function(data) {
+      return map[data.name];
+    };
+  }.property('seqIdToNodeName'),
 
   nodeColorizer: function() {
-    var seq_ids_to_dates = this.get('seq_ids_to_dates');
-    var time_point_colors = d3.scale.category10();
-    var f = function(element, data) {
-      element.style ("fill", time_point_colors (seq_ids_to_dates[data.name.toUpperCase()]));
+    var map = this.get('seqIdToNodeColor');
+    return function(element, data) {
+      element.style("fill", map[data.name]);
     };
-    return f;
-  }.property('seq_ids_to_dates'),
+  }.property('seqIdToNodeColor'),
 
   didInsertElement: function() {
     var tree_widget = d3.layout.phylotree("body")
@@ -138,5 +129,12 @@ export default Ember.Component.extend({
     var widget = this.get('treeWidget');
     widget.branch_name(this.get('nodeNamer'));
     widget.update(true);
-  }.observes('nodeNamer')
+  }.observes('nodeNamer'),
+
+  updateColors: function() {
+    var widget = this.get('treeWidget');
+    widget.style_nodes (this.get('nodeColorizer'));
+    widget.update(true);
+  }.observes('nodeColorizer'),
+
 });

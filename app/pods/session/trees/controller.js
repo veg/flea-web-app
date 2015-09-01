@@ -121,10 +121,45 @@ export default Ember.Controller.extend({
   seqIdToDate: function() {
     var seqs = this.get('model.sequences');
     return seqs.reduce(function(acc, s) {
-      acc[s['id'].toUpperCase()] = s['date'];
+      acc[s['id']] = s['date'];
       return acc;
     }, {});
   }.property('model.sequences.[]'),
+
+  seqIdToNodeName: function() {
+    var result = {};
+    if (this.get('showDates')) {
+      var map = this.get('seqIdToDate');
+      for (let key in map) {
+        if (map.hasOwnProperty(key)) {
+          try {
+            result[key] = format_date(map[key]);
+          } catch (err) {
+            result[key] = key;
+          }
+        }
+      }
+    } else {
+      var seqs = this.get('model.sequences');
+      result = seqs.reduce(function(acc, s) {
+        acc[s.get('id')] = s.get('id');
+        return acc;
+      }, {});
+    }
+    return result;
+  }.property('model.sequences.@each.id', 'seqIdToDate', 'showDates'),
+
+  seqIdToNodeColor: function() {
+    var map = this.get('seqIdToDate');
+    var time_point_colors = d3.scale.category10();
+    var result = {};
+    for (let key in map) {
+      if (map.hasOwnProperty(key)) {
+        result[key] = time_point_colors(map[key]);
+      }
+    }
+    return result;
+  }.property('seqIdToDate'),
 
   actions: {
     setSortState: function(val) {
