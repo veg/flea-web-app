@@ -12,12 +12,12 @@ export default Ember.Component.extend({
 
   refHTML: function() {
     var result = [];
-    var last_hs = -5;
     var map = this.get('alnToRef');
     var positive_positions = this.get('positiveSelection')[0];
     // TODO: there is surely a more elegent way of building this html
     var ranges = this.get('alnRanges');
     for (let i=0; i<ranges.length; i++) {
+      var last_hs = -1;
       var start = ranges[i][0];
       var stop = ranges[i][1];
       for (let s=start; s < stop; s++) {
