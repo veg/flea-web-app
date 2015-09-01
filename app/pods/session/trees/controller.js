@@ -7,6 +7,9 @@ export default Ember.Controller.extend({
   _timePoint: '',
   _distanceMeasure: '',
 
+  nodeNameTypes: ['id', 'date', 'motif'],
+  nodeNameType: 'id',
+
   linkeToSelection: true,
   showDates: true,
 
@@ -116,19 +119,25 @@ export default Ember.Controller.extend({
              'timePoints',
              'distanceMeasure'),
 
+
   // FIXME: code duplication. Same function used in neutralization controller.
   // Where to put this to share it?
-  seqIdToDate: function() {
-    var seqs = this.get('model.sequences');
+  seqIdToProperty: function(seqs, property) {
     return seqs.reduce(function(acc, s) {
-      acc[s['id']] = s['date'];
+      acc[s.get('id')] = s.get(property);
       return acc;
     }, {});
+  },
+
+  seqIdToDate: function() {
+    return this.seqIdToProperty(this.get('model.sequences'), 'date');
   }.property('model.sequences.[]'),
 
   seqIdToNodeName: function() {
     var result = {};
-    if (this.get('showDates')) {
+    var nameType = this.get('nodeNameType');
+    var seqs = this.get('model.sequences');
+    if (nameType === 'date') {
       var map = this.get('seqIdToDate');
       for (let key in map) {
         if (map.hasOwnProperty(key)) {
@@ -139,15 +148,18 @@ export default Ember.Controller.extend({
           }
         }
       }
+    } else if (nameType === "id") {
+      result = this.seqIdToProperty(seqs, 'id');
+    } else if (nameType === "motif") {
+      result =this.seqIdToProperty(seqs, 'motif');
     } else {
-      var seqs = this.get('model.sequences');
-      result = seqs.reduce(function(acc, s) {
-        acc[s.get('id')] = s.get('id');
-        return acc;
-      }, {});
+      throw "unknown node name type: " + nameType;
     }
     return result;
-  }.property('model.sequences.@each.id', 'seqIdToDate', 'showDates'),
+  }.property('model.sequences',
+             'model.sequences.@each.id',
+             'model.sequences.@each.motif',
+             'seqIdToDate', 'nodeNameType'),
 
   seqIdToNodeColor: function() {
     var map = this.get('seqIdToDate');
@@ -182,6 +194,12 @@ export default Ember.Controller.extend({
       if (value != null) {
         this.set('distanceMeasure', value);
       }
+    },
+    selectNodeNameType: function(value) {
+      if (value != null) {
+        this.set('nodeNameType', value);
+      }
     }
+
   }
 });

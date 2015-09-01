@@ -32,8 +32,12 @@
       </span>
       <span class="input-group-addon">
         Show dates
-        {{input type="checkbox" checked=showDates}}
       </span>
+      {{#x-select-bootstrap value=nodeNameType action="selectNodeNameType"}}
+      {{#each nodeNameTypes as |nameType|}}
+      {{#x-option value=nameType}}{{nameType}}{{/x-option}}
+      {{/each}}
+      {{/x-select-bootstrap}}
     </div>
   </div>
 </div>
