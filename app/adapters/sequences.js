@@ -78,6 +78,7 @@ function make_seq(id, date, sequence, type) {
     date: date,
     sequence: sequence,
     type: type,
-    selected: true  // used to filter sequences
+    selected: true,  // used to filter sequences
+    motif: ""  // changes when new columns are selected
   });
 }
