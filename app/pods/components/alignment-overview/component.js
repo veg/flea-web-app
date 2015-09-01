@@ -89,8 +89,7 @@ export default Ember.Component.extend({
         .data(regions, d => d.name);
 
     var width = function(start, stop) {
-      // FIXME: should not have to subtract 1 here
-      return mapLast[stop] - mapFirst[start] - 1;
+      return mapLast[zeroIndex(stop)] - mapFirst[start];
     };
 
     text
