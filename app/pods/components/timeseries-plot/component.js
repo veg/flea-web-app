@@ -38,6 +38,8 @@ export default Ember.Component.extend({
     bottom: 60,
     left:   50},
 
+  userColors: null,
+
   margin: function() {
     var margin = this.get('_margin');
     var names = this.get('seriesNames');
@@ -159,10 +161,14 @@ export default Ember.Component.extend({
   }.property(),
 
   colors: function() {
-    var colors = d3.scale.category10();
+    var colors = this.get('userColors');
+    if (colors !== null) {
+      return colors;
+    }
+    colors = d3.scale.category10();
     colors.domain(this.get('seriesNames'));
     return colors;
-  }.property('seriesNames'),
+  }.property('userColors', 'seriesNames'),
 
   _updateData: function(data, line, classname) {
     var svg = d3.select('#' + this.get('elementId')).select('.inner');

@@ -163,11 +163,12 @@ export default Ember.Controller.extend({
 
   seqIdToNodeColor: function() {
     var map = this.get('seqIdToDate');
-    var time_point_colors = d3.scale.category10();
+    var colors = d3.scale.category10();
+    colors.domain(_.values(map));
     var result = {};
     for (let key in map) {
       if (map.hasOwnProperty(key)) {
-        result[key] = time_point_colors(map[key]);
+        result[key] = colors(map[key]);
       }
     }
     return result;
