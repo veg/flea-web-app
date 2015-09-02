@@ -67,7 +67,6 @@ export default Ember.Object.extend({
 });
 
 
-
 function make_seq(id, date, sequence, type) {
   // FIXME: null dates are a problem everywhere!
   if (date !== null) {

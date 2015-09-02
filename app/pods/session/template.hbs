@@ -1,6 +1,6 @@
 <div class='container' id='allofit'>
   <ul class="nav nav-tabs">
-    {{#if model.runinfo.configuration.Tasks.hyphy_analysis}}
+    {{#if showTrajectory}}
       <li>{{#link-to 'session.trajectory' model.session_id data-toggle="tab"}}Evolutionary trajectory{{/link-to}}</li>
     {{/if}}
     <li>{{#link-to 'session.gene' model.session_id data-toggle="tab"}}Gene-wide information{{/link-to}}</li>
