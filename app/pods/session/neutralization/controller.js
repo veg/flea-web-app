@@ -135,12 +135,12 @@ export default Ember.Controller.extend({
   }.property('mabFeature.[]', 'sortedDate.[]'),
 
   seqIdToDate: function() {
-    var seqs = this.get('model.sequences');
+    var seqs = this.get('model.sequences.sequences');
     return seqs.reduce(function(acc, s) {
       acc[s['id']] = s['date'];
       return acc;
     }, {});
-  }.property('model.sequences.[]')
+  }.property('model.sequences.sequences.[]')
 });
 
 

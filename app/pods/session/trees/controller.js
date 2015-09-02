@@ -130,13 +130,13 @@ export default Ember.Controller.extend({
   },
 
   seqIdToDate: function() {
-    return this.seqIdToProperty(this.get('model.sequences'), 'date');
-  }.property('model.sequences.[]'),
+    return this.seqIdToProperty(this.get('model.sequences.observedAndMrca'), 'date');
+  }.property('model.sequences.observedAndMrca.[]'),
 
   seqIdToNodeName: function() {
     var result = {};
     var nameType = this.get('nodeNameType');
-    var seqs = this.get('model.sequences');
+    var seqs = this.get('model.sequences.observedAndMrca');
     if (nameType === 'date') {
       var map = this.get('seqIdToDate');
       for (let key in map) {
@@ -156,9 +156,9 @@ export default Ember.Controller.extend({
       throw "unknown node name type: " + nameType;
     }
     return result;
-  }.property('model.sequences',
-             'model.sequences.@each.id',
-             'model.sequences.@each.motif',
+  }.property('model.sequences.observedAndMrca',
+             'model.sequences.observedAndMrca.@each.id',
+             'model.sequences.observedAndMrca.@each.motif',
              'seqIdToDate', 'nodeNameType'),
 
   seqIdToNodeColor: function() {

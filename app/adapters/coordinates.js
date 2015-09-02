@@ -2,7 +2,7 @@ import Ember from 'ember';
 import config from '../config/environment';
 import request from 'ic-ajax';
 
-import CoordinatesObject from 'flea-app/pods/coordinates-object/model';
+import CoordinatesObject from 'flea-app/models/coordinates-object';
 
 export default Ember.Object.extend({
   find: function(session_id) {

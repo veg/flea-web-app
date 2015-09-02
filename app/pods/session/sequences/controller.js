@@ -22,8 +22,21 @@ export default Ember.Controller.extend({
 
   markPositive: true,
 
-  // in alignment 0-indexed coordinates
-  selectedPositions: [],
+  reference: function() {
+    var ref = this.get('model.sequences.reference');
+    // replace repeats with '-'
+    var map = this.get('model.coordinates.alnToRefCoords');
+    var newSeq = [ref.sequence[0]];
+    for (var k=1; k<map.length; k++ ) {
+      if (map[k] === map[k - 1]) {
+        newSeq.push('-');
+      } else {
+        newSeq.push(ref.sequence[k]);
+      }
+    }
+    ref.sequence = newSeq.join('');
+    return ref;
+  }.property('model.sequences.reference', 'model.coordinates.alnToRefCoords'),
 
   // parses simple grammar and builds RegExp that takes gaps and pipes
   // into account
@@ -62,51 +75,15 @@ export default Ember.Controller.extend({
     return [0, this.get('model.coordinates.alnToRefCoords.length')];
   }.property('model.coordinates.alnToRefCoords.length'),
 
-  filterSequenceTypes: function(seqs, type) {
-    return seqs.filter(function(seq) {
-      return seq.get('type') === type;
-    });
-  },
-
-  observedSequences: function() {
-    var seqs = this.get('model.sequences');
-    return this.filterSequenceTypes(seqs, 'Observed');
-  }.property('model.sequences.[]'),
-
-  mrca: function() {
-    var seqs = this.get('model.sequences');
-    return this.filterSequenceTypes(seqs, 'MRCA')[0];
-  }.property('model.sequences.[]'),
-
-  reference: function() {
-    var seqs = this.get('model.sequences');
-    if (!_.some(seqs, s => s.type === 'Reference')) {
-      return '';
-    }
-    var ref = this.filterSequenceTypes(seqs, 'Reference')[0];
-    // replace repeats with '-'
-    var map = this.get('model.coordinates.alnToRefCoords');
-    var newSeq = [ref.sequence[0]];
-    for (var k=1; k<map.length; k++ ) {
-      if (map[k] === map[k - 1]) {
-        newSeq.push('-');
-      } else {
-        newSeq.push(ref.sequence[k]);
-      }
-    }
-    ref.sequence = newSeq.join('');
-    return ref;
-  }.property('model.sequences.[]', 'model.coordinates.alnToRefCoords'),
-
   toSlices: function(seq, ranges) {
     return ranges.map(range => seq.slice(range[0], range[1])).join('|');
   },
 
   mrcaSlice: function() {
-    var mrca = this.get('mrca');
+    var mrca = this.get('model.sequences.mrca');
     var ranges = this.get('alnRanges');
     return this.toSlices(mrca.sequence, ranges);
-  }.property('mrca', 'alnRanges'),
+  }.property('model.sequences.mrca', 'alnRanges'),
 
   refSlice: function() {
     var ref = this.get('reference');
@@ -115,11 +92,11 @@ export default Ember.Controller.extend({
     }
     var ranges = this.get('alnRanges');
     return this.toSlices(ref.sequence, ranges);
-  }.property('mrca', 'alnRanges'),
+  }.property('model.sequences.mrca', 'alnRanges'),
 
   groupedSequences: function() {
     var self = this;
-    var sequences = this.get('observedSequences');
+    var sequences = this.get('model.sequences.observedSequences');
     var copynumbers = this.get('model.copynumbers');
     var result = [];
     var ranges = this.get('alnRanges');
@@ -157,7 +134,7 @@ export default Ember.Controller.extend({
     return result;
   }.property('alnRanges', 'mrcaSlice',
              'model.copynumbers',
-             'observedSequences.[]',
+             'model.sequences.observedSequences.[]',
              'regex', 'threshold'),
 
   sortedRanges: function() {
@@ -184,7 +161,7 @@ export default Ember.Controller.extend({
              'model.coordinates.refToLastAlnCoords'),
 
   aaTrajectories: function() {
-    var sequences = this.get('observedSequences');
+    var sequences = this.get('model.sequences.observedSequences');
     var copynumbers = this.get('model.copynumbers');
     var counts = {};
     var totals = {};
@@ -249,20 +226,7 @@ export default Ember.Controller.extend({
     }
     // TODO: sort by date each motif became prevalent
     return series;
-  }.property('observedSequences.[]', 'observedSequences.@each.motif'),
-
-  updateMotifs: function() {
-    var sequences = this.get('model.sequences');
-    var positions = this.get('selectedPositions').sort((a, b) => a - b);
-    for (let i=0; i<sequences.length; i++ ) {
-      var seq = sequences.objectAt(i);
-      if (positions.length === 0) {
-        seq.set('motif', "");
-      } else {
-        seq.set('motif', positions.map(idx => seq.sequence[idx]).join(''));
-      }
-    }
-  }.observes('selectedPositions.[]'),
+  }.property('model.sequences.observedSequences.[]', 'model.sequences.observedSequences.@each.motif'),
 
   validPredefinedRegions: function() {
     var [start, stop] = this.get('model.coordinates.refRange');
@@ -326,7 +290,7 @@ export default Ember.Controller.extend({
     setSelectedPositions: function(positions) {
       var stop = this.get('validAlnRange')[1];
       if (positions && _.every(positions, p => (p >= 0 && p < stop))) {
-        this.set('selectedPositions', positions);
+        this.set('model.sequences.selectedPositions', positions);
       }
     }
   }

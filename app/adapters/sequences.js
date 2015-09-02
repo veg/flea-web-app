@@ -3,6 +3,9 @@ import config from '../config/environment';
 import request from 'ic-ajax';
 import {parse_date} from 'flea-app/utils/utils';
 
+import SequenceObject from 'flea-app/models/sequence-object';
+import SequencesObject from 'flea-app/models/sequences-object';
+
 export default Ember.Object.extend({
   /* formats sequences to flat format:
 
@@ -19,19 +22,20 @@ export default Ember.Object.extend({
     var url = config.baseURL + 'data/' + session_id + '/sequences';
     return request(url).then(function(result) {
       var sequences = [];
+      var reference = null;
+      var mrca = null;
       for (let prop in result) {
         if (!result.hasOwnProperty(prop)) {
           continue;
         }
         if (prop === "MRCA") {
-          sequences.push(make_seq("mrca", null, result[prop], "MRCA"));
+          mrca = make_seq("mrca", null, result[prop], "MRCA");
           continue;
         }
         if (prop === "Reference") {
-          sequences.push(make_seq("reference", null, result[prop], "Reference"));
+          reference = make_seq("reference", null, result[prop], "Reference");
           continue;
         }
-
         if (prop === "Combined") {
           var combined = result[prop];
           for (let cid in combined) {
@@ -56,12 +60,17 @@ export default Ember.Object.extend({
               continue;
             }
             var seq = seqs[id];
-            var final = make_seq(id, date, seq, type);
-            sequences.push(final);
+            var fseq = make_seq(id, date, seq, type);
+            sequences.push(fseq);
+            continue;
           }
         }
       }
-      return sequences;
+      return SequencesObject.create({
+        sequences: sequences,
+        mrca: mrca,
+        reference: reference
+      });
     });
   }
 });
@@ -72,12 +81,10 @@ function make_seq(id, date, sequence, type) {
   if (date !== null) {
     date = parse_date(date);
   }
-  return Ember.Object.create({
+  return SequenceObject.create({
     id: id,
     date: date,
     sequence: sequence,
     type: type,
-    selected: true,  // used to filter sequences
-    motif: ""  // changes when new columns are selected
   });
 }
