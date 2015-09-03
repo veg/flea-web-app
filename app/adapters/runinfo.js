@@ -5,6 +5,10 @@ import request from 'ic-ajax';
 export default Ember.Object.extend({
   find: function(session_id) {
     var url = config.baseURL + 'data/' + session_id + '/runinfo';
-    return request(url);
+    return request(url).then(function(response) {
+      return response;
+    }, function() {
+      return null;
+    });
   }
 });
