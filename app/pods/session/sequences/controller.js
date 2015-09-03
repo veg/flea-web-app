@@ -163,11 +163,12 @@ export default Ember.Controller.extend({
   aaTrajectories: function() {
     var sequences = this.get('model.sequences.observedSequences');
     var copynumbers = this.get('model.copynumbers');
+    var motifs = this.get('model.sequences.idToMotif');
     var counts = {};
     var totals = {};
     for (let i=0; i<sequences.length; i++ ) {
       var seq = sequences[i];
-      var motif = seq.get('motif');
+      var motif = motifs[seq.get('id')];
       if (!(counts.hasOwnProperty(motif))) {
         counts[motif] = {};
       }
@@ -226,7 +227,7 @@ export default Ember.Controller.extend({
     }
     // TODO: sort by date each motif became prevalent
     return series;
-  }.property('model.sequences.observedSequences.[]', 'model.sequences.observedSequences.@each.motif'),
+  }.property('model.sequences.observedSequences.[]', 'model.sequences.idToMotif.[]'),
 
   validPredefinedRegions: function() {
     var [start, stop] = this.get('model.coordinates.refRange');

@@ -4,6 +4,5 @@ export default Ember.Object.extend({
   id: null,
   date: null,
   sequence: null,
-  type: null,
-  motif: ""  // FIXME: remove this
+  type: null
 });

@@ -151,14 +151,13 @@ export default Ember.Controller.extend({
     } else if (nameType === "id") {
       result = this.seqIdToProperty(seqs, 'id');
     } else if (nameType === "motif") {
-      result =this.seqIdToProperty(seqs, 'motif');
+      result = this.get('model.sequences.idToMotif');
     } else {
       throw "unknown node name type: " + nameType;
     }
     return result;
-  }.property('model.sequences.observedAndMrca',
-             'model.sequences.observedAndMrca.@each.id',
-             'model.sequences.observedAndMrca.@each.motif',
+  }.property('model.sequences.observedAndMrca.[]',
+             'model.sequences.idToMotif.[]',
              'seqIdToDate', 'nodeNameType'),
 
   seqIdToNodeColor: function() {

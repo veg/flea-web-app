@@ -26,16 +26,12 @@ export default Ember.Object.extend({
     return seqs;
   }.property('sequences.[]', 'mrca'),
 
-  updateMotifs: function() {
-    var sequences = this.get('sequences');
+  idToMotif: function() {
+    var seqs = this.get('observedAndMrca');
     var positions = this.get('selectedPositions').sort((a, b) => a - b);
-    for (let i=0; i<sequences.length; i++ ) {
-      var seq = sequences.objectAt(i);
-      if (positions.length === 0) {
-        seq.set('motif', "");
-      } else {
-        seq.set('motif', positions.map(idx => seq.sequence[idx]).join(''));
-      }
-    }
-  }.observes('selectedPositions.[]'),
+    return seqs.reduce(function(acc, s) {
+      acc[s.get('id')] = positions.map(idx => s.get('sequence')[idx]).join('');
+      return acc;
+    }, {});
+  }.property('observedAndMrca.[]', 'selectedPositions.[]')
 });
