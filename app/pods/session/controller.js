@@ -7,5 +7,5 @@ export default Ember.Controller.extend({
     } catch (err) {
       return false;
     }
-  }.property('model.runinfo')
+  }.property('model.runinfo.configuration.Tasks.hyphy_analysis')
 });
