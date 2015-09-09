@@ -4,8 +4,8 @@ import {parse_date, format_date, isString} from 'flea-app/utils/utils';
 export default Ember.Controller.extend({
 
   // FIXME: selecting and checking by string value is verbose and error-prone.
-  _metrics: ["dNdS", "Turnover", "Entropy"],
-  selectedMetric: "Turnover",
+  _metrics: ["dNdS", "JS Divergence", "Entropy"],
+  selectedMetric: "JS Divergence",
   markPositive: true,
 
   selectedTimepointIdx: 0,
@@ -29,7 +29,7 @@ export default Ember.Controller.extend({
     if (this.get('model.rates.exists')) {
       return this.get('_metrics');
     }
-    return ["Turnover"];
+    return ["JS Divergence"];
   }.property('model.rates.exists', '_metrics'),
 
   labels: function() {
@@ -60,13 +60,13 @@ export default Ember.Controller.extend({
     return this.getRate(rates, 4);
   }.property('model.rates.sortedRates.[].[]'),
 
-  turnover: function() {
-    var turnover = this.get('model.turnover.sortedTurnover');
-    return turnover.map(elt => elt.turnover);
-  }.property('model.turnover.sortedTurnover'),
+  divergence: function() {
+    var divergence = this.get('model.divergence.sortedDivergence');
+    return divergence.map(elt => elt.divergence);
+  }.property('model.divergence.sortedDivergence'),
 
   addCombined: function() {
-    return this.get('selectedMetric') === "Turnover";
+    return this.get('selectedMetric') === "JS Divergence";
   }.property('selectedMetric'),
 
   data1: function() {
@@ -74,14 +74,14 @@ export default Ember.Controller.extend({
     if (metric === "Entropy") {
       return this.get('entropy');
     }
-    else if (metric === "Turnover") {
-      return this.get('turnover');
+    else if (metric === "JS Divergence") {
+      return this.get('divergence');
     }
     else if (metric === "dNdS") {
       return this.get('meanDS');
     }
     throw "Invalid metric";
-  }.property('selectedMetric', 'turnover', 'entropy', 'meanDS'),
+  }.property('selectedMetric', 'divergence', 'entropy', 'meanDS'),
 
   data2: function() {
     var metric = this.get('selectedMetric');
@@ -89,7 +89,7 @@ export default Ember.Controller.extend({
       return this.get('meanDN');
     }
     return [];
-  }.property('selectedMetric', 'turnover', 'entropy', 'meanDN'),
+  }.property('selectedMetric', 'divergence', 'entropy', 'meanDN'),
 
   structureData: function() {
     var idx = this.get('selectedTimepointIdx');
@@ -101,8 +101,8 @@ export default Ember.Controller.extend({
     if (metric === "Entropy") {
       return this.get('entropy')[idx];
     }
-    if (metric === "Turnover") {
-      return this.get('turnover')[idx];
+    if (metric === "JS Divergence") {
+      return this.get('divergence')[idx];
     }
     var dn = this.get('meanDN');
     var ds = this.get('meanDS');
@@ -126,13 +126,13 @@ export default Ember.Controller.extend({
     var result = _.map(coordMap, alnCoord => ratios[alnCoord] || 0);
     return result;
   }.property('model.coordinates.refToFirstAlnCoords',
-             'meanDN', 'meanDS', 'entropy', 'turnover', 'selectedTimepointIdx',
+             'meanDN', 'meanDS', 'entropy', 'divergence', 'selectedTimepointIdx',
              'selectedMetric'),
 
   timepoints: function() {
-    if (this.get('selectedMetric') === "Turnover") {
-      var turnover = this.get('model.turnover.sortedTurnover');
-      return turnover.map(elt => elt.date);
+    if (this.get('selectedMetric') === "JS Divergence") {
+      var divergence = this.get('model.divergence.sortedDivergence');
+      return divergence.map(elt => elt.date);
     }
     var sorted = this.get('model.rates.sortedRates');
     var result = sorted.map(d => d.date);
