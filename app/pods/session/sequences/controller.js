@@ -3,7 +3,7 @@ import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, check
 import parser from 'flea-app/utils/parser';
 
 
-var pngsPattern = 'N[^P][ST][^P]';
+var pngsPattern = 'N[^P][ST]';
 
 
 export default Ember.Controller.extend({
