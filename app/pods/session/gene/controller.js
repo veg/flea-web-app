@@ -92,42 +92,57 @@ export default Ember.Controller.extend({
   }.property('selectedMetric', 'divergence', 'entropy', 'meanDN'),
 
   structureData: function() {
+    var metric = this.get('selectedMetric');
+    if (metric === "Entropy") {
+      return this.get('entropy');
+    }
+    if (metric === "JS Divergence") {
+      return this.get('divergence');
+    }
+    if (metric === 'dNdS') {
+      var dn = this.get('meanDN');
+      var ds = this.get('meanDS');
+      var result = [];
+      for (let idx=0; idx<dn.length; idx++) {
+        var zipped = _.zip(dn[idx], ds[idx]);
+        var logratios = zipped.map(function(pair) {
+          var logratio = Math.log(pair[0] / pair[1]);
+          return logratio;
+        });
+        result.push(logratios);
+      }
+      return result;
+    }
+    throw {name: 'UnknownMetricError', message: metric};
+  }.property('model.coordinates.refToFirstAlnCoords',
+             'meanDN', 'meanDS', 'entropy', 'divergence', 'selectedTimepointIdx',
+             'selectedMetric'),
+
+  selectedStructureData: function() {
     var idx = this.get('selectedTimepointIdx');
     if (idx >= this.get('names.length')) {
       // a hack; presumable selectedIdx will be updated later
       idx = this.get('names.length') - 1;
     }
-    var metric = this.get('selectedMetric');
-    if (metric === "Entropy") {
-      return this.get('entropy')[idx];
-    }
-    if (metric === "JS Divergence") {
-      return this.get('divergence')[idx];
-    }
-    var dn = this.get('meanDN');
-    var ds = this.get('meanDS');
-    var zipped = _.zip(dn[idx], ds[idx]);
-    // TODO: do not hardcode these values
-    // FIXME: fix issue when number of timepoints changes; selector should remain on current one if possible
-    var upper = Math.log(5);
-    var lower = Math.log(1/5);
-    var ratios = zipped.map(function(pair) {
-      var result = Math.log(pair[0] / pair[1]);
-      // cap extreme values
-      if (result > upper) {
-        result = upper;
-      } else if (result < lower) {
-        result = lower;
-      }
-      return result;
-    });
+    var data = this.get('structureData')[idx];
     // take only reference coordinates
     var coordMap = this.get('model.coordinates.refToFirstAlnCoords');
-    var result = _.map(coordMap, alnCoord => ratios[alnCoord] || 0);
+    var result = _.map(coordMap, alnCoord => data[alnCoord] || 0);
     return result;
-  }.property('model.coordinates.refToFirstAlnCoords',
-             'meanDN', 'meanDS', 'entropy', 'divergence', 'selectedTimepointIdx',
-             'selectedMetric'),
+  }.property('structureData', 'selectedTimepointIdx'),
+
+  structureDataRange: function() {
+    var data = this.get('structureData');
+    var minval = d3.min(data, d => d3.min(d));
+    var maxval = d3.max(data, d => d3.max(d));
+    if (minval < 0 && maxval > 0) {
+      var r = Math.max(Math.abs(minval), maxval);
+      minval = -r;
+      maxval = r;
+    }
+    console.log([minval, maxval]);
+    return [minval, maxval];
+  }.property('structureData'),
 
   timepoints: function() {
     if (this.get('selectedMetric') === "JS Divergence") {

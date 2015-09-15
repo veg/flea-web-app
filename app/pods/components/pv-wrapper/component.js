@@ -13,6 +13,7 @@ export default Ember.Component.extend({
   // bound
   structure: null,
   data: [],
+  range: [0, 1],
 
   // created
   viewer: null,
@@ -62,7 +63,7 @@ export default Ember.Component.extend({
 
   updateColors: function() {
     Ember.run.once(this, '_updateColors');
-  }.observes('data.[]', 'structure', 'geometry'),
+  }.observes('data.[]', 'range.[]', 'structure', 'geometry'),
 
   _updateColors() {
     var geometry = this.get('geometry');
@@ -76,24 +77,34 @@ export default Ember.Component.extend({
     var gradient = pv.color.gradient(['white', 'darkred']);
     if (data) {
       // remap to [0, 1], since pv's stops seems broken
+      var range = this.get('range');
       minval = d3.min(data);
       maxval = d3.max(data);
-      if (-minval === maxval) {
+      if (range[0] > minval) {
+        throw {name: 'RangeError', message: 'range[0] too large'};
+      }
+      if (range[1] < maxval) {
+        throw {name: 'RangeError', message: 'range[1] too small'};
+      }
+      if (range[0] < 0) {
         // TODO: get gradient stops working, so this is unnecessary
+        // map [range[0], 0] to [0, 0.5]
+        // map [0, range[1]] to [0, 0.5]
         gradient = pv.color.gradient(['darkblue', 'white', 'darkred']);
       }
-      var range = maxval - minval;
-      data = _.map(data, d => (d - minval) / range);
+      data = _.map(data, d => (d - range[0]) / (range[1] - range[0]));
+
+      structure.eachResidue(function(res) {
+        var ref_coord = res.num();
+        var val = data[ref_coord];
+        val = (val === undefined ? 0 : val);
+        res.customData = function() {return val;};
+      });
+      var newrange = [0, 1];
+      var colorOp = pv.color.byResidueProp('customData', gradient, newrange);
+      geometry.colorBy(colorOp);
+      this.get('viewer').requestRedraw();
     }
-    structure.eachResidue(function(res) {
-      var ref_coord = res.num();
-      var val = data[ref_coord];
-      val = (val === undefined ? 0 : val);
-      res.customData = function() {return val;};
-    });
-    var colorOp = pv.color.byResidueProp('customData', gradient);
-    geometry.colorBy(colorOp);
-    this.get('viewer').requestRedraw();
   },
 
   labelResidues: function() {
