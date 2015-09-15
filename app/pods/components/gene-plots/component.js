@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import {oneIndex, alignmentTicks} from 'flea-app/utils/utils';
 
 // input: (first is used for brushable navigation)
 // - names ['name1', 'name2', ...]
@@ -6,10 +7,15 @@ import Ember from 'ember';
 // - data2 (may be empty)
 // - positions - posns to mark (may be empty) [[posns], [posns], ...]
 // - labels ['label1'] or ['label1', 'label2']
+// refToFirstAlnCoords
+// alnToRefCoords
+
 
 export default Ember.Component.extend({
   tagName: 'svg',
   attributeBindings: ['width', 'height'],
+
+  tick: 100,
 
   // if false, use first data element as a combined view
   addCombined: true,
@@ -21,7 +27,7 @@ export default Ember.Component.extend({
 
   margin: {
     top:    20,
-    right:  0,
+    right:  20,
     bottom: 50,
     left:   30
   },
@@ -203,13 +209,22 @@ export default Ember.Component.extend({
         .range([height_each, 0])
         .domain([two_d ? -ymax[1] : 0, ymax[0]]);
 
+    var r2a = this.get('refToFirstAlnCoords');
+    var a2r = this.get('alnToRefCoords');
+    var tick = this.get('tick');
+    var ticks = alignmentTicks(a2r, r2a, tick);
+
     var xAxis = d3.svg.axis()
         .scale(x)
-        .orient("bottom");
+        .orient("bottom")
+        .tickValues(ticks)
+        .tickFormat(t => oneIndex(a2r[t]));
 
     var xAxis_overall = d3.svg.axis()
         .scale(x_overall)
-        .orient("top");
+        .orient("top")
+        .tickValues(ticks)
+        .tickFormat(t => oneIndex(a2r[t]));
 
     var focus_plots  = [];
     var area_objects = [];
