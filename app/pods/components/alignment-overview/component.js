@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {zeroIndex, oneIndex, transformIndex} from 'flea-app/utils/utils';
+import {zeroIndex, oneIndex, transformIndex, alignmentTicks} from 'flea-app/utils/utils';
 
 
 // FIXME: use an x-axis to scale to div width
@@ -205,30 +205,7 @@ export default Ember.Component.extend({
     var r2a = this.get('refToFirstAlnCoords');
     var a2r = this.get('alnToRefCoords');
     var tick = this.get('tick');
-
-    var first = a2r[0];
-    var last = a2r[a2r.length - 1];
-
-    // 1-indexed reference ticks we want
-    var wanted = _.range(Math.ceil(first / tick) * tick, 1 + Math.floor(last / tick) * tick, tick);
-
-    // need to remove 0 if it is present; will add later if necessary
-    if (wanted[0] === 0) {
-      wanted[0] = 1;
-    }
-
-    // convert to 0-indexing and add first and last positions
-    wanted = wanted.map(v => zeroIndex(v));
-    if (wanted[0] !== first) {
-      wanted.unshift(first);
-    }
-    if (wanted[wanted.length - 1] !== last) {
-      wanted.push(last);
-    }
-
-    // transform to closest possible alignment indices
-    var ticks = wanted.map(t => r2a[t]);
-
+    var ticks = alignmentTicks(a2r, r2a, tick);
     var x = this.get('x');
     var xAxis = d3.svg.axis().scale(x).orient("bottom")
         .tickValues(ticks)

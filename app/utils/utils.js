@@ -132,3 +132,55 @@ export var zeroIndex = function(i) {
   }
   return i - 1;
 };
+
+
+export var alignmentTicks = function(a2r, r2a, tick) {
+  // generate reference index tick locations closest to
+  // every `tick` possible, including first and last.
+
+  var first = a2r[0];
+  var last = a2r[a2r.length - 1];
+
+  // 1-indexed reference ticks we want
+  var wanted = _.range(Math.ceil(first / tick) * tick, 1 + Math.floor(last / tick) * tick, tick);
+
+  // need to remove 0 if it is present; will add later if necessary
+  if (wanted[0] === 0) {
+    wanted[0] = 1;
+  }
+
+  // convert to 0-indexing and add first and last positions
+  wanted = wanted.map(v => zeroIndex(v));
+  if (wanted[0] !== first) {
+    wanted.unshift(first);
+  }
+  if (wanted[wanted.length - 1] !== last) {
+    wanted.push(last);
+  }
+
+  // transform to closest possible alignment indices
+  return wanted.map(t => r2a[t]);
+};
+
+
+export var refToAlnCoords = function(alnToRef, stop) {
+  var toFirst = new Array(stop);
+  var toLast = new Array(stop);
+  var last_ref_index = -1;
+  for (let aln_index=0; aln_index<alnToRef.length; aln_index++) {
+    var ref_index = alnToRef[aln_index];
+    toLast[ref_index] = aln_index;
+    if (ref_index !== last_ref_index) {
+      toFirst[ref_index] = aln_index;
+    }
+    // fill in missing values
+    if (last_ref_index > -1) {
+      for (let missing_ref_index=last_ref_index + 1; missing_ref_index < ref_index; missing_ref_index++) {
+        toFirst[missing_ref_index] = aln_index;
+        toLast[missing_ref_index] = aln_index - 1;
+      }
+    }
+    last_ref_index = ref_index;
+  }
+  return [toFirst, toLast];
+};

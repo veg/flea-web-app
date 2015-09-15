@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {zeroIndex} from 'flea-app/utils/utils';
+import {zeroIndex, refToAlnCoords} from 'flea-app/utils/utils';
 
 export default Ember.Object.extend({
   data: [],
@@ -45,10 +45,10 @@ export default Ember.Object.extend({
     // inverse of alnToRefCoords.
     // maps reference coordinates to alignment coordinates
     // both 0-indexed
-    return this.refToAlnCoords()[0];
+    return refToAlnCoords(this.get('alnToRefCoords'), this.get('refRange')[1])[0];
   }.property('alnToRefCoords'),
 
   refToLastAlnCoords: function () {
-    return this.refToAlnCoords()[1];
+    return refToAlnCoords(this.get('alnToRefCoords'), this.get('refRange')[1])[1];
   }.property('alnToRefCoords')
 });
