@@ -16,6 +16,7 @@ export default Ember.Component.extend({
   attributeBindings: ['width', 'height'],
 
   tick: 100,
+  yticks: 5,
 
   // if false, use first data element as a combined view
   addCombined: true,
@@ -226,6 +227,17 @@ export default Ember.Component.extend({
         .tickValues(ticks)
         .tickFormat(t => oneIndex(a2r[t]));
 
+    var xAxis_blank = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .ticks(0)
+        .tickFormat('');
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("right")
+        .ticks(this.get('yticks'));
+
     var focus_plots  = [];
     var area_objects = [];
 
@@ -260,6 +272,25 @@ export default Ember.Component.extend({
         .attr("class", "_pos_dS")
         .attr("clip-path", "url(" + url + "#clip)")
         .attr("d", local_areas[0]);
+
+      // blank x axis
+      plot_svg.append("g")
+        .attr("class", "pos x axis")
+        .attr("transform", "translate(0," + height_each + ")")
+        .call(xAxis_blank);
+
+      // yaxis
+      plot_svg.append("g")
+        .attr("class", "pos y axis")
+        .attr("transform", "translate(" + width + " ,0)")
+        .call(yAxis);
+        // .append("text")
+        // .attr("transform", "translate(0,0)")
+        // .attr("dy", "-.4em")
+        // .attr("dx", ".25em")
+        // .style("text-anchor", "start")
+        // .text("Site");
+
       if (two_d) {
         plot_svg.append("path")
           .datum(data2[plot_id])
