@@ -1,27 +1,13 @@
 import { test, moduleFor } from 'ember-qunit';
 
-moduleFor('model:frequency-object', "FrequencyObject model", {
+moduleFor('model:coordinates-object', "CoordinatesObject model", {
   beforeEach: function () {},
   afterEach: function () {}
 });
 
-var data = {1 : {HXB2: 1},
-            2: {HXB2: 2},
-            3: {HXB2: 2},
-            4: {HXB2: 2},
-            5: {HXB2: 5},
-            6: {HXB2: 5},
-            7: {HXB2: 8}
-           };
+var data = [1, 2, 2, 2, 5, 5, 8];
 
-var data2 = {1 : {HXB2: 3},
-            2: {HXB2: 4},
-            3: {HXB2: 4},
-            4: {HXB2: 4},
-            5: {HXB2: 7},
-            6: {HXB2: 7},
-            7: {HXB2: 10}
-           };
+var data2 = [3, 4, 4, 4, 7, 7, 10];
 
 test("it computes alnToRefCoords", function(assert){
   var model = this.subject();
