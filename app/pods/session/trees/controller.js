@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {format_date} from 'flea-app/utils/utils';
+import {mapIfPresent} from 'flea-app/utils/utils';
 
 export default Ember.Controller.extend({
 
@@ -11,7 +11,6 @@ export default Ember.Controller.extend({
   nodeNameType: 'id',
 
   linkeToSelection: true,
-  showDates: true,
 
   sortState: 'ascending',
   spaceState: 0,
@@ -19,6 +18,7 @@ export default Ember.Controller.extend({
   nestedTrees: function() {
     var trees = this.get('model.trees');
     var keys = {};
+    var datemap = this.get('model.dates');
     for (let i=0; i < trees.length; i++) {
       var tree = trees[i];
       if (!(tree.region in keys)) {
@@ -26,7 +26,7 @@ export default Ember.Controller.extend({
       }
       var date = tree.date;
       if (date !== "Combined") {
-        date = format_date(tree.date);
+        date = mapIfPresent(datemap, date);
       }
       if (!(date in keys[tree.region])) {
         keys[tree.region][date] = {};
@@ -138,14 +138,14 @@ export default Ember.Controller.extend({
     var nameType = this.get('nodeNameType');
     var seqs = this.get('model.sequences.observedAndMrca');
     if (nameType === 'date') {
-      var map = this.get('seqIdToDate');
-      for (let key in map) {
-        if (map.hasOwnProperty(key)) {
-          try {
-            result[key] = format_date(map[key]);
-          } catch (err) {
-            result[key] = key;
-          }
+      var id_to_date = this.get('seqIdToDate');
+      var date_to_label = this.get('model.dates');
+      for (let i=0; i<seqs.length; i++) {
+        var key = seqs[i].get('id');
+        try {
+          result[key] = mapIfPresent(date_to_label, id_to_date[key]);
+        } catch (err) {
+          result[key] = key;
         }
       }
     } else if (nameType === "id") {
