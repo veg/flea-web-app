@@ -8,7 +8,8 @@ export default Ember.Route.extend({
       coordinates: this.store.find('coordinates', session_id),
       rates: this.store.find('rates', session_id),
       copynumbers: this.store.find('copynumbers', session_id),
-      predefinedRegions: this.store.find('predefined-regions', session_id)
+      predefinedRegions: this.store.find('predefined-regions', session_id),
+      dates: this.store.find('dates', session_id)
     });
   }
 });

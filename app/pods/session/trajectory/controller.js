@@ -66,15 +66,15 @@ export default Ember.Controller.extend({
   }.property('maxPhenoMetrics'),
 
   evoData: function() {
-    var all_data = this.get('model');
+    var all_data = this.get('model.trajectory');
     var regions = this.get('selectedRegions');
     var metrics = this.get('selectedEvoMetrics');
     return prepData(all_data, regions, metrics);
-  }.property('model', 'selectedRegions.[]',
+  }.property('model.trajectory', 'selectedRegions.[]',
              'selectedEvoMetrics.[]'),
 
   _phenoData: function(index) {
-    var all_data = this.get('model');
+    var all_data = this.get('model.trajectory');
     var regions = this.get('selectedRegions');
     var metrics = this.get('selectedPhenoMetrics');
     if (regions.length > 1) {
@@ -89,7 +89,7 @@ export default Ember.Controller.extend({
   phenoData: function() {
     var result = this._phenoData(0);
     return result;
-  }.property('model',
+  }.property('model.trajectory',
              'selectedRegions.[]',
              'selectedPhenoMetrics.[]'),
 
@@ -99,7 +99,7 @@ export default Ember.Controller.extend({
       result = this._phenoData(1);
     }
     return result;
-  }.property('model',
+  }.property('model.trajectory',
              'selectedRegions.[]',
              'selectedPhenoMetrics.[]'),
 

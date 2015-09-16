@@ -184,3 +184,11 @@ export var refToAlnCoords = function(alnToRef, stop) {
   }
   return [toFirst, toLast];
 };
+
+
+export var mapIfPresent = function(map, key) {
+  if (key in map) {
+    return map[key];
+  }
+  return key;
+};

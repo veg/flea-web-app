@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import {mapIfPresent} from "flea-app/utils/utils";
 
 /*
 example data:
@@ -39,6 +40,7 @@ export default Ember.Component.extend({
     left:   50},
 
   userColors: null,
+  tickMap: {},
 
   margin: function() {
     var margin = this.get('_margin');
@@ -149,8 +151,9 @@ export default Ember.Component.extend({
   }.property('xScale', 'yScale2'),
 
   xAxisFormat: function() {
-    return d3.time.format("%B %Y");
-  }.property(),
+    var map = this.get('tickMap');
+    return (d => mapIfPresent(map, d));
+  }.property('tickMap'),
 
   xTickValues: function() {
     return this.get('dates');
