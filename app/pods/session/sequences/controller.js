@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges} from 'flea-app/utils/utils';
+import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges, mapIfPresent } from 'flea-app/utils/utils';
 import parser from 'flea-app/utils/parser';
 
 
@@ -114,6 +114,7 @@ export default Ember.Controller.extend({
               copyNumber: cn,
               ids: [s.id]};
     };
+    var datemap = this.get('model.dates');
     for (let key in grouped) {
       if (!grouped.hasOwnProperty(key)) {
         continue;
@@ -121,7 +122,10 @@ export default Ember.Controller.extend({
       var final_seqs = grouped[key].map(slice);
       final_seqs = collapse(final_seqs);
       final_seqs.sort((a, b) => b.copyNumber - a.copyNumber);
-      result.push({'date': new Date(key),
+      var d = new Date(key);
+
+      result.push({'date': d,
+                   'label': mapIfPresent(datemap, d),
                    'sequences': final_seqs});
     }
     result.sort((a, b) => a.date - b.date);
