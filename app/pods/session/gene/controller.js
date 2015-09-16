@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {parse_date, format_date, isString} from 'flea-app/utils/utils';
+import {parse_date, format_date, isString, mapIfPresent} from 'flea-app/utils/utils';
 
 export default Ember.Controller.extend({
 
@@ -156,6 +156,7 @@ export default Ember.Controller.extend({
 
   names: function() {
     var timepoints = this.get('timepoints');
+    var datemap = this.get('model.dates');
     var names = timepoints.map(function(name) {
       if (name === 'Combined') {
         return name;
@@ -163,7 +164,7 @@ export default Ember.Controller.extend({
       if(isString(name)) {
         name = parse_date(name);
       }
-      return format_date(name);
+      return mapIfPresent(datemap, name);
     });
     return names;
   }.property('timepoints.[]'),
