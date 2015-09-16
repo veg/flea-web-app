@@ -139,7 +139,7 @@ export default Ember.Component.extend({
       .x(d => xScale(d.x))
       .y(d => yScale(d.y))
       .interpolate(this.get('interpolation'));
-  }.property('xScale', 'yScale'),
+  }.property('xScale', 'yScale', 'interpolation'),
 
   d3Line2: function() {
     var xScale = this.get('xScale'),
@@ -148,7 +148,7 @@ export default Ember.Component.extend({
       .x(d => xScale(d.x))
       .y(d => yScale(d.y))
       .interpolate(this.get('interpolation'));
-  }.property('xScale', 'yScale2'),
+  }.property('xScale', 'yScale2', 'interpolation'),
 
   xAxisFormat: function() {
     var map = this.get('tickMap');
