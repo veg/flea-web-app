@@ -107,6 +107,8 @@ export default Ember.Controller.extend({
       var cn = 0;
       if (s.id in copynumbers) {
         cn = copynumbers[s.id];
+      } else {
+        throw "copynumbers for sequence " + s.id + " not found";
       }
       return {sequence: result,
               copyNumber: cn,
@@ -175,7 +177,11 @@ export default Ember.Controller.extend({
       if (!(counts[motif].hasOwnProperty(seq.date))) {
         counts[motif][seq.date] = 0;
       }
-      counts[motif][seq.date] += copynumbers[seq.id];
+      if (seq.id in copynumbers) {
+        counts[motif][seq.date] += copynumbers[seq.id];
+      } else {
+        throw "copynumbers for sequence " + seq.id + " not found";
+      }
       if (!(totals.hasOwnProperty(seq.date))) {
         totals[seq.date] = 0;
       }
