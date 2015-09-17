@@ -13,7 +13,6 @@ export default Ember.Component.extend({
   refHTML: function() {
     var result = [];
     var map = this.get('alnToRef');
-    var positive_positions = this.get('positiveSelection')[0];
     // TODO: there is surely a more elegent way of building this html
     var ranges = this.get('alnRanges');
     for (let i=0; i<ranges.length; i++) {
@@ -39,11 +38,6 @@ export default Ember.Component.extend({
         }
         str = str.split('').join("<br/>");
         str += '<br/>';
-        if (this.get('markPositive')) {
-          str += (positive_positions.indexOf(s) >=0) ? "+" : "<br/>";
-        } else {
-          str += '<br/>';
-        }
 
         result.push({_class: _class,
                      dataCoord: s,
@@ -60,25 +54,58 @@ export default Ember.Component.extend({
   }.property('alnRanges', 'alnToRef', 'markPositive', 'positiveSelection',
              'selectedPositions', 'selectedPositions.[]'),
 
-  selectAllPositive: function () {
-    var positions = this.get('positiveSelection')[0];
+  visiblePositiveSites: function() {
+    var all_positions = this.get('positiveSelection');
     var ranges = this.get('alnRanges');
-    var result = [];
-    for (let r=0; r<ranges.length; r++) {
-      var start = ranges[r][0];
-      var stop = ranges[r][1];
-      for (let i = 0; i < positions.length; i++) {
-        // could do binary search to speed this up
-        var pos = positions[i];
-        if (start <= pos && pos <= stop) {
-          result.push(pos);
-        }
-        if (pos > stop) {
-          break;
+    var all_results = [];
+    for (let k=0; k<all_positions.length; k++) {
+      var result = [];
+      var positions = all_positions[k];
+      for (let r=0; r<ranges.length; r++) {
+        var start = ranges[r][0];
+        var stop = ranges[r][1];
+        for (let i = 0; i < positions.length; i++) {
+          // could do binary search to speed this up
+          var pos = positions[i];
+          if (start <= pos && pos <= stop) {
+            result.push(pos);
+          }
+          if (pos > stop) {
+            break;
+          }
         }
       }
+      all_results.push(result);
     }
-    this.sendSelected(result);
+    return all_results;
+  }.property('positiveSelection.[]', 'alnRanges.[]'),
+
+  allSelectionStrings: function() {
+    var arrs = this.get('visiblePositiveSites');
+    var ranges = this.get('alnRanges');
+    var all_indices = _.flatten(ranges.map(r => _.range(r[0], r[1])));
+    return arrs.map(arr => all_indices.map(idx => (arr.indexOf(idx) >=0) ? "+" : "&nbsp;").join(''));
+  }.property('visiblePositiveSites.[]', 'alnRanges.[]'),
+
+  combinedSelectionString: function() {
+    return this.get('allSelectionStrings')[0];
+  }.property('allSelectionStrings.[]'),
+
+  individualSelectionStrings: function() {
+    var a = this.get('allSelectionStrings');
+    var result = a.slice(1, a.length);
+    return result;
+  }.property('allSelectionStrings.[]'),
+
+  groupedAndSelected: function() {
+    var groups = this.get('groupedSequences');
+    var sel = this.get('individualSelectionStrings');
+    return _.range(0, groups.length).map(i => ({ 'group': groups[i], 'pos': sel[i] }));
+  }.property('groupedSequences.[]', 'individualSelectionStrings.[]'),
+
+  selectAllPositive: function () {
+    var visibleCombined = this.get('visiblePositiveSites')[0];
+    this.sendSelected(visibleCombined);
   },
 
   sendSelected: function(positions) {

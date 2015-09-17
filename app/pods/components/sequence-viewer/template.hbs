@@ -19,6 +19,15 @@
     <td class="seq-cell"></td>
   </thead>
   <tbody>
+    {{#if markPositive}}
+    <tr class="positivePositions">
+      <td class="seq-cell"></td>
+      <td class="seq-cell"><span class="addwrap">{{{combinedSelectionString}}}</span></td>
+      <td class="seq-cell"></td>
+      <td class="seq-cell"></td>
+    </tr>
+    {{/if}}
+
     {{#if reference}}
     <tr>
       <td class="seq-cell">Reference</td>

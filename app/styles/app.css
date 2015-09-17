@@ -107,6 +107,10 @@ canvas {
     white-space:nowrap;
 }
 
+.addwrap {
+    white-space: normal;
+}
+
 .seq-predef {
     cursor: pointer;
 }
@@ -372,4 +376,10 @@ TODO: install with bower instead
 .input-invalid {
     background-color: #ffdddd;
     border: 2px solid #ffdddd;
+}
+
+tbody tr.positivePositions td.seq-cell {
+    height: 1em;
+    padding-top: 0;
+    padding-bottom: 0;
 }
