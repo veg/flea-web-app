@@ -42,19 +42,32 @@
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
     </tr>
-    {{#each groupedSequences as |group|}}
+    {{#each groupedAndSelected as |obj|}}
+
+    {{#if markPositive}}
+    <tr class="positivePositions">
+      <td class="seq-cell">{{obj.group.label}}</td>
+      <td class="seq-cell"><span class="addwrap">{{{obj.pos}}}</span></td>
+      <td class="seq-cell"></td>
+      <td class="seq-cell"></td>
+    </tr>
+    {{/if}}
     <tr>
-      <td class="seq-cell">{{group.label}}</td>
-      <td class="seq-cell sequence">
+      {{#if markPositive}}
+        <td class="seq-cell notopborder"></td>
+      {{else}}
+        <td class="seq-cell">{{obj.group.label}}</td>
+      {{/if}}
+         <td class="seq-cell sequence">
         <ul class="list-unstyled">
-          {{#each group.sequences as |seq|}}
+          {{#each obj.group.sequences as |seq|}}
           <li>{{amino-acid seq.sequence ranges=seq.highlights mask=seq.mask}}</li>
           {{/each}}
         </ul>
       </td>
       <td class="seq-cell">
         <ul class="list-unstyled">
-          {{#each group.sequences as |seq|}}
+          {{#each obj.group.sequences as |seq|}}
           <li>
             {{#bootstrap-popover title="" dataContent=seq.html placement="right"}}
             {{seq.copyNumber}}
@@ -65,7 +78,7 @@
       </td>
       <td class="seq-cell">
         <ul class="list-unstyled">
-          {{#each group.sequences as |seq|}}
+          {{#each obj.group.sequences as |seq|}}
           <li>{{format-percent seq.percent}}%</li>
           {{/each}}
         </ul>

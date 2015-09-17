@@ -383,3 +383,7 @@ tbody tr.positivePositions td.seq-cell {
     padding-top: 0;
     padding-bottom: 0;
 }
+
+#sequence-viewer > tbody > tr > td.seq-cell.notopborder {
+    border-style: none;
+}
