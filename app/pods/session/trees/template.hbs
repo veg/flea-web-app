@@ -1,55 +1,5 @@
 <div class="row">
-  <div class="col-md-12">
-    <div class="input-group input-group-sm">
-      <span class="input-group-addon">
-        Time point
-      </span>
-      {{#x-select-bootstrap value=timePoint action="selectTimePoint"}}
-      {{#each timePoints as |tp|}}
-      {{#x-option value=tp}}{{tp}}{{/x-option}}
-      {{/each}}
-      {{/x-select-bootstrap}}
-      <span class="input-group-addon">
-        Genomic region
-      </span>
-      {{#x-select-bootstrap value=genomicRegion action="selectGenomicRegion"}}
-      {{#each genomicRegions as |region|}}
-      {{#x-option value=region}}{{region}}{{/x-option}}
-      {{/each}}
-      {{/x-select-bootstrap}}
-      <span class="input-group-addon">
-        Distance measure
-      </span>
-      {{#x-select-bootstrap value=distanceMeasure action="selectDistanceMeasure"}}
-      {{#each distanceMeasures as |measure|}}
-      {{#x-option value=measure}}{{measure}}{{/x-option}}
-      {{/each}}
-      {{/x-select-bootstrap}}
-      <span class="input-group-addon"
-            title="Change to radial layout">
-        Radial layout
-        {{input type="checkbox" checked=radialLayout}}
-      </span>
-      <span class="input-group-addon"
-            title="Use ordinal colors">
-        Ordinal colors
-        {{input type="checkbox" checked=ordinalColors}}
-      </span>
-
-      <span class="input-group-addon">
-        Node names
-      </span>
-      {{#x-select-bootstrap value=nodeNameType action="selectNodeNameType"}}
-      {{#each nodeNameTypes as |nameType|}}
-      {{#x-option value=nameType}}{{nameType}}{{/x-option}}
-      {{/each}}
-      {{/x-select-bootstrap}}
-    </div>
-  </div>
-</div>
-
-<div class='row'>
-  <div class='col-md-12'>
+  <div class="col-md-4">
     <div class="btn-toolbar" role="toolbar">
       <div class="btn-group">
         <button type="button" class="btn btn-default btn-sm" id="expand_spacing"
@@ -75,9 +25,36 @@
       </div>
     </div>
   </div>
+  <div class="col-md-6 pull-right">
+    <div class="input-group input-group-sm">
+      <span class="input-group-addon"
+            title="Show copynumber">
+        Show copynumber
+        {{input type="checkbox" checked=showCopynumber disabled=radialLayout}}
+      </span>
+      <span class="input-group-addon"
+            title="Change to radial layout">
+        Radial layout
+        {{input type="checkbox" checked=radialLayout}}
+      </span>
+      <span class="input-group-addon"
+            title="Use ordinal colors">
+        Ordinal colors
+        {{input type="checkbox" checked=ordinalColors}}
+      </span>
+      <span class="input-group-addon">
+        Node names
+      </span>
+      {{#x-select-bootstrap value=nodeNameType action="selectNodeNameType"}}
+      {{#each nodeNameTypes as |nameType|}}
+      {{#x-option value=nameType}}{{nameType}}{{/x-option}}
+      {{/each}}
+      {{/x-select-bootstrap}}
+    </div>
+  </div>
 </div>
 
-<div class='row'>
+<div class="row">
   <div class='col-md-12' id='_tree_enclosure'>
     {{phylotree-widget tree=tree
     copynumbers=model.copynumbers
