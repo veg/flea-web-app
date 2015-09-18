@@ -134,13 +134,13 @@ export default Ember.Component.extend({
   updateNames: function() {
     var widget = this.get('treeWidget');
     widget.branch_name(this.get('nodeNamer'));
-    widget.update(true);
+    widget.update();
   }.observes('nodeNamer'),
 
   updateColors: function() {
     var widget = this.get('treeWidget');
     widget.style_nodes (this.get('nodeColorizer'));
-    widget.update(true);
+    widget.refresh();
   }.observes('nodeColorizer'),
 
   updateLayout: function() {
