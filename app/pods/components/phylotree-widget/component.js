@@ -34,7 +34,9 @@ export default Ember.Component.extend({
   }.property('seqIdToNodeColor'),
 
   didInsertElement: function() {
-    var tree_widget = d3.layout.phylotree("body")
+    var svg = d3.select('#' + this.get('elementId'));
+    var tree_widget = d3.layout.phylotree()
+        .svg(svg)
         .size([this.get('height'), this.get('width')])
         .separation(() => 0)
         .style_nodes (this.get('nodeColorizer'))
@@ -60,17 +62,14 @@ export default Ember.Component.extend({
     tree_widget.options ({'selectable' : false}, false);
 
     this.set('treeWidget', tree_widget);
-    this.update();
-    //this.map_evolution_onto_tree();  // TODO
+    Ember.run.once(this, 'newTree');
   },
 
-  update: function() {
-    var tree = this.get('tree');
-    var svg = d3.select('#' + this.get('elementId'));
-    var tree_widget = this.get('treeWidget');
-    tree_widget(tree).svg(svg).layout();
+  newTree: function() {
+    // do not call layout(), since it will be done in sort()
+    this.get('treeWidget')(this.get('tree'));
     this.sort();
-  }.observes('tree', 'treeWidget'),
+  }.observes('tree'),
 
   sort: function() {
     var sort_state = this.get('sortState');
@@ -144,8 +143,8 @@ export default Ember.Component.extend({
     widget.options ({'is-radial' : radial}, false);
     widget.options ({'draw-size-bubbles' : !radial}, false);
     widget.options ({'shift-nodes' : !radial}, false);
-    var phylotree = widget.placenodes()
-    widget.update(phylotree);
+    widget.placenodes();
+    widget.update(true);
   }.observes('radialLayout')
 
 });
