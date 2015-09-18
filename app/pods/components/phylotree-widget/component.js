@@ -19,6 +19,18 @@ export default Ember.Component.extend({
   seqIdToNodeColor: null,
   radialLayout: false,
 
+  minRadius: 1,
+  maxRadius: 10,
+
+  nodeSpan: function() {
+    var idToCn = this.get('copynumbers');
+    var max = d3.max(Object.keys(idToCn).map(k => idToCn[k]));
+    var scale = d3.scale.sqrt()
+        .domain([0, max])
+        .range([this.get('minRadius'), this.get('maxRadius')]);
+    return node => (node.name in idToCn) ? scale(idToCn[node.name]) : scale(1);
+  }.property('copynumbers', 'minRadius', 'maxRadius'),
+
   nodeNamer: function() {
     var map = this.get('seqIdToNodeName');
     return function(data) {
@@ -46,13 +58,7 @@ export default Ember.Component.extend({
     tree_widget.options ({'is-radial' : this.get('radialLayout')}, false);
 
     if (this.get('do_copy_number')) {
-      var copynumbers = this.get('copynumbers');
-      tree_widget.node_span (function (a) {
-        if (copynumbers.hasOwnProperty(a.name)) {
-          return Math.sqrt(copynumbers[a.name]);
-        }
-        return 1;
-      });
+      tree_widget.node_span (this.get('nodeSpan'));
       tree_widget.options ({'draw-size-bubbles' : true}, false);
       tree_widget.options ({'shift-nodes' : true}, false);
     } else {
