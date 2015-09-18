@@ -10,6 +10,7 @@ export default Ember.Controller.extend({
   nodeNameTypes: ['id', 'date', 'motif'],
   nodeNameType: 'id',
 
+  showCopynumber: true,
   ordinalColors: false,
   radialLayout: false,
 

@@ -12,7 +12,7 @@ export default Ember.Component.extend({
 
   tree: null,
   copynumbers: null,
-  do_copy_number: false,
+  showCopynumber: false,
 
   // parameters
   seqIdToNodeName: null,
@@ -54,14 +54,14 @@ export default Ember.Component.extend({
         .style_nodes (this.get('nodeColorizer'))
         .branch_name (this.get('nodeNamer'));
 
-    tree_widget.node_span ('equal');
     tree_widget.options ({'is-radial' : this.get('radialLayout')}, false);
 
-    if (this.get('do_copy_number')) {
+    if (this.get('showCopynumber') || !this.get('radialLayout')) {
       tree_widget.node_span (this.get('nodeSpan'));
       tree_widget.options ({'draw-size-bubbles' : true}, false);
       tree_widget.options ({'shift-nodes' : true}, false);
     } else {
+      tree_widget.node_span ('equal');
       tree_widget.options ({'draw-size-bubbles' : false}, false);
       tree_widget.options ({'shift-nodes' : false}, false);
     }
@@ -143,12 +143,31 @@ export default Ember.Component.extend({
     widget.refresh();
   }.observes('nodeColorizer'),
 
+  updateCopynumber: function() {
+    var tree_widget = this.get('treeWidget');
+    if (this.get('showCopynumber') && !this.get('radialLayout')) {
+      tree_widget.node_span (this.get('nodeSpan'));
+      tree_widget.options ({'draw-size-bubbles' : true}, false);
+      tree_widget.options ({'shift-nodes' : true}, false);
+    } else {
+      tree_widget.node_span ('equal');
+      tree_widget.options ({'draw-size-bubbles' : false}, false);
+      tree_widget.options ({'shift-nodes' : false}, false);
+    }
+    tree_widget.update(true);
+  }.observes('showCopynumber', 'nodeSpan'),
+
   updateLayout: function() {
     var widget = this.get('treeWidget');
     var radial = this.get('radialLayout');
     widget.options ({'is-radial' : radial}, false);
     widget.options ({'draw-size-bubbles' : !radial}, false);
     widget.options ({'shift-nodes' : !radial}, false);
+    if (radial) {
+      widget.node_span ('equal');
+    } else {
+      widget.node_span (this.get('nodeSpan'));
+    }
     widget.placenodes();
     widget.update(true);
   }.observes('radialLayout')
