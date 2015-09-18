@@ -10,6 +10,7 @@ export default Ember.Controller.extend({
   nodeNameTypes: ['id', 'date', 'motif'],
   nodeNameType: 'id',
 
+  ordinalColors: false,
   radialLayout: false,
 
   sortState: 'ascending',
@@ -152,18 +153,36 @@ export default Ember.Controller.extend({
              'model.sequences.idToMotif.[]',
              'seqIdToDate', 'nodeNameType'),
 
+  colorScale: function() {
+    var map = this.get('seqIdToDate');
+    if (this.get('ordinalColors')) {
+      return d3.scale.category10()
+        .domain(_.uniq(_.values(map)).sort());
+    }
+    var colours = ["red", "orange", "yellow", "green", "blue", "indigo"];
+    var step = 1.0 / (colours.length - 1);
+    var n_domain = d3.range(0, 1 + step / 2, step);
+    var date_to_num = d3.time.scale()
+        .domain(d3.extent(_.values(map)))
+        .range([0, 1]);
+    var num_to_color = d3.scale.linear()
+        .domain(n_domain)
+        .range(colours)
+        .interpolate(d3.interpolateHcl);
+    return date => num_to_color(date_to_num(date));
+  }.property('seqIdToDate', 'ordinalColors'),
+
   seqIdToNodeColor: function() {
     var map = this.get('seqIdToDate');
-    var colors = d3.scale.category10();
-    colors.domain(_.values(map));
+    var scale = this.get('colorScale');
     var result = {};
     for (let key in map) {
       if (map.hasOwnProperty(key)) {
-        result[key] = colors(map[key]);
+        result[key] = scale(map[key]);
       }
     }
     return result;
-  }.property('seqIdToDate'),
+  }.property('seqIdToDate', 'colorScale'),
 
   actions: {
     setSortState: function(val) {

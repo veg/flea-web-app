@@ -24,7 +24,7 @@ export default Ember.Component.extend({
 
   nodeSpan: function() {
     var idToCn = this.get('copynumbers');
-    var max = d3.max(Object.keys(idToCn).map(k => idToCn[k]));
+    var max = d3.max(_.values(idToCn));
     var scale = d3.scale.sqrt()
         .domain([0, max])
         .range([this.get('minRadius'), this.get('maxRadius')]);
