@@ -17,6 +17,7 @@ export default Ember.Component.extend({
   // parameters
   seqIdToNodeName: null,
   seqIdToNodeColor: null,
+  radialLayout: false,
 
   nodeNamer: function() {
     var map = this.get('seqIdToNodeName');
@@ -40,6 +41,7 @@ export default Ember.Component.extend({
         .branch_name (this.get('nodeNamer'));
 
     tree_widget.node_span ('equal');
+    tree_widget.options ({'is-radial' : this.get('radialLayout')}, false);
 
     if (this.get('do_copy_number')) {
       var copynumbers = this.get('copynumbers');
@@ -50,11 +52,10 @@ export default Ember.Component.extend({
         return 1;
       });
       tree_widget.options ({'draw-size-bubbles' : true}, false);
-      tree_widget.options ({'min-bubble-size' : 0.1}, false);
-      tree_widget.options ({'max-bubble-size' : 3}, false);
-      tree_widget.update_scale();
+      tree_widget.options ({'shift-nodes' : true}, false);
     } else {
       tree_widget.options ({'draw-size-bubbles' : false}, false);
+      tree_widget.options ({'shift-nodes' : false}, false);
     }
     tree_widget.options ({'selectable' : false}, false);
 
@@ -136,5 +137,14 @@ export default Ember.Component.extend({
     widget.style_nodes (this.get('nodeColorizer'));
     widget.update(true);
   }.observes('nodeColorizer'),
+
+  updateLayout: function() {
+    var widget = this.get('treeWidget');
+    var radial = this.get('radialLayout');
+    widget.options ({'is-radial' : radial}, false);
+    widget.options ({'shift-nodes' : !radial}, false);
+    var phylotree = widget.placenodes()
+    widget.update(phylotree);
+  }.observes('radialLayout')
 
 });

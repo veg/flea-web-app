@@ -10,7 +10,7 @@ export default Ember.Controller.extend({
   nodeNameTypes: ['id', 'date', 'motif'],
   nodeNameType: 'id',
 
-  linkeToSelection: true,
+  radialLayout: false,
 
   sortState: 'ascending',
   spaceState: 0,
