@@ -142,6 +142,7 @@ export default Ember.Component.extend({
     var widget = this.get('treeWidget');
     var radial = this.get('radialLayout');
     widget.options ({'is-radial' : radial}, false);
+    widget.options ({'draw-size-bubbles' : !radial}, false);
     widget.options ({'shift-nodes' : !radial}, false);
     var phylotree = widget.placenodes()
     widget.update(phylotree);
