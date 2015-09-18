@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {mapIfPresent} from 'flea-app/utils/utils';
+import {mapIfPresent, insertNested} from 'flea-app/utils/utils';
 
 export default Ember.Controller.extend({
 
@@ -17,49 +17,41 @@ export default Ember.Controller.extend({
 
   nestedTrees: function() {
     var trees = this.get('model.trees');
-    var keys = {};
+    var result = {};
     var datemap = this.get('model.dates');
     for (let i=0; i < trees.length; i++) {
       var tree = trees[i];
-      if (!(tree.region in keys)) {
-        keys[tree.region] = {};
-      }
       var date = tree.date;
       if (date !== "Combined") {
         date = mapIfPresent(datemap, date);
       }
-      if (!(date in keys[tree.region])) {
-        keys[tree.region][date] = {};
-      }
-      if (!(tree.distance in keys[tree.region][date])) {
-        keys[tree.region][date][tree.distance] = tree.tree;
-      }
+      insertNested(result, [date, tree.region, tree.distance], tree.tree);
     }
-    return keys;
+    return result;
   }.property('model.trees.[]'),
-
-  genomicRegions: function() {
-    var trees = this.get('nestedTrees');
-    return Object.keys(trees);
-  }.property('nestedTrees'),
 
   timePoints: function() {
     var trees = this.get('nestedTrees');
-    var region = this.get('genomicRegion');
-    var dates = Object.keys(trees[region]);
+    var dates = Object.keys(trees);
     var idx = dates.indexOf("Combined");
     if (idx > 0) {
       // move to front
       dates.splice(0, 0, dates.splice(idx, 1)[0]);
     }
     return dates;
-  }.property('nestedTrees', 'genomicRegion'),
+  }.property('nestedTrees'),
+
+  genomicRegions: function() {
+    var trees = this.get('nestedTrees');
+    var tp = this.get('timePoint');
+    return Object.keys(trees[tp]);
+  }.property('nestedTrees', 'timePoint'),
 
   distanceMeasures: function() {
     var trees = this.get('nestedTrees');
-    var region = this.get('genomicRegion');
     var date = this.get('timePoint');
-    return Object.keys(trees[region][date]);
+    var region = this.get('genomicRegion');
+    return Object.keys(trees[date][region]);
   }.property('nestedTrees', 'genomicRegion', 'timePoint'),
 
   handleGet: function(name) {
@@ -109,10 +101,10 @@ export default Ember.Controller.extend({
   }),
 
   tree: function() {
-    var region = this.get('genomicRegion');
     var date = this.get('timePoint');
+    var region = this.get('genomicRegion');
     var distance = this.get('distanceMeasure');
-    var tree = this.get('nestedTrees')[region][date][distance];
+    var tree = this.get('nestedTrees')[date][region][distance];
     return tree;
   }.property('nestedTrees',
              'genomicRegion',

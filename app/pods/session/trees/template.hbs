@@ -2,19 +2,19 @@
   <div class="col-md-12">
     <div class="input-group input-group-sm">
       <span class="input-group-addon">
-        Genomic region
-      </span>
-      {{#x-select-bootstrap value=genomicRegion action="selectGenomicRegion"}}
-      {{#each genomicRegions as |region|}}
-      {{#x-option value=region}}{{region}}{{/x-option}}
-      {{/each}}
-      {{/x-select-bootstrap}}
-      <span class="input-group-addon">
         Time point
       </span>
       {{#x-select-bootstrap value=timePoint action="selectTimePoint"}}
       {{#each timePoints as |tp|}}
       {{#x-option value=tp}}{{tp}}{{/x-option}}
+      {{/each}}
+      {{/x-select-bootstrap}}
+      <span class="input-group-addon">
+        Genomic region
+      </span>
+      {{#x-select-bootstrap value=genomicRegion action="selectGenomicRegion"}}
+      {{#each genomicRegions as |region|}}
+      {{#x-option value=region}}{{region}}{{/x-option}}
       {{/each}}
       {{/x-select-bootstrap}}
       <span class="input-group-addon">

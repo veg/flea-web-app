@@ -192,3 +192,14 @@ export var mapIfPresent = function(map, key) {
   }
   return key;
 };
+
+export var insertNested = function(map, keys, val) {
+  for (let i=0; i<keys.length - 1; i++) {
+    var key = keys[i];
+    if (!(key in map)) {
+      map[key] = {};
+    }
+    map = map[key];
+  }
+  map[keys[keys.length - 1]] = val;
+}
