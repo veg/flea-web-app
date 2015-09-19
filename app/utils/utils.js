@@ -202,4 +202,4 @@ export var insertNested = function(map, keys, val) {
     map = map[key];
   }
   map[keys[keys.length - 1]] = val;
-}
+};

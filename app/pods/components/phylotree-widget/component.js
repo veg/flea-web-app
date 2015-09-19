@@ -41,10 +41,8 @@ export default Ember.Component.extend({
 
   nodeColorizer: function() {
     var map = this.get('seqIdToNodeColor');
-    return function(element, data) {
-      element.style("fill", map[data.name]);
-    };
-  }.property('seqIdToNodeColor'),
+    return (element, data) => element.selectAll('text').style("fill", map[data.name]);
+  }.property('seqIdToNodeColor', 'radialLayout'),
 
   didInsertElement: function() {
     var svg = d3.select('#' + this.get('elementId'));

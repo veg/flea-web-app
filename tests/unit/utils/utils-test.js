@@ -1,4 +1,4 @@
-import { test, moduleFor } from 'ember-qunit';
+import { test } from 'ember-qunit';
 import { refToAlnCoords, alignmentTicks, zeroIndex } from 'flea-app/utils/utils';
 
 
