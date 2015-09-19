@@ -15,7 +15,7 @@ export default Ember.Controller.extend({
   radialLayout: false,
 
   sortState: 'ascending',
-  spaceState: 0,
+  spaceDelta: 0,
 
   nestedTrees: function() {
     var trees = this.get('model.trees');
@@ -189,8 +189,12 @@ export default Ember.Controller.extend({
     setSortState: function(val) {
       this.set('sortState', val);
     },
-    setSpaceState: function(val) {
-      this.set('spaceState', val);
+
+    increaseSpaceDelta: function() {
+      this.set('spaceDelta', this.get('spaceDelta') + 1);
+    },
+    decreaseSpaceDelta: function() {
+      this.set('spaceDelta', this.get('spaceDelta') - 1);
     },
     selectGenomicRegion: function(value) {
       if (value != null) {

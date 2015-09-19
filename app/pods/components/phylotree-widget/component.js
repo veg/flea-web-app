@@ -21,6 +21,7 @@ export default Ember.Component.extend({
 
   minRadius: 1,
   maxRadius: 10,
+  spacingOrig: 0,
 
   nodeSpan: function() {
     var idToCn = this.get('copynumbers');
@@ -68,6 +69,7 @@ export default Ember.Component.extend({
     tree_widget.options ({'selectable' : false}, false);
 
     this.set('treeWidget', tree_widget);
+    this.set('spacingOrig', tree_widget.spacing_x());
     Ember.run.once(this, 'newTree');
   },
 
@@ -108,28 +110,11 @@ export default Ember.Component.extend({
     });
   },
 
-  space: function() {
-    var space_state = this.get('spaceState');
-    if (space_state === "neutral") {
-      return;
-    }
-    else if (space_state === "compress") {
-      this.compressSpacing();
-    } else if (space_state === "expand") {
-      this.expandSpacing();
-    }
-    this.set("spaceState", "neutral");
-  }.observes('spaceState'),
-
-  expandSpacing: function() {
+  updateSpacing: function() {
     var widget = this.get('treeWidget');
-    widget.spacing_x(widget.spacing_x() + 1).update(true);
-  },
-
-  compressSpacing: function() {
-    var widget = this.get('treeWidget');
-    widget.spacing_x(widget.spacing_x() - 1).update(true);
-  },
+    var newSpacing = this.get('spacingOrig') + this.get('spaceDelta');
+    widget.spacing_x(newSpacing).update(true);
+  }.observes('spaceDelta'),
 
   updateNames: function() {
     var widget = this.get('treeWidget');

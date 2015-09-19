@@ -3,11 +3,11 @@
     <div class="btn-toolbar" role="toolbar">
       <div class="btn-group">
         <button type="button" class="btn btn-default btn-sm" id="expand_spacing"
-                title="Expand spacing" {{action "setSpaceState" "expand"}}>
+                title="Expand spacing" {{action "increaseSpaceDelta"}}>
           <i class="fa fa-expand" ></i>
         </button>
         <button type="button" class="btn btn-default btn-sm" id="compress_spacing"
-                title="Compress spacing" {{action "setSpaceState" "compress"}}>
+                title="Compress spacing" {{action "decreaseSpaceDelta"}}>
           <i class="fa fa-compress" ></i>
         </button>
         <button type="button" class="btn btn-default btn-sm" id="sort_ascending"
@@ -58,7 +58,7 @@
   <div class='col-md-12' id='_tree_enclosure'>
     {{phylotree-widget tree=tree
     copynumbers=model.copynumbers
-    sortState=sortState spaceState=spaceState
+    sortState=sortState spaceDelta=spaceDelta
     do_copy_number=true
     seqIdToNodeName=seqIdToNodeName
     seqIdToNodeColor=seqIdToNodeColor
