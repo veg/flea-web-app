@@ -1,7 +1,7 @@
 {
   "name": "flea-app",
-  "version": "0.1.0",
-  "description": "Small description for flea-app goes here",
+  "version": "1.0.0",
+  "description": "Web app for viewing FLEA results.",
   "private": true,
   "directories": {
     "doc": "doc",
