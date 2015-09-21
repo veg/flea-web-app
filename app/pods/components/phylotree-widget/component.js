@@ -45,9 +45,9 @@ export default Ember.Component.extend({
     var textMap = this.get('seqIdToTextColor');
     return (element, data) => {
       if (Ember.isPresent(nodeMap)) {
-        element.selectAll('circle').style("fill", nodeMap[data.name]);
+        element.selectAll('circle').style("fill", nodeMap[data.name]).style('opacity', 0.4);
       } else {
-        element.selectAll('circle').style("fill", 'LightGray');
+        element.selectAll('circle').style("fill", 'LightGray').style('opacity', 0.4);
       }
       if (Ember.isPresent(textMap)) {
         element.selectAll('text').style('fill', textMap[data.name]);
@@ -67,15 +67,14 @@ export default Ember.Component.extend({
         .branch_name (this.get('nodeNamer'));
 
     tree_widget.options ({'is-radial' : this.get('radialLayout')}, false);
+    tree_widget.options ({'shift-nodes' : false}, false);
 
-    if (this.get('showCopynumber') || !this.get('radialLayout')) {
+    if (this.get('showCopynumber')) {
       tree_widget.node_span (this.get('nodeSpan'));
       tree_widget.options ({'draw-size-bubbles' : true}, false);
-      tree_widget.options ({'shift-nodes' : true}, false);
     } else {
       tree_widget.node_span ('equal');
       tree_widget.options ({'draw-size-bubbles' : false}, false);
-      tree_widget.options ({'shift-nodes' : false}, false);
     }
     tree_widget.options ({'selectable' : false}, false);
 
@@ -141,14 +140,12 @@ export default Ember.Component.extend({
 
   updateCopynumber: function() {
     var tree_widget = this.get('treeWidget');
-    if (this.get('showCopynumber') && !this.get('radialLayout')) {
+    if (this.get('showCopynumber')) {
       tree_widget.node_span (this.get('nodeSpan'));
       tree_widget.options ({'draw-size-bubbles' : true}, false);
-      tree_widget.options ({'shift-nodes' : true}, false);
     } else {
       tree_widget.node_span ('equal');
       tree_widget.options ({'draw-size-bubbles' : false}, false);
-      tree_widget.options ({'shift-nodes' : false}, false);
     }
     tree_widget.update(true);
   }.observes('showCopynumber', 'nodeSpan'),
@@ -157,13 +154,6 @@ export default Ember.Component.extend({
     var widget = this.get('treeWidget');
     var radial = this.get('radialLayout');
     widget.options ({'is-radial' : radial}, false);
-    widget.options ({'draw-size-bubbles' : !radial}, false);
-    widget.options ({'shift-nodes' : !radial}, false);
-    if (radial) {
-      widget.node_span ('equal');
-    } else {
-      widget.node_span (this.get('nodeSpan'));
-    }
     widget.placenodes();
     widget.update(true);
   }.observes('radialLayout')
