@@ -17,6 +17,7 @@ export default Ember.Component.extend({
   // parameters
   seqIdToNodeName: null,
   seqIdToNodeColor: null,
+  seqIdToTextColor: null,
   radialLayout: false,
 
   minRadius: 1,
@@ -40,9 +41,21 @@ export default Ember.Component.extend({
   }.property('seqIdToNodeName'),
 
   nodeColorizer: function() {
-    var map = this.get('seqIdToNodeColor');
-    return (element, data) => element.selectAll('text').style("fill", map[data.name]);
-  }.property('seqIdToNodeColor', 'radialLayout'),
+    var nodeMap = this.get('seqIdToNodeColor');
+    var textMap = this.get('seqIdToTextColor');
+    return (element, data) => {
+      if (Ember.isPresent(nodeMap)) {
+        element.selectAll('circle').style("fill", nodeMap[data.name]);
+      } else {
+        element.selectAll('circle').style("fill", 'LightGray');
+      }
+      if (Ember.isPresent(textMap)) {
+        element.selectAll('text').style('fill', textMap[data.name]);
+      } else {
+        element.selectAll('text').style("fill", 'Black');
+      }
+    };
+  }.property('seqIdToNodeColor', 'seqIdToTextColor', 'radialLayout'),
 
   didInsertElement: function() {
     var svg = d3.select('#' + this.get('elementId'));

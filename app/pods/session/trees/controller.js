@@ -173,9 +173,14 @@ export default Ember.Controller.extend({
     return date => num_to_color(date_to_num(date));
   }.property('seqIdToDate', 'ordinalColors'),
 
-  seqIdToNodeColor: function() {
-    var map = this.get('seqIdToDate');
-    var scale = this.get('colorScale');
+  motifColorScale: function() {
+    var map = this.get('model.sequences.idToMotif');
+    var motifs = _.uniq(_.values(map)).sort();
+    return d3.scale.category10()
+      .domain(motifs);
+  }.property('model.sequences.idToMotif[]'),
+
+  colorMap: function(map, scale) {
     var result = {};
     for (let key in map) {
       if (map.hasOwnProperty(key)) {
@@ -183,7 +188,22 @@ export default Ember.Controller.extend({
       }
     }
     return result;
-  }.property('seqIdToDate', 'colorScale'),
+  },
+
+  seqIdToNodeColor: function() {
+    var map = this.get('seqIdToDate');
+    var scale = this.get('colorScale');
+    return this.colorMap(map, scale);
+  }.property('seqIdToDate', 'colorScale', 'nodeNameType'),
+
+  seqIdToTextColor: function() {
+    if (this.get('nodeNameType') === 'motif') {
+      var map = this.get('model.sequences.idToMotif');
+      var scale = this.get('motifColorScale');
+      return this.colorMap(map, scale);
+    }
+    return null;
+  }.property('seqIdToDate', 'colorScale', 'nodeNameType'),
 
   actions: {
     setSortState: function(val) {
