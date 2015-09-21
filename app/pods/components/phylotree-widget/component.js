@@ -36,7 +36,7 @@ export default Ember.Component.extend({
   nodeNamer: function() {
     var map = this.get('seqIdToNodeName');
     return function(data) {
-      return (map[data.name] || data.name);
+      return (Ember.isPresent(map[data.name]) ? map[data.name] : "");
     };
   }.property('seqIdToNodeName'),
 

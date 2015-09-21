@@ -7,7 +7,7 @@ export default Ember.Controller.extend({
   _timePoint: '',
   _distanceMeasure: '',
 
-  nodeNameTypes: ['id', 'date', 'motif'],
+  nodeNameTypes: ['id', 'date', 'motif', 'none'],
   nodeNameType: 'id',
 
   showCopynumber: true,
@@ -146,6 +146,8 @@ export default Ember.Controller.extend({
       result = this.seqIdToProperty(seqs, 'id');
     } else if (nameType === "motif") {
       result = this.get('model.sequences.idToMotif');
+    } else if (nameType === "none") {
+      result = _.zipObject(seqs.map(s => [s.get('id'), '']));
     } else {
       throw "unknown node name type: " + nameType;
     }
@@ -194,7 +196,7 @@ export default Ember.Controller.extend({
     var map = this.get('seqIdToDate');
     var scale = this.get('colorScale');
     return this.colorMap(map, scale);
-  }.property('seqIdToDate', 'colorScale', 'nodeNameType'),
+  }.property('seqIdToDate', 'colorScale'),
 
   seqIdToTextColor: function() {
     if (this.get('nodeNameType') === 'motif') {
