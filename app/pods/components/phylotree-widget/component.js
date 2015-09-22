@@ -21,9 +21,9 @@ export default Ember.Component.extend({
   seqIdToTextColor: null,
   radialLayout: false,
 
-  minRadius: 1,
+  minRadius: 0.1,
   maxRadius: 10,
-  spacingOrig: 0,
+  heightScale: 1.0,
 
   nodeSpan: function() {
     var idToCn = this.get('copynumbers');
@@ -81,7 +81,6 @@ export default Ember.Component.extend({
     tree_widget.options ({'selectable' : false}, false);
 
     this.set('treeWidget', tree_widget);
-    this.set('spacingOrig', tree_widget.spacing_x());
     Ember.run.once(this, 'newTree');
   },
 
@@ -124,9 +123,10 @@ export default Ember.Component.extend({
 
   updateSpacing: function() {
     var widget = this.get('treeWidget');
-    var newSpacing = this.get('spacingOrig') + this.get('spaceDelta');
-    widget.spacing_x(newSpacing).update(true);
-  }.observes('spaceDelta'),
+    widget.options ({'height-scale' : +this.get('heightScale')}, false);
+    widget.placenodes();
+    widget.update(true);
+  }.observes('heightScale'),
 
   updateNames: function() {
     var widget = this.get('treeWidget');

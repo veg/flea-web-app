@@ -16,7 +16,7 @@ export default Ember.Controller.extend({
   radialLayout: false,
 
   sortState: 'ascending',
-  spaceDelta: 0,
+  heightScale: 1.0,
 
   hideCopynumber: Ember.computed.not('showCopynumber'),
 
@@ -215,12 +215,6 @@ export default Ember.Controller.extend({
       this.set('sortState', val);
     },
 
-    increaseSpaceDelta: function() {
-      this.set('spaceDelta', this.get('spaceDelta') + 1);
-    },
-    decreaseSpaceDelta: function() {
-      this.set('spaceDelta', this.get('spaceDelta') - 1);
-    },
     selectGenomicRegion: function(value) {
       if (value != null) {
         this.set('genomicRegion', value);
