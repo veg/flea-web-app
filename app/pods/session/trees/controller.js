@@ -181,8 +181,13 @@ export default Ember.Controller.extend({
   motifColorScale: function() {
     var map = this.get('model.sequences.idToMotif');
     var motifs = _.uniq(_.values(map)).sort();
-    return d3.scale.category10()
-      .domain(motifs);
+    var scale;
+    if (motifs.length > 10) {
+      scale = d3.scale.category20();
+    } else {
+      scale = d3.scale.category10();
+    }
+    return scale.domain(motifs);
   }.property('model.sequences.idToMotif[]'),
 
   colorMap: function(map, scale) {
