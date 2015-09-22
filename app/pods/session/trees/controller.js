@@ -12,7 +12,7 @@ export default Ember.Controller.extend({
 
   showCopynumber: true,
   overlapNodes: true,
-  ordinalColors: false,
+  rankColors: false,
   radialLayout: false,
 
   sortState: 'ascending',
@@ -161,22 +161,31 @@ export default Ember.Controller.extend({
 
   colorScale: function() {
     var map = this.get('seqIdToDate');
-    if (this.get('ordinalColors')) {
-      return d3.scale.category10()
-        .domain(_.uniq(_.values(map)).sort());
+    delete map["mrca"];
+    var dates = _.values(map);
+    var s1;
+    var maxval;
+    if (this.get('rankColors')) {
+      var sorted = _.uniq(dates, d => d.toString()).sort((a, b) => a - b);
+      maxval = sorted.length;
+      s1 = d3.scale.ordinal()
+        .domain(sorted)
+        .range(_.range(sorted.length));
+    } else {
+      maxval = 1;
+      s1 = d3.time.scale()
+        .domain(d3.extent(dates))
+        .range([0, 1]);
     }
     var colours = ["red", "orange", "yellow", "green", "blue", "indigo"];
-    var step = 1.0 / (colours.length - 1);
-    var n_domain = d3.range(0, 1 + step / 2, step);
-    var date_to_num = d3.time.scale()
-        .domain(d3.extent(_.values(map)))
-        .range([0, 1]);
-    var num_to_color = d3.scale.linear()
-        .domain(n_domain)
+    var step = maxval / (colours.length - 1);
+    var domain = d3.range(0, maxval + step / 2, step);
+    var s2 = d3.scale.linear()
+        .domain(domain)
         .range(colours)
         .interpolate(d3.interpolateLab);
-    return date => num_to_color(date_to_num(date));
-  }.property('seqIdToDate', 'ordinalColors'),
+    return date => s2(s1(date));
+  }.property('seqIdToDate', 'rankColors'),
 
   motifColorScale: function() {
     var map = this.get('model.sequences.idToMotif');
