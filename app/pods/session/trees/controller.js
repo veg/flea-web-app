@@ -174,7 +174,7 @@ export default Ember.Controller.extend({
     var num_to_color = d3.scale.linear()
         .domain(n_domain)
         .range(colours)
-        .interpolate(d3.interpolateHcl);
+        .interpolate(d3.interpolateLab);
     return date => num_to_color(date_to_num(date));
   }.property('seqIdToDate', 'ordinalColors'),
 
