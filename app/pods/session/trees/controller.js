@@ -7,8 +7,8 @@ export default Ember.Controller.extend({
   _timePoint: '',
   _distanceMeasure: '',
 
-  nodeNameTypes: ['id', 'date', 'motif', 'none'],
-  nodeNameType: 'id',
+  nodeNameTypes: ['label', 'seq_id', 'motif', 'none'],
+  nodeNameType: 'label',
 
   showCopynumber: true,
   overlapNodes: true,
@@ -134,7 +134,7 @@ export default Ember.Controller.extend({
     var result = {};
     var nameType = this.get('nodeNameType');
     var seqs = this.get('model.sequences.observedAndMrca');
-    if (nameType === 'date') {
+    if (nameType === 'label') {
       var id_to_date = this.get('seqIdToDate');
       var date_to_label = this.get('model.dates');
       for (let i=0; i<seqs.length; i++) {
@@ -145,7 +145,7 @@ export default Ember.Controller.extend({
           result[key] = key;
         }
       }
-    } else if (nameType === "id") {
+    } else if (nameType === "seq_id") {
       result = this.seqIdToProperty(seqs, 'id');
     } else if (nameType === "motif") {
       result = this.get('model.sequences.idToMotif');
