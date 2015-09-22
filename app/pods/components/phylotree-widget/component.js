@@ -13,6 +13,7 @@ export default Ember.Component.extend({
   tree: null,
   copynumbers: null,
   showCopynumber: false,
+  overlapNodes: true,
 
   // parameters
   seqIdToNodeName: null,
@@ -68,6 +69,7 @@ export default Ember.Component.extend({
 
     tree_widget.options ({'is-radial' : this.get('radialLayout')}, false);
     tree_widget.options ({'shift-nodes' : false}, false);
+    tree_widget.options ({'overlap-bubbles' : this.get('overlapNodes')}, false);
 
     if (this.get('showCopynumber')) {
       tree_widget.node_span (this.get('nodeSpan'));
@@ -147,8 +149,16 @@ export default Ember.Component.extend({
       tree_widget.node_span ('equal');
       tree_widget.options ({'draw-size-bubbles' : false}, false);
     }
+    tree_widget.placenodes();  // TODO: this is not always necessary
     tree_widget.update(true);
   }.observes('showCopynumber', 'nodeSpan'),
+
+  updateOverlap: function() {
+    var tree_widget = this.get('treeWidget');
+    tree_widget.options({'overlap-bubbles': this.get('overlapNodes')}, false);
+    tree_widget.placenodes();  // TODO: this is not always necessary
+    tree_widget.update(true);
+  }.observes('overlapNodes'),
 
   updateLayout: function() {
     var widget = this.get('treeWidget');

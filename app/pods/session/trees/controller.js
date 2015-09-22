@@ -11,11 +11,14 @@ export default Ember.Controller.extend({
   nodeNameType: 'id',
 
   showCopynumber: true,
+  overlapNodes: true,
   ordinalColors: false,
   radialLayout: false,
 
   sortState: 'ascending',
   spaceDelta: 0,
+
+  hideCopynumber: Ember.computed.not('showCopynumber'),
 
   nestedTrees: function() {
     var trees = this.get('model.trees');
