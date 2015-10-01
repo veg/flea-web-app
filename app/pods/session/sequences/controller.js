@@ -22,6 +22,10 @@ export default Ember.Controller.extend({
 
   markPositive: true,
 
+  defaultMaxMotifs: 10,
+  _maxMotifs: 10,
+  maxMotifs: 10,
+
   reference: function() {
     var ref = this.get('model.sequences.reference');
     // replace repeats with '-'
@@ -209,8 +213,15 @@ export default Ember.Controller.extend({
       }
       series.push({name: m, values: points});
     }
-    // take top 9 and combine others
-    if (series.length > 10) {
+    return series;
+  }.property('model.sequences.observedSequences.[]',
+             'model.sequences.idToMotif.[]'),
+
+  cappedTrajectories: function() {
+    var series = this.get('aaTrajectories');
+    var maxnum = this.get('maxMotifs');
+    // take top n-1 and combine others
+    if (series.length > maxnum) {
       var maxes = [];
       for (let j=0; j<series.length; j++) {
         var trajectory = series[j];
@@ -219,9 +230,9 @@ export default Ember.Controller.extend({
       }
       maxes.sort((a, b) => b.max - a.max);
       var split_names = _.partition(maxes.map(v => v.name),
-                                    (value, index) => index < 9);
-      var top9 = split_names[0];
-      var split_series = _.partition(series, elt => _.includes(top9, elt.name));
+                                    (value, index) => index < maxnum - 1);
+      var top = split_names[0];
+      var split_series = _.partition(series, elt => _.includes(top, elt.name));
       var first_series = split_series[0];
       var rest_series = split_series[1];
       // now combine others
@@ -237,7 +248,7 @@ export default Ember.Controller.extend({
     }
     // TODO: sort by date each motif became prevalent
     return series;
-  }.property('model.sequences.observedSequences.[]', 'model.sequences.idToMotif.[]'),
+  }.property('aaTrajectories', 'maxMotifs'),
 
   validPredefinedRegions: function() {
     var [start, stop] = this.get('model.coordinates.refRange');
@@ -259,6 +270,18 @@ export default Ember.Controller.extend({
       if (t >= 0 && t <= 100) {
         this.set('_threshold', t);
         this.set('threshold', t);
+      }
+    },
+
+    doMaxMotifs: function() {
+      var t = this.get('_maxMotifs');
+      if (t === "") {
+        t = this.get('defaultMaxMotifs');
+      }
+      t = +t;
+      if (t >= 1 && t <= 20) {
+        this.set('_maxMotifs', t);
+        this.set('maxMotifs', t);
       }
     },
 
