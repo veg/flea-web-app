@@ -168,8 +168,13 @@ export default Ember.Component.extend({
     if (colors !== null) {
       return colors;
     }
-    colors = d3.scale.category10();
-    colors.domain(this.get('seriesNames'));
+    var names = this.get('seriesNames');
+    if (names.length <= 10) {
+      colors = d3.scale.category10();
+    } else {
+      colors = d3.scale.category20();
+    }
+    colors.domain(names);
     return colors;
   }.property('userColors', 'seriesNames'),
 
