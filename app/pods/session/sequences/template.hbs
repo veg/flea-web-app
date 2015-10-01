@@ -41,8 +41,9 @@
 <br>
 <div class = "row">
   <div class = "col-md-12">
-    {{timeseries-plot width=800 height=200 data=cappedTrajectories
-      legendRight=true ymin=0 interpolation="monotone" tickMap=model.dates
+    {{c3-chart
+      data=trajectoryData
+      axis=trajectoryAxis
     }}
   </div>
 </div>

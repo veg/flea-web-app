@@ -26,6 +26,8 @@ export default Ember.Controller.extend({
   _maxMotifs: 10,
   maxMotifs: 10,
 
+  _oldKeys: [],
+
   reference: function() {
     var ref = this.get('model.sequences.reference');
     // replace repeats with '-'
@@ -249,6 +251,54 @@ export default Ember.Controller.extend({
     // TODO: sort by date each motif became prevalent
     return series;
   }.property('aaTrajectories', 'maxMotifs'),
+
+  sortedDates: function() {
+    var datemap = this.get('model.dates');
+    var result = _.keys(datemap).map(k => new Date(k));
+    result.sort((a, b) => a < b ? -1 : 1);
+    return result;
+  }.property('model.dates'),
+
+  trajectoryData: function() {
+    var data = this.get('cappedTrajectories');
+    var oldKeys = this.get('_oldKeys');
+    var newKeys = data.map(s => s.name);
+    this.set('_oldKeys', newKeys);
+    var columns = data.map(s => {
+      var values = s.values;
+      values.sort((a, b) => a.x - b.x);
+      var ys = values.map(v => v.y);
+      ys.unshift(s.name);
+      return ys;
+    });
+    var dates = this.get('sortedDates');
+    var xticks = ['x'].concat(dates);
+    columns.push(xticks);
+    var result = {
+      x: 'x',
+      columns: columns,
+      unload: oldKeys,
+      type: "spline",
+      spline: {
+        interpolation: {
+          type: 'monotone'
+        }
+      }
+    };
+    return result;
+  }.property('cappedTrajectories', 'sortedDates'),
+
+  trajectoryAxis: function() {
+    var datemap = this.get('model.dates');
+    return {
+      x: {
+        type: 'timeseries',
+        tick: {
+          format: x => datemap[x]
+        }
+      }
+    };
+  }.property('sortedDates'),
 
   validPredefinedRegions: function() {
     var [start, stop] = this.get('model.coordinates.refRange');
