@@ -294,11 +294,15 @@ export default Ember.Controller.extend({
       x: {
         type: 'timeseries',
         tick: {
-          format: x => datemap[x]
+          format: x => x in datemap ? datemap[x] : moment(x).format('YYYY-MM-DD')
         }
       }
     };
   }.property('sortedDates'),
+
+  transition: {
+    duration: 0
+  },
 
   validPredefinedRegions: function() {
     var [start, stop] = this.get('model.coordinates.refRange');

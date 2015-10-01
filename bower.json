@@ -37,6 +37,7 @@
     "lodash": "~3.10.1",
     "moment": "~2.10.0",
     "bio-pv": "https://github.com/biasmv/pv/releases/download/v1.8.1/bio-pv-1.8.1.tgz",
-    "phylotree": "https://github.com/kemaleren/phylotree.js.git"
+    "phylotree": "https://github.com/kemaleren/phylotree.js.git",
+    "c3": "~0.4.10"
   }
 }
