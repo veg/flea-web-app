@@ -22,9 +22,9 @@ export default Ember.Controller.extend({
 
   markPositive: true,
 
-  defaultMaxMotifs: 10,
-  _maxMotifs: 10,
-  maxMotifs: 10,
+  defaultMaxMotifs: 20,
+  _maxMotifs: 20,
+  maxMotifs: 20,
 
   _oldKeys: [],
 
@@ -339,7 +339,7 @@ export default Ember.Controller.extend({
         t = this.get('defaultMaxMotifs');
       }
       t = +t;
-      if (t >= 1 && t <= 20) {
+      if (t >= 1 && t <= 100) {
         this.set('_maxMotifs', t);
         this.set('maxMotifs', t);
       }
