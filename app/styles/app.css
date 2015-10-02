@@ -148,22 +148,16 @@ canvas {
     font: 12px sans-serif;
 }
 
-.timeseries_legend {
-    font: 12px sans-serif;
+.c3-line {
+  stroke-width: 2px;
 }
 
-.timeseries_line {
-  fill: none;
-  stroke: red;
-  stroke-width: 4px;
+.c3-target.c3-defocused {
+  opacity: .1!important;
 }
 
-.legend_symbol {
-  fill: #EEEEEE;
-  stroke: black;
-  stroke-opacity: 1.0;
-  stroke-width: 1.5px;
-  fill-opacity :1.0;
+.c3-tooltip tr td.name {
+  font-family: monospace;
 }
 
 a.fill-div {
