@@ -304,6 +304,12 @@ export default Ember.Controller.extend({
     duration: 0
   },
 
+  tooltip: {
+    format: {
+      value: d3.format('.4f')
+    }
+  },
+
   validPredefinedRegions: function() {
     var [start, stop] = this.get('model.coordinates.refRange');
     var regions = this.get('model.predefinedRegions');
