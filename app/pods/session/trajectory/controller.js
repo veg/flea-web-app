@@ -81,7 +81,7 @@ export default Ember.Controller.extend({
       return prepData(all_data, regions, metrics);
     } else if (metrics.length > 1) {
       return singleRegion(all_data, regions[0], [metrics[index]]);
-    } else{
+    } else {
       return singleRegion(all_data, regions[0], metrics);
     }
   },

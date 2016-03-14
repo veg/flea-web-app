@@ -1,0 +1,12 @@
+* gene page
+* phylotree
+* mrca and positive selection
+* amino acid and database conservation charts
+* use V01 format for dates
+* 3D viewer
+* make all models use Ember objects
+* double-check all computed properties are recomputed properly
+* be able to select multiple evolutionary metrics
+* add gene-like selector to sequences tab
+* add precomputed gene locations and names
+* sequence viewer
