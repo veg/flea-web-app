@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import config from '../config/environment';
-import request from 'ic-ajax';
 import {parse_date} from 'flea-app/utils/utils';
 
 
@@ -21,9 +20,11 @@ var DivergenceObject = Ember.Object.extend({
 });
 
 export default Ember.Object.extend({
+  ajax: Ember.inject.service(),
+
   find: function(session_id) {
     var url = config.baseURL + 'data/' + session_id + '/divergence';
-    return request(url).then(function(data) {
+    return this.get("ajax").request(url).then(function(data) {
       var result = [];
       delete data['readCount'];
       for (let k in data) {

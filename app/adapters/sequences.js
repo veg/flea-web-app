@@ -1,12 +1,13 @@
 import Ember from 'ember';
 import config from '../config/environment';
-import request from 'ic-ajax';
 import {parse_date} from 'flea-app/utils/utils';
 
 import SequenceObject from 'flea-app/models/sequence-object';
 import SequencesObject from 'flea-app/models/sequences-object';
 
 export default Ember.Object.extend({
+  ajax: Ember.inject.service(),
+
   /* formats sequences to flat format:
 
      [{ id: "mrca",
@@ -20,7 +21,7 @@ export default Ember.Object.extend({
 
   find: function(session_id) {
     var url = config.baseURL + 'data/' + session_id + '/sequences';
-    return request(url).then(function(result) {
+    return this.get("ajax").request(url).then(function(result) {
       var sequences = [];
       var reference = null;
       var mrca = null;

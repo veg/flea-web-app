@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import config from '../config/environment';
-import request from 'ic-ajax';
 import {parse_date} from 'flea-app/utils/utils';
 
 var RateInfo = Ember.Object.extend({
@@ -40,9 +39,11 @@ function positive_selection_positions (mx) {
 }
 
 export default Ember.Object.extend({
+  ajax: Ember.inject.service(),
+
   find: function(session_id) {
     var url = config.baseURL + 'data/' + session_id + '/rates';
-    return request(url).then(function(result) {
+    return this.get("ajax").request(url).then(function(result) {
       var new_result = [];
       for (let key in result) {
         if (result.hasOwnProperty(key)) {

@@ -1,13 +1,14 @@
 import Ember from 'ember';
 import config from '../config/environment';
-import request from 'ic-ajax';
 
 import {parse_date} from 'flea-app/utils/utils';
 
 export default Ember.Object.extend({
+  ajax: Ember.inject.service(),
+
   find: function(session_id) {
     var url = config.baseURL + 'data/' + session_id + '/dates';
-    return request(url).then(function(result) {
+    return this.get("ajax").request(url).then(function(result) {
       var new_result = {};
       for (let d in result) {
         if (!(result.hasOwnProperty(d))) {
