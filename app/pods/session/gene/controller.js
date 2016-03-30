@@ -140,7 +140,6 @@ export default Ember.Controller.extend({
       minval = -r;
       maxval = r;
     }
-    console.log([minval, maxval]);
     return [minval, maxval];
   }.property('structureData'),
 
