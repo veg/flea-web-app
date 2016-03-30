@@ -32,7 +32,7 @@ export default Ember.Component.extend({
       return [start, stop];
     });
 
-    if (_.all(ranges.map(range => range[0] < range[1]))) {
+    if (_.every(ranges.map(range => range[0] < range[1]))) {
       this.sendAction('setRanges', ranges);
     }
   },
