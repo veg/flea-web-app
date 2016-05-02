@@ -9,6 +9,11 @@ body {
   font-size: 10pt;
 }
 
+.timeseries_line {
+    fill: none;
+    stroke-width: 3px;
+}
+
 .popover-link {
     cursor: pointer;
 }
