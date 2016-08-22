@@ -20,7 +20,7 @@ export default Ember.Object.extend({
   */
 
   find: function(session_id) {
-    var url = config.baseURL + 'data/' + session_id + '/sequences';
+    var url = config.rootURL + 'data/' + session_id + '/sequences';
     return this.get("ajax").request(url).then(function(result) {
       var sequences = [];
       var reference = null;

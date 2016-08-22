@@ -1,31 +1,9 @@
 {
   "name": "flea-app",
-  "main": "dist/assets/flea-app.js",
-  "ignore": [
-    "app",
-    "bower_components",
-    "bower.json",
-    "Brocfile.js",
-    "config",
-    "node_modules",
-    "package.json",
-    "public",
-    "README.md",
-    "server",
-    "testem.json",
-    "tests",
-    "tmp",
-    "TODO",
-    "vendor",
-    "ember"
-  ],
   "dependencies": {
-    "ember": "~2.4.2",
-    "ember-cli-shims": "0.1.0",
-    "ember-cli-test-loader": "0.2.0",
+    "ember": "~2.7.0",
+    "ember-cli-shims": "0.1.1",
     "ember-qunit-notifications": "0.1.0",
-    "jquery": "^2.2.1",
-    "qunit": "~1.22.0",
     "bootstrap": "~3.3.6",
     "bootstrap-multiselect": "~0.9.13",
     "font-awesome": "~4.5.0",
@@ -33,7 +11,7 @@
     "moment": "~2.12.0",
     "bio-pv": "https://github.com/biasmv/pv/releases/download/v1.8.1/bio-pv-1.8.1.tgz",
     "phylotree": "https://github.com/kemaleren/phylotree.js.git",
-    "d3": "~3.5.0",
-    "c3": "^0.4.10"
+    "d3": "3.5.17",
+    "c3": "^0.4.11"
   }
 }

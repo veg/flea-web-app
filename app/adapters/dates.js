@@ -7,7 +7,7 @@ export default Ember.Object.extend({
   ajax: Ember.inject.service(),
 
   find: function(session_id) {
-    var url = config.baseURL + 'data/' + session_id + '/dates';
+    var url = config.rootURL + 'data/' + session_id + '/dates';
     return this.get("ajax").request(url).then(function(result) {
       var new_result = {};
       for (let d in result) {

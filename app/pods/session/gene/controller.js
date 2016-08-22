@@ -16,12 +16,12 @@ export default Ember.Controller.extend({
   session: Ember.inject.controller(),
 
   currentPath: function() {
-    var base = this.get('application.baseURL');
+    var base = this.get('application.rootURL');
     var path = this.get('application.currentPath');
     var session_id = this.get('session.model.session_id');
     path = path.replace('session', session_id).replace('.', '/');
     return base + path;
-  }.property('application.baseURL',
+  }.property('application.rootURL',
              'application.currentPath',
              'session.session_id'),
 

@@ -7,7 +7,7 @@ export default Ember.Object.extend({
 
 
   find: function(session_id) {
-    var url = config.baseURL + 'data/' + session_id + '/trees';
+    var url = config.rootURL + 'data/' + session_id + '/trees';
     return this.get("ajax").request(url).then(function(result) {
       var trees = [];
       for (let date in result) {
