@@ -224,20 +224,14 @@ export default Ember.Controller.extend({
     var maxnum = this.get('maxMotifs');
     // take top n-1 and combine others
     if (series.length > maxnum) {
-      var maxes = [];
       for (let j=0; j<series.length; j++) {
         var trajectory = series[j];
         var tmax = _.max(trajectory.values.map(v => v.y));
-        maxes.push({name: trajectory.name, max: tmax});
+        series[j].tmax = tmax;
       }
-      maxes.sort((a, b) => b.max - a.max);
-      var split_names = _.partition(maxes.map(v => v.name),
-                                    (value, index) => index < maxnum - 1);
-      var top = split_names[0];
-      var split_series = _.partition(series, elt => _.includes(top, elt.name));
-      var first_series = split_series[0];
-      var rest_series = split_series[1];
-      // now combine others
+      series.sort((a, b) => b.tmax - a.tmax);
+      var first_series = series.slice(0, maxnum);
+      var rest_series = series.slice(maxnum);
       var combined = rest_series[0].values;
       for (let k=1; k<rest_series.length; k++) {
         var curve = rest_series[k].values;
@@ -245,7 +239,7 @@ export default Ember.Controller.extend({
           combined[n].y += curve[n].y;
         }
       }
-      first_series.push({name: 'other', values: combined});
+      first_series.push({name: 'Other', values: combined});
       series = first_series;
     }
     // TODO: sort by date each motif became prevalent
