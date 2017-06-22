@@ -18,8 +18,8 @@ export default Ember.Helper.helper(function(params, hash) {
   var result = escaped.map(function(aa, idx) {
     var html_str = '';
     if (range_idx < ranges.length) {
-      if (idx === ranges[range_idx][0]) {
-        html_str += "<span class = 'pngs'>";
+      if (idx >= ranges[range_idx][0] && idx <= ranges[range_idx][1]) {
+        html_str += "<span class = 'pngs'>"; // class pngs makes span background grey.
       }
     }
     aa = aa.toUpperCase();
@@ -38,12 +38,15 @@ export default Ember.Helper.helper(function(params, hash) {
     }
     html_str += '<span class=' + _class + '>' + aa + '</span>';
     if (range_idx < ranges.length) {
-      if (idx === ranges[range_idx][1]) {
+      if (idx >= ranges[range_idx][0] && idx <= ranges[range_idx][1]) {
         html_str += "</span>";
-        range_idx++;
+        if(idx === ranges[range_idx][1]){
+          range_idx++;
+        }
       }
     }
     return html_str;
   });
-  return new Ember.Handlebars.SafeString(result.join(''));
+  var fin = "<td class = 'seq-cell sequence'>"+result.join("</td><td class = 'seq-cell sequence'>")+"</td>";
+  return new Ember.Handlebars.SafeString(fin);
 });
