@@ -1,72 +1,87 @@
 <table class="table table-hover table-condensed nostretch sequence-viewer fixed-heads" id="sequence-viewer">
   <thead>
-    <td class="seq-cell">ref. coord.<br>
+    <tr>
+    <th class="seq-cell">ref. coord.<br>
       <div>
       <button title="Select positive sites" type="button" class="btn btn-default btn-sm" {{action "selectPositiveClicked"}}><i class="fa fa-plus"></i></button>
       <button title="Clear sites" type="button" class="btn btn-default btn-sm" {{action "clearPositions"}}><i class="fa fa-remove"></i></button>
       </div>
-    </td>
-    <td class="seq-cell ref-coords">
+    </th>
+
     {{#each refHTML as |elt|}}
-    <span class="{{elt._class}}"
+
+    <th class="{{elt._class}}"
           data-coord="{{elt.dataCoord}}"
           {{action "togglePosition" elt.dataCoord}}>
       {{{elt.html}}}
-    </span>
+
+  </th>
     {{/each}}
-    </td>
-    <td class="seq-cell"></td>
-    <td class="seq-cell"></td>
-  </thead>
-  <tbody>
+
+    <th class="seq-cell col"></th>
+    <th class="seq-cell col"></th>
+      </tr>
+    </thead>
+<tbody>
     {{#if markPositive}}
     <tr class="positivePositions">
-      <td class="seq-cell"></td>
-      <td class="seq-cell"><span class="addwrap">{{{combinedSelectionString}}}</span></td>
+      <th class="seq-cell row"></th>
+      {{{combinedSelectionString}}}
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
     </tr>
     {{/if}}
+
 
     {{#if reference}}
     <tr>
-      <td class="seq-cell">Reference</td>
-      <td class="seq-cell sequence"><span class="reference">{{amino-acid reference}}</span></td>
+      <th class="seq-cell row">Reference</th>
+      {{amino-acid reference}}
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
     </tr>
     {{/if}}
-    <tr>
-      <td class="seq-cell">MRCA</td>
-      <td class="seq-cell sequence"><span class="mrca">{{amino-acid mrca}}</span></td>
+<tr>
+      <th class="seq-cell row">MRCA</th>
+      {{amino-acid mrca}}
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
     </tr>
+
     {{#each groupedAndSelected as |obj|}}
+
 
     {{#if markPositive}}
     <tr class="positivePositions">
-      <td class="seq-cell">{{obj.group.label}}</td>
-      <td class="seq-cell"><span class="addwrap">{{{obj.pos}}}</span></td>
+      <th class="seq-cell row">{{obj.group.label}}</th>
+      {{{obj.pos}}}
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
     </tr>
     {{/if}}
-    <tr>
-      {{#if markPositive}}
-        <td class="seq-cell notopborder"></td>
-      {{else}}
-        <td class="seq-cell">{{obj.group.label}}</td>
-      {{/if}}
-         <td class="seq-cell sequence">
-        <ul class="list-unstyled">
+
+
           {{#each obj.group.sequences as |seq|}}
-          <li>{{amino-acid seq.sequence ranges=seq.highlights mask=seq.mask}}</li>
+          <tr>
+            <!--
+              Chat to Rob about this does obj.group.label have a purpose??
+              for now, i assumed not can fix it in future if needs be
+              {{#if markPositive}}
+                <td class="seq-cell notopborder"></td>
+              {{else}}
+                <td class="seq-cell">{{obj.group.label}}</td>
+              {{/if}}
+            -->
+            <th class="seq-cell row notopborder"></th>
+          {{amino-acid seq.sequence ranges=seq.highlights mask=seq.mask}}
+          <td class="seq-cell pad">{{#bootstrap-popover title="" dataContent=seq.html placement="right"}}
+          {{seq.copyNumber}}
+          {{/bootstrap-popover}}</td>
+          <td class="seq-cell pad">{{format-percent seq.percent}}%</td>
+         </tr>
           {{/each}}
-        </ul>
-      </td>
-      <td class="seq-cell">
-        <ul class="list-unstyled">
+      <!-- <td class="seq-cell">
+        <ul>
           {{#each obj.group.sequences as |seq|}}
           <li>
             {{#bootstrap-popover title="" dataContent=seq.html placement="right"}}
@@ -77,13 +92,12 @@
         </ul>
       </td>
       <td class="seq-cell">
-        <ul class="list-unstyled">
+        <ul>
           {{#each obj.group.sequences as |seq|}}
           <li>{{format-percent seq.percent}}%</li>
           {{/each}}
         </ul>
-      </td>
-    </tr>
+      </td> -->
     {{/each}}
   </tbody>
 </table>
