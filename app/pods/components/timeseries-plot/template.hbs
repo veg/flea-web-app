@@ -24,9 +24,10 @@
   {{/if}}
 
   <g class="lines"></g>
-
   <g class="lines2"></g>
 
-  <g class="legend"></g>
-
+  {{d3-legend
+    legendLabels=seriesNames
+    legendColors=seriesColors
+  }}
 </g>

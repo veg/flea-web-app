@@ -24,7 +24,6 @@ export default Ember.Component.extend(D3Plot, {
   width:  900,
   height: 300,
 
-  legendRight: false,
   interpolation: "linear",
 
   ymin: null,
@@ -34,22 +33,12 @@ export default Ember.Component.extend(D3Plot, {
   userColors: null,
   tickMap: {},
 
-  _margin: {
+  margin: {
     top:    20,
     right:  50,
     bottom: 60,
     left:   50
   },
-
-  margin: function() {
-    var margin = this.get('_margin');
-    var names = this.get('seriesNames');
-    if (this.get('legendRight') && (names.length > 0)) {
-      var longest = Math.max.apply(null, names.map(n => n.length));
-      margin.right = 20 + 10 * longest;
-    }
-    return margin;
-  }.property('seriesNames.[]', 'legendRight'),
 
   seriesNames: function() {
     var data = this.get('data');
@@ -103,14 +92,6 @@ export default Ember.Component.extend(D3Plot, {
   yScale2: function () {
     return this._yScale(this.get('data2'));
   }.property('innerHeight', 'data2.[].values.[].y', 'ymin'),
-
-  xAxisTransform: function() {
-    return 'translate(0, %@)'.fmt(this.get('innerHeight'));
-  }.property('innerHeight'),
-
-  yAxisTransform: function() {
-    return 'translate(%@, 0)'.fmt(this.get('innerWidth'));
-  }.property('innerWidth'),
 
   d3Line: function() {
     var xScale = this.get('xScale'),
@@ -178,7 +159,6 @@ export default Ember.Component.extend(D3Plot, {
   _updateChart: function() {
     this._updateData(this.get('data'), this.get('d3Line'), '.lines');
     this._updateData(this.get('data2'), this.get('d3Line2'), '.lines2');
-    this._updateLegend();
   },
 
   onChartChange: function() {
@@ -192,53 +172,6 @@ export default Ember.Component.extend(D3Plot, {
              'data2.[].name',
              'data2.[].values.[].x',
              'data2.[].values.[].y',
-             'seriesNames', 'd3Line', 'd3Line2', 'xScale', 'yScale', 'yScale2'),
-
-  // TODO: make legends into seperate component?
-  _updateLegend: function() {
-    var labels = this.get('seriesNames');
-    var colors = this.get('colors');
-
-    var xval = 0;
-    var spacer = 25;
-    var font = 10;
-    if (this.get('legendRight')) {
-      // FIXME: this is way too brittle
-      xval = this.get('innerWidth');
-      spacer = 10;
-      font = 6;
-    }
-    var legend_dim = {x: xval, y: 0, spacer: spacer, margin: 5, font: font};
-    var svg = d3.select('#' + this.get('elementId')).select('.inner').select('.legend');
-
-    // TODO: do not remove everything
-    svg.selectAll('g').remove();
-
-    var legend = svg.append("g")
-        .attr("class", "timeseries_legend")
-        .attr("x", legend_dim.x)
-        .attr("y", legend_dim.y)
-        .attr("transform", "translate("+legend_dim.x+","+legend_dim.y+")");
-
-    var legend_parts = legend.selectAll('.legend_panel');
-    legend_parts.data(labels, d => d)
-      .enter()
-      .append('g')
-      .attr('class', 'legend_panel')
-      .each(function(d, idx) {
-        var g = d3.select(this);
-        g.append("rect")
-          .attr("x", legend_dim.spacer)
-          .attr("y", idx*(legend_dim.spacer + legend_dim.margin))
-          .attr("width", legend_dim.spacer)
-          .attr("height", legend_dim.spacer)
-          .style("fill", () => colors(d));
-        g.append("text")
-          .attr("x", 2*legend_dim.spacer + legend_dim.font/4)
-          .attr("y", (idx+1)*(legend_dim.spacer + legend_dim.margin) - legend_dim.margin - (legend_dim.spacer / 2) + legend_dim.font / 2)
-          .style("fill", () => colors(d))
-          .attr('font-family', 'monospace')
-          .text(d => d);
-      });
-  }
+             'd3Line', 'd3Line2',
+	     'xScale', 'yScale', 'yScale2'),
 });

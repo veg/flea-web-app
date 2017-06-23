@@ -6,15 +6,29 @@ export default Ember.Mixin.create({
   nodeNameType: 'visit_code',
   rankColors: false,
 
+  sortedDates: function() {
+    let map = this.get('model.sequences.seqIdToDate');
+    delete map["mrca"];
+    let dates = _.values(map);
+    return _.uniqBy(dates, d => d.toString()).sort((a, b) => a - b);
+  }.property('model.sequences.seqIdToDate'),
+
+  sortedVisitCodes: function() {
+    let sorted = this.get('sortedDates');
+    let dateMap = this.get('model.dates');
+    let result = sorted.map(d => dateMap[d]);
+    return result;
+  }.property('sortedDates', 'model.dates'),
+
   seqIdToNodeName: function() {
-    var result = {};
-    var nameType = this.get('nodeNameType');
-    var seqs = this.get('model.sequences.observedAndMrca');
+    let result = {};
+    let nameType = this.get('nodeNameType');
+    let seqs = this.get('model.sequences.observedAndMrca');
     if (nameType === 'visit_code') {
-      var id_to_date = this.get('model.sequences.seqIdToDate');
-      var date_to_visit_code = this.get('model.dates');
+      let id_to_date = this.get('model.sequences.seqIdToDate');
+      let date_to_visit_code = this.get('model.dates');
       for (let i=0; i<seqs.length; i++) {
-        var key = seqs[i].get('id');
+        let key = seqs[i].get('id');
         try {
           result[key] = mapIfPresent(date_to_visit_code, id_to_date[key]);
         } catch (err) {
@@ -36,38 +50,54 @@ export default Ember.Mixin.create({
              'model.sequences.idToMotif.[]',
              'nodeNameType'),
 
-  colorScale: function() {
-    var map = this.get('model.sequences.seqIdToDate');
-    delete map["mrca"];
-    var dates = _.values(map);
-    var s1;
-    var maxval;
+  makeColorScale: function(sorted, dates) {
+    if (!dates) {
+      dates = sorted;
+    }
+    if (sorted.length !== dates.length) {
+      throw 'lengths do not match';
+    }
+
+    let labelToDate = {};
+    for (let i=0; i<sorted.length; i++) {
+      labelToDate[sorted[i]] = dates[i];
+    }
+
+    let s1;
+    let maxval;
     if (this.get('rankColors')) {
-      var sorted = _.uniqBy(dates, d => d.toString()).sort((a, b) => a - b);
-      maxval = sorted.length;
+      maxval = dates.length;
       s1 = d3.scale.ordinal()
-        .domain(sorted)
-        .range(_.range(sorted.length));
+        .domain(dates)
+        .range(_.range(dates.length));
     } else {
       maxval = 1;
       s1 = d3.time.scale()
         .domain(d3.extent(dates))
         .range([0, 1]);
     }
-    var colours = ["red", "orange", "yellow", "green", "blue", "indigo"];
-    var step = maxval / (colours.length - 1);
-    var domain = d3.range(0, maxval + step / 2, step);
-    var s2 = d3.scale.linear()
+    let colours = ["red", "orange", "yellow", "green", "blue", "indigo"];
+    let step = maxval / (colours.length - 1);
+    let domain = d3.range(0, maxval + step / 2, step);
+    let s2 = d3.scale.linear()
         .domain(domain)
         .range(colours)
         .interpolate(d3.interpolateLab);
-    return date => s2(s1(date));
-  }.property('model.sequences.seqIdToDate', 'rankColors'),
+    return label => s2(s1(labelToDate[label]));
+  },
+
+  colorScale: function() {
+    return this.makeColorScale(this.get('sortedDates'));
+  }.property('sortedDates', 'rankColors'),
+
+  colorScaleVisitCode: function() {
+    return this.makeColorScale(this.get('sortedVisitCodes'), this.get('sortedDates'));
+  }.property('sortedVisitCodes', 'rankColors'),
 
   motifColorScale: function() {
-    var map = this.get('model.sequences.idToMotif');
-    var motifs = _.uniq(_.values(map)).sort();
-    var scale;
+    let map = this.get('model.sequences.idToMotif');
+    let motifs = _.uniq(_.values(map)).sort();
+    let scale;
     if (motifs.length > 10) {
       scale = d3.scale.category20();
     } else {
@@ -77,7 +107,7 @@ export default Ember.Mixin.create({
   }.property('model.sequences.idToMotif[]'),
 
   colorMap: function(map, scale) {
-    var result = {};
+    let result = {};
     for (let key in map) {
       if (map.hasOwnProperty(key)) {
         result[key] = scale(map[key]);
@@ -87,15 +117,15 @@ export default Ember.Mixin.create({
   },
 
   seqIdToNodeColor: function() {
-    var map = this.get('model.sequences.seqIdToDate');
-    var scale = this.get('colorScale');
+    let map = this.get('model.sequences.seqIdToDate');
+    let scale = this.get('colorScale');
     return this.colorMap(map, scale);
   }.property('model.sequences.seqIdToDate', 'colorScale'),
 
   seqIdToMotifColor: function() {
     if (this.get('nodeNameType') === 'motif') {
-      var map = this.get('model.sequences.idToMotif');
-      var scale = this.get('motifColorScale');
+      let map = this.get('model.sequences.idToMotif');
+      let scale = this.get('motifColorScale');
       return this.colorMap(map, scale);
     }
     return null;

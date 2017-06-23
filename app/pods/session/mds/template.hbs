@@ -2,8 +2,8 @@
   <div class="col-md-8 pull-right">
     <div class="input-group input-group-sm">
       <span class="input-group-addon"
-            title="Use rank colors">
-        Rank colors
+            title="Interpolate colors by date">
+        Interpolate colors
         {{input type="checkbox" checked=rankColors}}
       </span>
       <span class="input-group-addon">
@@ -23,10 +23,12 @@
     {{mds-viewer
       data=model.mds
       copynumbers=model.copynumbers
-      seqIdToNodeName=seqIdToNodeName
-      seqIdToNodeColor=seqIdToNodeColor
-      seqIdToMotifColor=seqIdToMotifColor
-      seqIdToMotif=model.sequences.idToMotif
+      nameToNodeLabel=seqIdToNodeName
+      nameToNodeColor=seqIdToNodeColor
+      nameToMotifColor=seqIdToMotifColor
+      nameToMotif=model.sequences.idToMotif
+      legendLabels=sortedVisitCodes
+      legendColors=colorScaleVisitCode
     }}
   </div>
 </div>

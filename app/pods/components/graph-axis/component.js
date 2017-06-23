@@ -10,9 +10,9 @@ export default Ember.Component.extend({
   orient:      'bottom',
   ticks:       10,
   tickValues:  null,
-  tickSize:    15,
+  tickSize:    5,
   tickFormat:  null,
-  tickPadding: 15,
+  tickPadding: 5,
   rotate:      0,
 
   _axis: null,

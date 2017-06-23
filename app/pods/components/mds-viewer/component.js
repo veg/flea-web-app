@@ -3,36 +3,59 @@ import D3Plot from "flea-app/mixins/d3-plot-mixin";
 
 export default Ember.Component.extend(D3Plot, {
   copynumbers: null,
-  seqIdToNodeName: null,
-  seqIdToNodeColor: null,
-  seqIdToMotifColor: null,
-  seqIdToMotif: null,
+  nameToNodeLabel: null,
+  nameToNodeColor: null,
+  nameToMotifColor: null,
+  nameToMotif: null,
 
-  width: 800,
-  height: 800,
+  legendLabels: [],
+  legendColors: null,
 
-  xyDomain: function() {
-    let xDomain = d3.extent(this.get('data').map(d => d.x));
-    let yDomain = d3.extent(this.get('data').map(d => d.y));
-    return [d3.min([xDomain[0], yDomain[0]]),
-	    d3.max([xDomain[1], yDomain[1]])];
+  width: 100,
+
+  didInsertElement: function()
+  {
+    this._super();
+    var parentWidth = this.$().parents('div').width();
+    this.set('width', parentWidth);
+  },
+
+  height: function() {
+    // adjust height so that axes are equal
+    let xDomain = this.get('xDomain');
+    let yDomain = this.get('yDomain');
+    let width = this.get('width');
+
+    let xmin = xDomain[0];
+    let xmax = xDomain[1];
+    let ymin = yDomain[0];
+    let ymax = yDomain[1];
+
+    let ratio = (ymax - ymin) / (xmax - xmin);
+    return width * ratio;
+  }.property('width', 'xDomain', 'yDomain'),
+
+  xDomain: function() {
+    return d3.extent(this.get('data').map(d => d.x));
   }.property('data.[]'),
 
-  scale: function(maxval) {
-    let name = 'xyDomain';
-    let minval = 0;
+  yDomain: function() {
+    return d3.extent(this.get('data').map(d => d.y));
+  }.property('data.[]'),
+
+  scale: function(domain, minval, maxval) {
     return d3.scale.linear()
-      .domain(this.get(name))
+      .domain(this.get(domain))
       .range([minval, maxval]);
   },
 
   xScale: function() {
-    return this.scale(this.get('innerWidth'));
-  }.property('innerWidth', 'xyDomain'),
+    return this.scale('xDomain', 0, this.get('innerWidth'));
+  }.property('innerWidth', 'xDomain'),
 
   yScale: function() {
-    return this.scale(this.get('innerHeight'));
-  }.property('innerWidth', 'xyDomain'),
+    return this.scale('yDomain', this.get('innerHeight'), 0);
+  }.property('innerHeight', 'yDomain'),
 
   cnDomain: function() {
     let cns = this.get('copynumbers');
@@ -40,7 +63,7 @@ export default Ember.Component.extend(D3Plot, {
   }.property('copynumbers.[]'),
 
   margin: function () {
-    let cn = this.get('cnDomain')[1]
+    let cn = this.get('cnDomain')[1];
     let scale = this.get('cnScale');
     let radius = Math.sqrt(scale(cn));
     return {
@@ -55,7 +78,6 @@ export default Ember.Component.extend(D3Plot, {
     return d3.scale.linear()
       .domain(this.get('cnDomain'))
       .range([1, 500]);
-    return result;
   }.property('cnDomain'),
 
   onChartChange: function() {
@@ -64,20 +86,24 @@ export default Ember.Component.extend(D3Plot, {
       return;
     }
     Ember.run.once(this, '_updateChart');
-  }.observes('data.[]', 'seqIdToNodeColor', 'xScale', 'yScale', 'cnScale', 'copynumbers.[]'),
+  }.observes('data.[]', 'nameToNodeColor', 'xScale', 'yScale', 'cnScale', 'copynumbers.[]'),
 
   _updateChart: function() {
-    let svg = d3.select('#' + this.get('elementId')).select('.inner');
+    let svg = d3.select('#' + this.get('elementId')).select('.inner').select('.circles');
     let data = this.get('data');
     let xScale = this.get('xScale');
     let yScale = this.get('yScale');
     let cnScale = this.get('cnScale');
     let cns = this.get('copynumbers');
-    let seqIdToNodeColor = this.get('seqIdToNodeColor');
-    let circles = svg.selectAll("circle").data(data, function(d) {return d.name});
+    let nameToNodeColor = this.get('nameToNodeColor');
+    let circles = svg.selectAll("circle").data(data, function(d) {return d.name;});
 
     circles.enter()
-      .append("circle")
+      .append("circle");
+
+    circles.exit().remove();
+
+    circles
       .attr("cx", function(d) {
 	return xScale(d.x);
       })
@@ -86,12 +112,9 @@ export default Ember.Component.extend(D3Plot, {
       })
       .attr("r", function(d) {
 	return Math.sqrt(cnScale(cns[d.name]));
-      });
-
-    circles.exit().remove();
-
-    circles.style("fill", function(d) {
-	return seqIdToNodeColor[d.name];
+      })
+      .style("fill", function(d) {
+	return nameToNodeColor[d.name];
       });
   },
 });

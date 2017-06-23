@@ -1,2 +1,21 @@
 <g transform="{{innerGroupTransform}}" class="inner">
+  <g class="circles"></g>
+
+  {{graph-axis class="x axis"
+  scale=xScale
+  transform=xAxisTransform
+  }}
+
+  {{graph-axis class="y axis"
+  scale=yScale
+  orient='left'
+  }}
+
+{{#if legendLabels.length}}
+{{d3-legend
+legendLabels=legendLabels
+legendColors=legendColors
+}}
+{{/if}}
+
 </g>

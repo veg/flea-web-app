@@ -49,4 +49,12 @@ export default Ember.Mixin.create({
     return 'translate(%@, %@)'.fmt(margin.left, margin.top);
   }.property('margin'),
 
+  xAxisTransform: function() {
+    return 'translate(0, %@)'.fmt(this.get('innerHeight'));
+  }.property('innerHeight'),
+
+  yAxisTransform: function() {
+    return 'translate(%@, 0)'.fmt(this.get('innerWidth'));
+  }.property('innerWidth'),
+
 });
