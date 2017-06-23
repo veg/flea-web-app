@@ -3,10 +3,6 @@ import {mapIfPresent, insertNested} from 'flea-app/utils/utils';
 
 export default Ember.Controller.extend({
 
-  _genomicRegion: '',
-  _timePoint: '',
-  _distanceMeasure: '',
-
   nodeNameTypes: ['visit_code', 'seq_id', 'motif', 'none'],
   nodeNameType: 'visit_code',
 
@@ -19,103 +15,6 @@ export default Ember.Controller.extend({
   heightScale: 1.0,
 
   hideCopynumber: Ember.computed.not('showCopynumber'),
-
-  nestedTrees: function() {
-    var trees = this.get('model.trees');
-    var result = {};
-    var datemap = this.get('model.dates');
-    for (let i=0; i < trees.length; i++) {
-      var tree = trees[i];
-      var date = tree.date;
-      if (date !== "Combined") {
-        date = mapIfPresent(datemap, date);
-      }
-      insertNested(result, [date, tree.region, tree.distance], tree.tree);
-    }
-    return result;
-  }.property('model.trees.[]'),
-
-  timePoints: function() {
-    var trees = this.get('nestedTrees');
-    var dates = Object.keys(trees);
-    var idx = dates.indexOf("Combined");
-    if (idx > 0) {
-      // move to front
-      dates.splice(0, 0, dates.splice(idx, 1)[0]);
-    }
-    return dates;
-  }.property('nestedTrees'),
-
-  genomicRegions: function() {
-    var trees = this.get('nestedTrees');
-    var tp = this.get('timePoint');
-    return Object.keys(trees[tp]);
-  }.property('nestedTrees', 'timePoint'),
-
-  distanceMeasures: function() {
-    var trees = this.get('nestedTrees');
-    var date = this.get('timePoint');
-    var region = this.get('genomicRegion');
-    return Object.keys(trees[date][region]);
-  }.property('nestedTrees', 'genomicRegion', 'timePoint'),
-
-  handleGet: function(name) {
-    var value = this.get('_' + name);
-    var options = this.get(name + 's');
-    if (!(_.includes(options, value))) {
-      return options[0];
-    }
-    return value;
-  },
-
-  handleSet: function(name, value) {
-    var options = this.get(name + 's');
-    if (!(_.includes(options, value))) {
-      this.set('_' + name, options[0]);
-      return options[0];
-    }
-    this.set('_' + name, value);
-    return value;
-  },
-
-  genomicRegion: Ember.computed('genomicRegions', '_genomicRegion', {
-    get: function() {
-      return this.handleGet('genomicRegion');
-    },
-    set: function(key, value) {
-      return this.handleSet('genomicRegion', value);
-    }
-  }),
-
-  timePoint: Ember.computed('timePoints', '_timePoint', {
-    get: function() {
-      return this.handleGet('timePoint');
-    },
-    set: function(key, value) {
-      return this.handleSet('timePoint', value);
-    }
-  }),
-
-  distanceMeasure: Ember.computed('distanceMeasures', '_distanceMeasure', {
-    get: function() {
-      return this.handleGet('distanceMeasure');
-    },
-    set: function(key, value) {
-      return this.handleSet('distanceMeasure', value);
-    }
-  }),
-
-  tree: function() {
-    var date = this.get('timePoint');
-    var region = this.get('genomicRegion');
-    var distance = this.get('distanceMeasure');
-    var tree = this.get('nestedTrees')[date][region][distance];
-    return tree;
-  }.property('nestedTrees',
-             'genomicRegion',
-             'timePoints',
-             'distanceMeasure'),
-
 
   // FIXME: code duplication. Same function used in neutralization controller.
   // Where to put this to share it?
