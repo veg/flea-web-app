@@ -102,7 +102,7 @@ export default Ember.Controller.extend({
 
   groupedSequences: function() {
     var self = this;
-    var sequences = this.get('model.sequences.observedSequences');
+    var sequences = this.get('model.sequences.observed');
     var copynumbers = this.get('model.copynumbers');
     var result = [];
     var ranges = this.get('alnRanges');
@@ -146,7 +146,7 @@ export default Ember.Controller.extend({
     return result;
   }.property('alnRanges', 'mrcaSlice',
              'model.copynumbers',
-             'model.sequences.observedSequences.[]',
+             'model.sequences.observed.[]',
              'regex', 'threshold'),
 
   sortedRanges: function() {
@@ -173,7 +173,7 @@ export default Ember.Controller.extend({
              'model.coordinates.refToLastAlnCoords'),
 
   aaTrajectories: function() {
-    var sequences = this.get('model.sequences.observedSequences');
+    var sequences = this.get('model.sequences.observed');
     var copynumbers = this.get('model.copynumbers');
     var motifs = this.get('model.sequences.idToMotif');
     var counts = {};
@@ -216,7 +216,7 @@ export default Ember.Controller.extend({
       series.push({name: m, values: points});
     }
     return series;
-  }.property('model.sequences.observedSequences.[]',
+  }.property('model.sequences.observed.[]',
              'model.sequences.idToMotif.[]'),
 
   cappedTrajectories: function() {

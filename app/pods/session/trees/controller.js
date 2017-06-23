@@ -7,8 +7,8 @@ export default Ember.Controller.extend({
   _timePoint: '',
   _distanceMeasure: '',
 
-  nodeNameTypes: ['label', 'seq_id', 'motif', 'none'],
-  nodeNameType: 'label',
+  nodeNameTypes: ['visit_code', 'seq_id', 'motif', 'none'],
+  nodeNameType: 'visit_code',
 
   showCopynumber: true,
   overlapNodes: true,
@@ -134,13 +134,13 @@ export default Ember.Controller.extend({
     var result = {};
     var nameType = this.get('nodeNameType');
     var seqs = this.get('model.sequences.observedAndMrca');
-    if (nameType === 'label') {
+    if (nameType === 'visit_code') {
       var id_to_date = this.get('seqIdToDate');
-      var date_to_label = this.get('model.dates');
+      var date_to_visit_code = this.get('model.dates');
       for (let i=0; i<seqs.length; i++) {
         var key = seqs[i].get('id');
         try {
-          result[key] = mapIfPresent(date_to_label, id_to_date[key]);
+          result[key] = mapIfPresent(date_to_visit_code, id_to_date[key]);
         } catch (err) {
           result[key] = key;
         }

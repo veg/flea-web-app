@@ -3,7 +3,7 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   showTrajectory: function() {
     try {
-      var val = this.get('model.runinfo.configuration.Tasks.hyphy_analysis');
+      var val = this.get('model.runinfo.configuration.Tasks.hyphy_analysis_slow');
       // used to be a string, but now it is a JSON bool. Have to check both.
       if (val === "True") {
         return true;
@@ -15,5 +15,5 @@ export default Ember.Controller.extend({
     } catch (err) {
       return false;
     }
-  }.property('model.runinfo.configuration.Tasks.hyphy_analysis')
+  }.property('model.runinfo.configuration.Tasks.hyphy_analysis_slow')
 });
