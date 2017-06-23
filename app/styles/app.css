@@ -387,3 +387,14 @@ tbody tr.positivePositions td.seq-cell {
 #sequence-viewer > tbody > tr > td.seq-cell.notopborder {
     border-style: none;
 }
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 5px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}

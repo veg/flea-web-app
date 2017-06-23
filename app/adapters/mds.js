@@ -5,7 +5,7 @@ export default Ember.Object.extend({
   ajax: Ember.inject.service(),
 
   find: function(session_id) {
-    var url = config.rootURL + 'data/' + session_id + '/mds';
+    var url = config.rootURL + 'data/' + session_id + '/manifold';
     return this.get("ajax").request(url).then(function(data) {
       let result = [];
       for (let id in data) {

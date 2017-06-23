@@ -86,7 +86,8 @@ export default Ember.Component.extend(D3Plot, {
       return;
     }
     Ember.run.once(this, '_updateChart');
-  }.observes('data.[]', 'nameToNodeColor', 'xScale', 'yScale', 'cnScale', 'copynumbers.[]'),
+  }.observes('data.[]', 'nameToNodeColor', 'xScale', 'yScale', 'cnScale',
+	     'copynumbers.[]', 'highlightedNodes'),
 
   _updateChart: function() {
     let svg = d3.select('#' + this.get('elementId')).select('.inner').select('.circles');
@@ -96,7 +97,13 @@ export default Ember.Component.extend(D3Plot, {
     let cnScale = this.get('cnScale');
     let cns = this.get('copynumbers');
     let nameToNodeColor = this.get('nameToNodeColor');
+    let highlightedNodes = this.get('highlightedNodes');
+
     let circles = svg.selectAll("circle").data(data, function(d) {return d.name;});
+
+    var div = d3.select("body").append("div")	
+	.attr("class", "tooltip")				
+	.style("opacity", 0);
 
     circles.enter()
       .append("circle");
@@ -115,6 +122,28 @@ export default Ember.Component.extend(D3Plot, {
       })
       .style("fill", function(d) {
 	return nameToNodeColor[d.name];
+      }).style("opacity", function(d) {
+	if (highlightedNodes.length === 0) {
+	  return 1.0;
+	}
+	if (highlightedNodes.has(d.name)) {
+	  return 1.0;
+	} else {
+	  return 0.1;
+	}
+      })
+      .on("mouseover", function(d) {		
+        div.transition()		
+          .duration(100)		
+          .style("opacity", .9);		
+        div.html(d.name)
+          .style("left", (d3.event.pageX) + "px")		
+          .style("top", (d3.event.pageY - 30) + "px");	
+      })					
+      .on("mouseout", function(d) {		
+        div.transition()		
+          .duration(100)		
+          .style("opacity", 0);	
       });
   },
 });
