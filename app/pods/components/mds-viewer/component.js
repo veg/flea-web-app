@@ -86,7 +86,8 @@ export default Ember.Component.extend(D3Plot, {
       return;
     }
     Ember.run.once(this, '_updateChart');
-  }.observes('data.[]', 'nameToNodeColor', 'xScale', 'yScale', 'cnScale',
+  }.observes('data.[]', 'nameToNodeColor', 'nameToMotif', 'nameToMotifColor',
+	     'xScale', 'yScale', 'cnScale',
 	     'copynumbers.[]', 'highlightedNodes'),
 
   _updateChart: function() {
@@ -97,12 +98,15 @@ export default Ember.Component.extend(D3Plot, {
     let cnScale = this.get('cnScale');
     let cns = this.get('copynumbers');
     let nameToNodeColor = this.get('nameToNodeColor');
+    let nameToMotif = this.get('nameToMotif');
+    let nameToMotifColor = this.get('nameToMotifColor');
     let highlightedNodes = this.get('highlightedNodes');
 
     let circles = svg.selectAll("circle").data(data, function(d) {return d.name;});
 
-    var div = d3.select("body").append("div")	
-	.attr("class", "tooltip")				
+    d3.select("body").select(".tooltip").remove()
+    let div = d3.select("body").append("div")
+	.attr("class", "tooltip")
 	.style("opacity", 0);
 
     circles.enter()
@@ -132,18 +136,25 @@ export default Ember.Component.extend(D3Plot, {
 	  return 0.1;
 	}
       })
-      .on("mouseover", function(d) {		
-        div.transition()		
-          .duration(100)		
-          .style("opacity", .9);		
-        div.html(d.name)
-          .style("left", (d3.event.pageX) + "px")		
-          .style("top", (d3.event.pageY - 30) + "px");	
-      })					
-      .on("mouseout", function(d) {		
-        div.transition()		
-          .duration(100)		
-          .style("opacity", 0);	
+      .on("mouseover", function(d) {
+	let html = d.name;
+	let color = 'black';
+	if (nameToMotif[d.name]) {
+	  html += ' : ' + nameToMotif[d.name];
+	  color = nameToMotifColor[d.name];
+	}
+        div.transition()
+          .duration(100)
+          .style("opacity", .9);
+        div.html(html)
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY - 30) + "px")
+	  .style('color', color);
+      })
+      .on("mouseout", function(d) {
+        div.transition()
+          .duration(100)
+          .style("opacity", 0);
       });
   },
 });

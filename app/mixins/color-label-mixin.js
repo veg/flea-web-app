@@ -123,13 +123,10 @@ export default Ember.Mixin.create({
   }.property('model.sequences.seqIdToDate', 'colorScale'),
 
   seqIdToMotifColor: function() {
-    if (this.get('nodeNameType') === 'motif') {
-      let map = this.get('model.sequences.idToMotif');
-      let scale = this.get('motifColorScale');
-      return this.colorMap(map, scale);
-    }
-    return null;
-  }.property('model.sequences.seqIdToDate', 'colorScale', 'nodeNameType'),
+    let map = this.get('model.sequences.idToMotif');
+    let scale = this.get('motifColorScale');
+    return this.colorMap(map, scale);
+  }.property('model.sequences.seqIdToDate', 'motifColorScale', 'nodeNameType'),
 
   actions: {
     selectNodeNameType: function(value) {
