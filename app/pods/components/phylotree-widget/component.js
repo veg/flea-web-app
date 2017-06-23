@@ -19,6 +19,7 @@ export default Ember.Component.extend({
   seqIdToNodeName: null,
   seqIdToNodeColor: null,
   seqIdToTextColor: null,
+  seqIdToMotif: null,
   radialLayout: false,
 
   minRadius: 0.1,
@@ -44,14 +45,17 @@ export default Ember.Component.extend({
   nodeColorizer: function() {
     var nodeMap = this.get('seqIdToNodeColor');
     var textMap = this.get('seqIdToTextColor');
-    return (element, data) => {
+    return (element, node) => {
       if (Ember.isPresent(nodeMap)) {
-        element.selectAll('circle').style("fill", nodeMap[data.name]).style('opacity', 0.4);
+        element.selectAll('circle').style("fill", nodeMap[node.name]).style('opacity', 0.4);
       } else {
         element.selectAll('circle').style("fill", 'LightGray').style('opacity', 0.4);
       }
       if (Ember.isPresent(textMap)) {
-        element.selectAll('text').style('fill', textMap[data.name]);
+        element.selectAll('text').style('fill', textMap[node.name]);
+	if (!d3_phylotree_is_leafnode(node)) {
+          element.selectAll('circle').style("fill", textMap[node.name]).style('opacity', 0.9);
+	}
       } else {
         element.selectAll('text').style("fill", 'Black');
       }
@@ -79,6 +83,7 @@ export default Ember.Component.extend({
       tree_widget.options ({'draw-size-bubbles' : false}, false);
     }
     tree_widget.options ({'selectable' : false}, false);
+    tree_widget.options ({'internal-names' : true}, false);
 
     this.set('treeWidget', tree_widget);
     Ember.run.once(this, 'newTree');
@@ -86,9 +91,22 @@ export default Ember.Component.extend({
 
   newTree: function() {
     // do not call layout(), since it will be done in sort()
-    this.get('treeWidget')(this.get('tree'));
+    let tree_widget = this.get('treeWidget');
+    tree_widget(this.get('tree'));
+    let toMotif = this.get('seqIdToMotif');
+
+    // custom menu
+    tree_widget.get_nodes().forEach(function(tree_node) {
+      d3_add_custom_menu(
+	tree_node,
+	// display this text for the menu
+	function(node) { return node.name + ' : ' + toMotif[node.name];},
+	function() {},
+	d3.layout.phylotree.is_leafnode // condition on when to display the menu
+      );
+    });
     this.sort();
-  }.observes('tree'),
+  }.observes('tree', 'seqIdToMotif'),
 
   sort: function() {
     var sort_state = this.get('sortState');

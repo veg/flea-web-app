@@ -127,22 +127,6 @@ export default Ember.Controller.extend({
     setSortState: function(val) {
       this.set('sortState', val);
     },
-
-    selectGenomicRegion: function(value) {
-      if (value != null) {
-        this.set('genomicRegion', value);
-      }
-    },
-    selectTimePoint: function(value) {
-      if (value != null) {
-        this.set('timePoint', value);
-      }
-    },
-    selectDistanceMeasure: function(value) {
-      if (value != null) {
-        this.set('distanceMeasure', value);
-      }
-    },
     selectNodeNameType: function(value) {
       if (value != null) {
         this.set('nodeNameType', value);
