@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import {mapIfPresent} from "flea-app/utils/utils";
+import D3Plot from "flea-app/mixins/d3-plot-mixin";
 
 /*
 example data:
@@ -19,10 +20,7 @@ example data:
 ]
 */
 
-export default Ember.Component.extend({
-  tagName: 'svg',
-  attributeBindings: ['width', 'height'],
-
+export default Ember.Component.extend(D3Plot, {
   width:  900,
   height: 300,
 
@@ -33,14 +31,15 @@ export default Ember.Component.extend({
   data: [],
   data2: [],
 
+  userColors: null,
+  tickMap: {},
+
   _margin: {
     top:    20,
     right:  50,
     bottom: 60,
-    left:   50},
-
-  userColors: null,
-  tickMap: {},
+    left:   50
+  },
 
   margin: function() {
     var margin = this.get('_margin');
@@ -51,25 +50,6 @@ export default Ember.Component.extend({
     }
     return margin;
   }.property('seriesNames.[]', 'legendRight'),
-
-  didInsertElement: function() {
-    this._updateChart();
-  },
-
-  innerWidth: function() {
-    var margin = this.get('margin');
-    return this.get('width') - margin.left - margin.right;
-  }.property('width', 'margin'),
-
-  innerHeight: function() {
-    var margin = this.get('margin');
-    return this.get('height') - margin.top - margin.bottom;
-  }.property('height', 'margin'),
-
-  innerGroupTransform: function() {
-    var margin = this.get('margin');
-    return 'translate(%@, %@)'.fmt(margin.left, margin.top);
-  }.property('margin'),
 
   seriesNames: function() {
     var data = this.get('data');
@@ -91,10 +71,6 @@ export default Ember.Component.extend({
   xDomain: function() {
     return d3.extent(this.get('dates'));
   }.property('dates.[]'),
-
-  xAxisTransform: function() {
-    return 'translate(0, %@)'.fmt(this.get('innerHeight'));
-  }.property('innerHeight'),
 
   xScale: function() {
     var domain = this.get('xDomain');
@@ -128,9 +104,13 @@ export default Ember.Component.extend({
     return this._yScale(this.get('data2'));
   }.property('innerHeight', 'data2.[].values.[].y', 'ymin'),
 
+  xAxisTransform: function() {
+    return 'translate(0, %@)'.fmt(this.get('innerHeight'));
+  }.property('innerHeight'),
+
   yAxisTransform: function() {
     return 'translate(%@, 0)'.fmt(this.get('innerWidth'));
-  }.property('innerHeight'),
+  }.property('innerWidth'),
 
   d3Line: function() {
     var xScale = this.get('xScale'),
@@ -261,5 +241,4 @@ export default Ember.Component.extend({
           .text(d => d);
       });
   }
-
 });

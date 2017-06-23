@@ -54,18 +54,19 @@
 
 <div class="row">
   <div class='col-md-12' id='_tree_enclosure'>
-    {{phylotree-widget tree=model.tree
-    copynumbers=model.copynumbers
-    sortState=sortState
-    do_copy_number=true
-    seqIdToNodeName=seqIdToNodeName
-    seqIdToNodeColor=seqIdToNodeColor
-    seqIdToTextColor=seqIdToTextColor
-    seqIdToMotif=model.sequences.idToMotif
-    radialLayout=radialLayout
-    showCopynumber=showCopynumber
-    overlapNodes=overlapNodes
-    heightScale=heightScale
+    {{phylotree-widget
+      tree=model.tree
+      copynumbers=model.copynumbers
+      sortState=sortState
+      do_copy_number=true
+      seqIdToNodeName=seqIdToNodeName
+      seqIdToNodeColor=seqIdToNodeColor
+      seqIdToMotifColor=seqIdToMotifColor
+      seqIdToMotif=model.sequences.idToMotif
+      radialLayout=radialLayout
+      showCopynumber=showCopynumber
+      overlapNodes=overlapNodes
+      heightScale=heightScale
     }}
   </div>
 </div>

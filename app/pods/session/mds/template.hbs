@@ -1,0 +1,32 @@
+<div class="row">
+  <div class="col-md-8 pull-right">
+    <div class="input-group input-group-sm">
+      <span class="input-group-addon"
+            title="Use rank colors">
+        Rank colors
+        {{input type="checkbox" checked=rankColors}}
+      </span>
+      <span class="input-group-addon">
+        Node names
+      </span>
+      {{#x-select-bootstrap value=nodeNameType action="selectNodeNameType"}}
+      {{#each nodeNameTypes as |nameType|}}
+      {{#x-option value=nameType}}{{nameType}}{{/x-option}}
+      {{/each}}
+      {{/x-select-bootstrap}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class='col-md-12' id='_mds_viewer'>
+    {{mds-viewer
+      data=model.mds
+      copynumbers=model.copynumbers
+      seqIdToNodeName=seqIdToNodeName
+      seqIdToNodeColor=seqIdToNodeColor
+      seqIdToMotifColor=seqIdToMotifColor
+      seqIdToMotif=model.sequences.idToMotif
+    }}
+  </div>
+</div>

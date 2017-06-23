@@ -24,7 +24,7 @@ export default Ember.Controller.extend({
 
   mabFeatures: function() {
     var json = this.get('model.neutralization');
-    var seq_id_to_date = this.get('seqIdToDate');
+    var seq_id_to_date = this.get('model.sequences.seqIdToDate');
 
     var mab_table = {};
     var names = this.get('mabNames');
@@ -53,7 +53,7 @@ export default Ember.Controller.extend({
       }
     }
     return mab_table;
-  }.property('mabName.[]', 'model.neutralization.[]', 'seqIdToDate'),
+  }.property('mabName.[]', 'model.neutralization.[]', 'model.sequences.seqIdToDate'),
 
   sortedDates: function() {
     var d = this.get('model.dates');
@@ -133,14 +133,6 @@ export default Ember.Controller.extend({
     }
     return result;
   }.property('mabFeature.[]', 'sortedDate.[]'),
-
-  seqIdToDate: function() {
-    var seqs = this.get('model.sequences.sequences');
-    return seqs.reduce(function(acc, s) {
-      acc[s['id']] = s['date'];
-      return acc;
-    }, {});
-  }.property('model.sequences.sequences.[]')
 });
 
 

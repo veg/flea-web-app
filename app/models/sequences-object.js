@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import {seqIdToProperty} from 'flea-app/utils/utils';
 
 export default Ember.Object.extend({
 
@@ -6,7 +7,6 @@ export default Ember.Object.extend({
   mrca: null,
   observed: [],
   ancestors: [],
-
 
   // in alignment 0-indexed coordinates
   selectedPositions: [],
@@ -26,5 +26,10 @@ export default Ember.Object.extend({
       acc[s.get('id')] = positions.map(idx => s.get('sequence')[idx]).join('');
       return acc;
     }, {});
-  }.property('observedAndMrca.[]', 'ancestors.[]', 'selectedPositions.[]')
+  }.property('observedAndMrca.[]', 'ancestors.[]', 'selectedPositions.[]'),
+
+  seqIdToDate: function() {
+    return seqIdToProperty(this.get('model.sequences.observedAndMrca'), 'date');
+  }.property('observedAndMrca.[]'),
+
 });

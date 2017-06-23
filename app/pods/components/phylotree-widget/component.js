@@ -18,7 +18,7 @@ export default Ember.Component.extend({
   // parameters
   seqIdToNodeName: null,
   seqIdToNodeColor: null,
-  seqIdToTextColor: null,
+  seqIdToMotifColor: null,
   seqIdToMotif: null,
   radialLayout: false,
 
@@ -44,7 +44,7 @@ export default Ember.Component.extend({
 
   nodeColorizer: function() {
     var nodeMap = this.get('seqIdToNodeColor');
-    var textMap = this.get('seqIdToTextColor');
+    var textMap = this.get('seqIdToMotifColor');
     return (element, node) => {
       if (Ember.isPresent(nodeMap)) {
         element.selectAll('circle').style("fill", nodeMap[node.name]).style('opacity', 0.4);
@@ -60,7 +60,7 @@ export default Ember.Component.extend({
         element.selectAll('text').style("fill", 'Black');
       }
     };
-  }.property('seqIdToNodeColor', 'seqIdToTextColor', 'radialLayout'),
+  }.property('seqIdToNodeColor', 'seqIdToMotifColor', 'radialLayout'),
 
   didInsertElement: function() {
     var svg = d3.select('#' + this.get('elementId'));

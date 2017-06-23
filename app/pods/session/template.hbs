@@ -3,6 +3,7 @@
     {{#if showTrajectory}}
       <li>{{#link-to 'session.trajectory' model.session_id data-toggle="tab"}}Evolutionary trajectory{{/link-to}}</li>
     {{/if}}
+    <li>{{#link-to 'session.mds' model.session_id data-toggle="tab"}}MDS{{/link-to}}</li>
     <li>{{#link-to 'session.gene' model.session_id data-toggle="tab"}}Gene-wide information{{/link-to}}</li>
     <li>{{#link-to 'session.sequences' model.session_id data-toggle="tab"}}Amino-acid sequences{{/link-to}}</li>
     <li>{{#link-to 'session.trees' model.session_id data-toggle="tab"}}Trees{{/link-to}}</li>

@@ -203,3 +203,14 @@ export var insertNested = function(map, keys, val) {
   }
   map[keys[keys.length - 1]] = val;
 };
+
+
+export var seqIdToProperty = function(seqs, property) {
+  if (!seqs) {
+    return {};
+  }
+  return seqs.reduce(function(acc, s) {
+    acc[s.get('id')] = s.get(property);
+    return acc;
+  }, {});
+};
