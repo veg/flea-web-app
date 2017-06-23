@@ -8,37 +8,48 @@ export default Ember.Component.extend(D3Plot, {
   seqIdToMotifColor: null,
   seqIdToMotif: null,
 
-  domain: function(name) {
-    return d3.extent(this.get('data').map(d => d[name]));
+  width: 800,
+  height: 800,
+
+  xyDomain: function() {
+    let xDomain = d3.extent(this.get('data').map(d => d.x));
+    let yDomain = d3.extent(this.get('data').map(d => d.y));
+    return [d3.min([xDomain[0], yDomain[0]]),
+	    d3.max([xDomain[1], yDomain[1]])];
+  }.property('data.[]'),
+
+  scale: function(maxval) {
+    let name = 'xyDomain';
+    let minval = 0;
+    return d3.scale.linear()
+      .domain(this.get(name))
+      .range([minval, maxval]);
   },
 
-  xDomain: function() {
-    return this.domain('x');
-  }.property('data.[]'),
+  xScale: function() {
+    return this.scale(this.get('innerWidth'));
+  }.property('innerWidth', 'xyDomain'),
 
-  yDomain: function() {
-    return this.domain('y');
-  }.property('data.[]'),
+  yScale: function() {
+    return this.scale(this.get('innerHeight'));
+  }.property('innerWidth', 'xyDomain'),
 
   cnDomain: function() {
     let cns = this.get('copynumbers');
     return [0, d3.max(_.values(cns))];
   }.property('copynumbers.[]'),
 
-  scale: function(name, minval, maxval) {
-    return d3.scale.linear()
-      .domain(this.get(name))
-      .range([minval, maxval]);
-    return result;
-  },
-
-  xScale: function() {
-    return this.scale('xDomain', 0, this.get('innerWidth'));
-  }.property('innerWidth', 'xDomain'),
-
-  yScale: function() {
-    return this.scale('yDomain', 0, this.get('innerHeight'));
-  }.property('innerWidth', 'xDomain'),
+  margin: function () {
+    let cn = this.get('cnDomain')[1]
+    let scale = this.get('cnScale');
+    let radius = Math.sqrt(scale(cn));
+    return {
+      top:    radius,
+      right:  radius,
+      bottom: radius,
+      left:   radius,
+    };
+  }.property('cnDomain'),
 
   cnScale: function() {
     return d3.scale.linear()
@@ -63,6 +74,7 @@ export default Ember.Component.extend(D3Plot, {
     let cnScale = this.get('cnScale');
     let cns = this.get('copynumbers');
     let seqIdToNodeName = this.get('seqIdToNodeName');
+    console.log(seqIdToNodeName)
     svg.selectAll("circle")
       .data(data)
       .enter()
@@ -76,22 +88,5 @@ export default Ember.Component.extend(D3Plot, {
       .attr("r", function(d) {
 	return Math.sqrt(cnScale(cns[d.name]));
       });
-
-    svg.selectAll("text")
-      .data(data)
-      .enter()
-      .append("text")
-      .text(function(d) {
-	return seqIdToNodeName[d.name];
-      })
-      .attr("x", function(d) {
-	return xScale(d.x);
-      })
-      .attr("y", function(d) {
-	return yScale(d.y);
-      })
-      .attr("font-family", "sans-serif")
-      .attr("font-size", "11px")
-      .attr("fill", "black");
   },
 });
