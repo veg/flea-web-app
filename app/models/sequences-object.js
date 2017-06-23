@@ -29,7 +29,7 @@ export default Ember.Object.extend({
   }.property('observedAndMrca.[]', 'ancestors.[]', 'selectedPositions.[]'),
 
   seqIdToDate: function() {
-    return seqIdToProperty(this.get('model.sequences.observedAndMrca'), 'date');
-  }.property('observedAndMrca.[]'),
+    return seqIdToProperty(this.get('observedAndMrca'), 'date');
+  }.property('observedAndMrca.[].date'),
 
 });

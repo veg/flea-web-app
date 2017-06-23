@@ -43,7 +43,7 @@ export default Ember.Mixin.create({
     var s1;
     var maxval;
     if (this.get('rankColors')) {
-      var sorted = _.uniq(dates, d => d.toString()).sort((a, b) => a - b);
+      var sorted = _.uniqBy(dates, d => d.toString()).sort((a, b) => a - b);
       maxval = sorted.length;
       s1 = d3.scale.ordinal()
         .domain(sorted)

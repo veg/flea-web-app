@@ -64,7 +64,7 @@ export default Ember.Component.extend(D3Plot, {
       return;
     }
     Ember.run.once(this, '_updateChart');
-  }.observes('data.[]', 'seqIdToNodeName', 'xScale', 'yScale', 'cnScale', 'copynumbers.[]'),
+  }.observes('data.[]', 'seqIdToNodeColor', 'xScale', 'yScale', 'cnScale', 'copynumbers.[]'),
 
   _updateChart: function() {
     let svg = d3.select('#' + this.get('elementId')).select('.inner');
@@ -73,11 +73,10 @@ export default Ember.Component.extend(D3Plot, {
     let yScale = this.get('yScale');
     let cnScale = this.get('cnScale');
     let cns = this.get('copynumbers');
-    let seqIdToNodeName = this.get('seqIdToNodeName');
-    console.log(seqIdToNodeName)
-    svg.selectAll("circle")
-      .data(data)
-      .enter()
+    let seqIdToNodeColor = this.get('seqIdToNodeColor');
+    let circles = svg.selectAll("circle").data(data, function(d) {return d.name});
+
+    circles.enter()
       .append("circle")
       .attr("cx", function(d) {
 	return xScale(d.x);
@@ -87,6 +86,12 @@ export default Ember.Component.extend(D3Plot, {
       })
       .attr("r", function(d) {
 	return Math.sqrt(cnScale(cns[d.name]));
+      });
+
+    circles.exit().remove();
+
+    circles.style("fill", function(d) {
+	return seqIdToNodeColor[d.name];
       });
   },
 });
