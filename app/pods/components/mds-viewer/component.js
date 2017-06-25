@@ -1,7 +1,8 @@
 import Ember from 'ember';
 import D3Plot from "flea-app/mixins/d3-plot-mixin";
+import WidthMixin from "flea-app/mixins/width-mixin";
 
-export default Ember.Component.extend(D3Plot, {
+export default Ember.Component.extend(D3Plot, WidthMixin, {
   copynumbers: null,
   nameToNodeLabel: null,
   nameToNodeColor: null,
@@ -12,13 +13,6 @@ export default Ember.Component.extend(D3Plot, {
   legendColors: null,
 
   width: 100,
-
-  didInsertElement: function()
-  {
-    this._super();
-    var parentWidth = this.$().parents('div').width();
-    this.set('width', parentWidth);
-  },
 
   height: function() {
     // adjust height so that axes are equal
@@ -36,11 +30,13 @@ export default Ember.Component.extend(D3Plot, {
   }.property('width', 'xDomain', 'yDomain'),
 
   xDomain: function() {
-    return d3.extent(this.get('data').map(d => d.x));
+    // return d3.extent(this.get('data').map(d => d.x));
+    return [-5, 3];
   }.property('data.[]'),
 
   yDomain: function() {
-    return d3.extent(this.get('data').map(d => d.y));
+    // return d3.extent(this.get('data').map(d => d.y));
+    return [-2, 4];
   }.property('data.[]'),
 
   scale: function(domain, minval, maxval) {
@@ -104,7 +100,7 @@ export default Ember.Component.extend(D3Plot, {
 
     let circles = svg.selectAll("circle").data(data, function(d) {return d.name;});
 
-    d3.select("body").select(".tooltip").remove()
+    d3.select("body").select(".tooltip").remove();
     let div = d3.select("body").append("div")
 	.attr("class", "tooltip")
 	.style("opacity", 0);
@@ -122,7 +118,7 @@ export default Ember.Component.extend(D3Plot, {
 	return yScale(d.y);
       })
       .attr("r", function(d) {
-	return Math.sqrt(cnScale(cns[d.name]));
+	return 1.5 * Math.sqrt(cnScale(cns[d.name]));
       })
       .style("fill", function(d) {
 	return nameToNodeColor[d.name];
@@ -145,13 +141,13 @@ export default Ember.Component.extend(D3Plot, {
 	}
         div.transition()
           .duration(100)
-          .style("opacity", .9);
+          .style("opacity", 0.9);
         div.html(html)
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY - 30) + "px")
 	  .style('color', color);
       })
-      .on("mouseout", function(d) {
+      .on("mouseout", function() {
         div.transition()
           .duration(100)
           .style("opacity", 0);

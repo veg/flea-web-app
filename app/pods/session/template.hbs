@@ -2,6 +2,8 @@
   <ul class="nav nav-tabs">
     {{#if showTrajectory}}
       <li>{{#link-to 'session.trajectory' model.session_id data-toggle="tab"}}Evolutionary trajectory{{/link-to}}</li>
+    {{else}}
+      <li><a href="" data-toggle="tab" class="disabled">Evolutionary trajectory</a></li>
     {{/if}}
     <li>{{#link-to 'session.mds' model.session_id data-toggle="tab"}}MDS{{/link-to}}</li>
     <li>{{#link-to 'session.gene' model.session_id data-toggle="tab"}}Gene-wide information{{/link-to}}</li>

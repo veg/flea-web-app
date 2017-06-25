@@ -398,3 +398,9 @@ tbody tr.positivePositions td.seq-cell {
     border-radius: 8px;
     pointer-events: none;
 }
+
+.disabled {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.6;
+}

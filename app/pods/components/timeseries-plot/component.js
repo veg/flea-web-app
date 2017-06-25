@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import {mapIfPresent} from "flea-app/utils/utils";
 import D3Plot from "flea-app/mixins/d3-plot-mixin";
+import WidthMixin from "flea-app/mixins/width-mixin";
 
 /*
 example data:
@@ -20,7 +21,7 @@ example data:
 ]
 */
 
-export default Ember.Component.extend(D3Plot, {
+export default Ember.Component.extend(D3Plot, WidthMixin, {
   width:  900,
   height: 300,
 

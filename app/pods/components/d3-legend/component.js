@@ -30,7 +30,7 @@ export default Ember.Component.extend({
     var spacer = 25;
     var font = 10;
     var legend_dim = {x: xval, y: yval, spacer: spacer, margin: 5, font: font};
-    var svg = d3.select('#' + this.get('elementId'))
+    var svg = d3.select('#' + this.get('elementId'));
 
     svg.selectAll('g').remove();
 
