@@ -1,5 +1,7 @@
 import Ember from 'ember';
 import {oneIndex, alignmentTicks} from 'flea-app/utils/utils';
+import D3Plot from "flea-app/mixins/d3-plot-mixin";
+import WidthMixin from "flea-app/mixins/width-mixin";
 
 // input: (first is used for brushable navigation)
 // - names ['name1', 'name2', ...]
@@ -11,20 +13,16 @@ import {oneIndex, alignmentTicks} from 'flea-app/utils/utils';
 // alnToRefCoords
 
 
-export default Ember.Component.extend({
-  tagName: 'svg',
-  attributeBindings: ['width', 'height'],
+export default Ember.Component.extend(D3Plot, WidthMixin, {
+  // width:  800,
+  heightEach: 80,
+  labelHeight: 25,
 
   tick: 100,
   yticks: 5,
 
   // if false, use first data element as a combined view
   addCombined: true,
-
-  //TODO: make it possible to fit width of container
-  width:  850,
-  heightEach: 80,
-  labelHeight: 25,
 
   margin: {
     top:    20,
@@ -37,25 +35,6 @@ export default Ember.Component.extend({
     var margin = this.get('margin');
     return margin.top + margin.bottom + this.get('nPlots') * this.get('heightEach') + this.get('labelHeight');
   }.property('heightEach', 'margin', 'nPlots', 'labelHeight'),
-
-  didInsertElement: function() {
-    this._updateChart();
-  },
-
-  innerWidth: function() {
-    var margin = this.get('margin');
-    return this.get('width') - margin.left - margin.right;
-  }.property('width', 'margin'),
-
-  innerHeight: function() {
-    var margin = this.get('margin');
-    return this.get('height') - margin.top - margin.bottom;
-  }.property('height', 'margin'),
-
-  innerGroupTransform: function() {
-    var margin = this.get('margin');
-    return 'translate(%@, %@)'.fmt(margin.left, margin.top);
-  }.property('margin'),
 
   onChartChange: function() {
     // FIXME: this gets called multiple times

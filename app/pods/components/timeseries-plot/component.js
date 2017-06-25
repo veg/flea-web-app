@@ -22,8 +22,8 @@ example data:
 */
 
 export default Ember.Component.extend(D3Plot, WidthMixin, {
-  width:  900,
-  height: 300,
+  width:  800,
+  height: 350,
 
   interpolation: "linear",
 
@@ -125,7 +125,7 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
     return d3.format(".00");
   }.property(),
 
-  colors: function() {
+  seriesColors: function() {
     var colors = this.get('userColors');
     if (colors !== null) {
       return colors;
@@ -142,7 +142,7 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
 
   _updateData: function(data, line, classname) {
     var svg = d3.select('#' + this.get('elementId')).select('.inner');
-    var colors = this.get('colors');
+    var colors = this.get('seriesColors');
 
     var paths = svg.select(classname).selectAll('path')
         .data(data, d => d.name);
