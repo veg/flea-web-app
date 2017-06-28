@@ -21,7 +21,7 @@ export default Ember.Controller.extend(ColorLabelMixin, {
 
   markPositive: true,
 
-  defaultMaxMotifs: 20,
+  defaultMaxMotifs: 10,
   _maxMotifs: 20,
   maxMotifs: 20,
 
@@ -221,14 +221,16 @@ export default Ember.Controller.extend(ColorLabelMixin, {
   cappedTrajectories: function() {
     var series = this.get('aaTrajectories');
     var maxnum = this.get('maxMotifs');
+
+    for (let j=0; j<series.length; j++) {
+      var trajectory = series[j];
+      var tmax = _.max(trajectory.values.map(v => v.y));
+      series[j].tmax = tmax;
+    }
+    series.sort((a, b) => b.tmax - a.tmax);
+
     // take top n-1 and combine others
     if (series.length > maxnum) {
-      for (let j=0; j<series.length; j++) {
-        var trajectory = series[j];
-        var tmax = _.max(trajectory.values.map(v => v.y));
-        series[j].tmax = tmax;
-      }
-      series.sort((a, b) => b.tmax - a.tmax);
       var first_series = series.slice(0, maxnum);
       var rest_series = series.slice(maxnum);
       var combined = rest_series[0].values;
@@ -288,15 +290,6 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     };
     return result;
   }.property('cappedTrajectories', 'sortedDates', 'motifColorScale'),
-
-  c3Colors: function() {
-    let trajectories = this.get('cappedTrajectories');
-    let colors = trajectories.map(t => scale(t.name));
-    let result = {
-      pattern: colors,
-    };
-    return result;
-  }.property('motifColorScale', 'cappedTrajectories'),
 
   trajectoryAxis: function() {
     var datemap = this.get('model.dates');
