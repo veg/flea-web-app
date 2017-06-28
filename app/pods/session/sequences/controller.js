@@ -1,12 +1,11 @@
 import Ember from 'ember';
 import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges, mapIfPresent } from 'flea-app/utils/utils';
+import ColorLabelMixin from 'flea-app/mixins/color-label-mixin';
 import parser from 'flea-app/utils/parser';
-
 
 var pngsPattern = 'N[^P][ST]';
 
-
-export default Ember.Controller.extend({
+export default Ember.Controller.extend(ColorLabelMixin, {
 
   // range in 0-indexed [start, stop) reference coordinates
   ranges: [[159, 200]],
@@ -258,13 +257,20 @@ export default Ember.Controller.extend({
     var oldKeys = this.get('_oldKeys');
     var newKeys = data.map(s => s.name);
     this.set('_oldKeys', newKeys);
-    var columns = data.map(s => {
+    let colorscale = this.get('motifColorScale');
+
+    let columns = data.map(s => {
       var values = s.values;
       values.sort((a, b) => a.x - b.x);
       var ys = values.map(v => v.y);
       ys.unshift(s.name);
       return ys;
     });
+    let colors = {};
+    data.forEach(s => {
+      colors[s.name] = colorscale(s.name);
+    });
+
     var dates = this.get('sortedDates');
     var xticks = ['x'].concat(dates);
     columns.push(xticks);
@@ -277,10 +283,20 @@ export default Ember.Controller.extend({
         interpolation: {
           type: 'monotone'
         }
-      }
+      },
+      colors: colors,
     };
     return result;
-  }.property('cappedTrajectories', 'sortedDates'),
+  }.property('cappedTrajectories', 'sortedDates', 'motifColorScale'),
+
+  c3Colors: function() {
+    let trajectories = this.get('cappedTrajectories');
+    let colors = trajectories.map(t => scale(t.name));
+    let result = {
+      pattern: colors,
+    };
+    return result;
+  }.property('motifColorScale', 'cappedTrajectories'),
 
   trajectoryAxis: function() {
     var datemap = this.get('model.dates');
