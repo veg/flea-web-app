@@ -404,3 +404,13 @@ tbody tr.positivePositions td.seq-cell {
     cursor: default;
     opacity: 0.6;
 }
+
+/*
+very slightly reduce the spacing, so the coordinates line up with
+the alignment columns.
+
+FIXME: this should not be necessary.
+*/
+#sequence-viewer .ref-coords {
+letter-spacing: -.001em;
+}
