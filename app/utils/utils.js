@@ -118,7 +118,6 @@ export var checkRanges = function(ranges, targetRange) {
   }
 };
 
-
 export var oneIndex = function(i) {
   if (i < 0) {
     throw "invalid index";
@@ -132,7 +131,6 @@ export var zeroIndex = function(i) {
   }
   return i - 1;
 };
-
 
 export var alignmentTicks = function(a2r, r2a, tick) {
   // generate reference index tick locations closest to
@@ -162,7 +160,6 @@ export var alignmentTicks = function(a2r, r2a, tick) {
   return wanted.map(t => r2a[t]);
 };
 
-
 export var refToAlnCoords = function(alnToRef, stop) {
   var toFirst = new Array(stop);
   var toLast = new Array(stop);
@@ -185,7 +182,6 @@ export var refToAlnCoords = function(alnToRef, stop) {
   return [toFirst, toLast];
 };
 
-
 export var mapIfPresent = function(map, key) {
   if (key in map) {
     return map[key];
@@ -203,7 +199,6 @@ export var insertNested = function(map, keys, val) {
   }
   map[keys[keys.length - 1]] = val;
 };
-
 
 export var seqIdToProperty = function(seqs, property) {
   if (!seqs) {

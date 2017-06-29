@@ -1,3 +1,13 @@
+{{#if model.disabled}}
+<div class="error-pane">
+  <div class="error-title">
+    Evolutionary data not available
+  </div>
+  <div class="error-message">
+    This analysis was disabled in the pipeline.
+  </div>
+</div>
+{{else}}
 <div class="form-inline">
   <div class="form-group">
     <label for="evo_regions">Region(s) to plot</label>
@@ -77,3 +87,4 @@
     {{timeseries-plot data=phenoData data2=phenoData2 tickMap=model.dates}}
   </div>
 </div>
+{{/if}}
