@@ -91,6 +91,7 @@ canvas {
 
 .alignment-overview {
     float:left;
+    margin-top: 1em;
 }
 
 .brush .extent {
@@ -412,5 +413,19 @@ the alignment columns.
 FIXME: this should not be necessary.
 */
 #sequence-viewer .ref-coords {
-letter-spacing: -.001em;
+    letter-spacing: -.001em;
+}
+
+.trajectoryPlot .c3 {
+    height: 300px;
+}
+
+.placeholder {
+    padding-top: 10em;
+    background: snow;
+    color: darkgrey;
+    text-align: center;
+    font-family: sans-serif;
+    height: 300px;
+    border: 1px darkgrey solid;
 }

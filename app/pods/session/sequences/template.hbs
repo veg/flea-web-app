@@ -39,14 +39,21 @@
   </div>
 </div>
 <br>
-<div class = "row">
-  <div class = "col-md-12">
-    {{c3-chart
-      data=trajectoryData
-      axis=trajectoryAxis
-      transition=transition
-      tooltip=tooltip
-    }}
+<div class="row">
+  <div class="col-md-12 trajectoryPlot">
+    {{#if model.sequences.selectedPositions}}
+      {{c3-chart
+        data=trajectoryData
+        axis=trajectoryAxis
+        transition=transition
+        tooltip=tooltip
+      }}
+    {{else}}
+    <div class="placeholder">
+      <h3>Motif trajectory viewer</h3>
+      Select alignment positions to plot motifs
+    </div>
+    {{/if}}
   </div>
 </div>
 
