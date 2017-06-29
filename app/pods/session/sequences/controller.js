@@ -22,8 +22,8 @@ export default Ember.Controller.extend(ColorLabelMixin, {
   markPositive: true,
 
   defaultMaxMotifs: 10,
-  _maxMotifs: 20,
-  maxMotifs: 20,
+  _maxMotifs: 10,
+  maxMotifs: 10,
 
   _oldKeys: [],
 
