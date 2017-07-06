@@ -46,7 +46,6 @@ export default Ember.Object.extend({
 	    let seq = ancestors_json[id];
 	    let fseq = make_seq(id, null, seq);
 	    ancestors.push(fseq);
-	    continue;
           }
         }
 	if (prop === "Observed") {
@@ -63,7 +62,20 @@ export default Ember.Object.extend({
 	      let seq = timepoint[id];
 	      let fseq = make_seq(id, date, seq);
 	      observed.push(fseq);
-	      continue;
+            }
+	  }
+	} else {
+	  // old-style json. assume the key is a date.
+	  let date = prop
+	  if (result[date].hasOwnProperty("Observed")) {
+            let timepoint = result[date]["Observed"];
+            for (let id in timepoint) {
+	      if (!timepoint.hasOwnProperty(id)) {
+		continue;
+	      }
+	      let seq = timepoint[id];
+	      let fseq = make_seq(id, date, seq);
+	      observed.push(fseq);
             }
 	  }
 	}
