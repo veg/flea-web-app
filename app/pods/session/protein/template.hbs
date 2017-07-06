@@ -1,0 +1,48 @@
+<div class="pv-viewer">
+{{pv-wrapper structure=model.structure data=selectedStructureData range=structureDataRange}}
+</div>
+
+<div class="form-horizontal control-group">
+  <div class="col-sm-1">
+  <button {{action "togglePlayback"}} type="button" class="btn btn-default btn-sm" title="Toggle playback">
+    <i class="{{buttonClass}}"></i>
+  </button>
+  </div>
+  <div class="col-sm-9">
+    {{range-selector values=timepoints selectedIdx=selectedTimepointIdx selectedIdxChanged="selectTimepointIdx"}}
+  </div>
+  <div class="col-sm-2 flea-value">
+    <output>{{selectedName}}</output>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="input-group input-group-sm">
+      <span class="input-group-addon">
+        <label for="evo_regions">Metrics(s) to plot</label>
+        {{#x-select-bootstrap makeMulti=true value=selectedMetric action="selectMetric" id="protein_metrics"}}
+        {{#each metrics as |metric|}}
+        {{#x-option value=metric}}{{metric}}{{/x-option}}
+        {{/each}}
+        {{/x-select-bootstrap}}
+      </span>
+      <span class="input-group-addon">
+        <label>Mark positively selected sites</label>
+        {{input type="checkbox" name="markPositive" checked=markPositive}}
+      </span>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-sm-12">
+    {{protein-plots names=names data1=data1 data2=data2
+    positions=positions labels=labels url=currentPath
+    addCombined=addCombined
+    alnToRefCoords=model.coordinates.alnToRefCoords
+    refToFirstAlnCoords=model.coordinates.refToFirstAlnCoords
+    }}
+  </div>
+</div>
