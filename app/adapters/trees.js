@@ -7,10 +7,15 @@ export default Ember.Object.extend({
   find: function(session_id) {
     var url = config.rootURL + 'data/' + session_id + '/trees';
     return this.get("ajax").request(url).then(function(result) {
-      if (!result.hasOwnProperty('tree')) {
-	throw 'missing tree';
+      let tree = _.get(result, 'tree');
+      if (tree) {
+	return tree;
       }
-      return result['tree'];
+      tree = _.get(result, ['Combined', 'all', 'Maximum Likelihood']);
+      if (tree) {
+	return tree;
+      }
+      throw "missing tree";
     });
   }
 });
