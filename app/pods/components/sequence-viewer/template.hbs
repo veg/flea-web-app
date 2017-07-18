@@ -1,5 +1,7 @@
-<table class="table table-hover table-condensed nostretch sequence-viewer fixed-heads" id="sequence-viewer">
-  <thead>
+
+<table class="table table-hover table-condensed nostretch sequence-viewer" id="sequence-viewer">
+{{#sticky-element}}
+  <thead id="sequence-viewer_top">
     <tr>
     <th class="seq-cell">ref. coord.<br>
       <div>
@@ -21,8 +23,7 @@
     <th class="seq-cell col"></th>
     <th class="seq-cell col"></th>
       </tr>
-    </thead>
-<tbody>
+
     {{#if markPositive}}
     <tr class="positivePositions">
       <th class="seq-cell row"></th>
@@ -35,10 +36,12 @@
 
     {{#if reference}}
     <tr>
+
       <th class="seq-cell row">Reference</th>
       {{amino-acid reference}}
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
+
     </tr>
     {{/if}}
 <tr>
@@ -48,12 +51,19 @@
       <td class="seq-cell"></td>
     </tr>
 
+  </thead>
+{{/sticky-element}}
+<div id="sequence-viewer_bottom" >
+<tbody>
+  <tr>
+    <td>-----------</td>
+  </tr>
     {{#each groupedAndSelected as |obj|}}
 
 
     {{#if markPositive}}
     <tr class="positivePositions">
-      <th class="seq-cell row">{{obj.group.label}}</th>
+      <th class="row">{{obj.group.label}}</th>
       {{{obj.pos}}}
       <td class="seq-cell"></td>
       <td class="seq-cell"></td>
@@ -72,7 +82,7 @@
                 <td class="seq-cell">{{obj.group.label}}</td>
               {{/if}}
             -->
-            <th class="seq-cell row notopborder"></th>
+            <th class="row notopborder"></th>
           {{amino-acid seq.sequence ranges=seq.highlights mask=seq.mask}}
           <td class="seq-cell pad">{{#bootstrap-popover title="" dataContent=seq.html placement="right"}}
           {{seq.copyNumber}}
@@ -100,4 +110,5 @@
       </td> -->
     {{/each}}
   </tbody>
+</div>
 </table>

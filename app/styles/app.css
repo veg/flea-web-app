@@ -1,5 +1,4 @@
-html, body {
-}
+html, body {}
 
 body {
   font: 10px sans-serif;
@@ -10,21 +9,21 @@ body {
 }
 
 .timeseries_line {
-    fill: none;
-    stroke-width: 3px;
+  fill: none;
+  stroke-width: 3px;
 }
 
 .popover-link {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #neutralization .popover-link {
-    color:black;
-    text-decoration:none;
+  color: black;
+  text-decoration: none;
 }
 
-.popover{
-    max-width: 100%;
+.popover {
+  max-width: 100%;
 }
 
 canvas {
@@ -38,15 +37,14 @@ canvas {
   shape-rendering: crispEdges;
 }
 
-.axis path,
-.axis line {
+.axis path, .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
 
 .axis {
-    font: 9px sans-serif;
+  font: 9px sans-serif;
 }
 
 .selected_site {
@@ -54,11 +52,11 @@ canvas {
   stroke: black;
   stroke-opacity: 1.0;
   stroke-width: 0.5px;
-  fill-opacity :0.5;
+  fill-opacity: 0.5;
 }
 
 ._nab_cells {
-    color : #000;
+  color: #000;
 }
 
 .bar {
@@ -72,21 +70,21 @@ canvas {
 }
 
 .barlabel {
-    font: 10px sans-serif;
-    fill: black;
-    text-anchor: start;
+  font: 10px sans-serif;
+  fill: black;
+  text-anchor: start;
 }
 
 .seq-head {
-    font: 14px monospace;
+  font: 14px monospace;
 }
 
 .seq-prop {
-    font: 10px monospace;
+  font: 10px monospace;
 }
 
 .sequence-viewer {
-    font: 12px monospace;
+  font: 12px monospace;
 }
 
 .alignment-overview {
@@ -95,34 +93,34 @@ canvas {
 }
 
 .brush .extent {
-    stroke: #fff;
-    fill-opacity: .125;
-    shape-rendering: crispEdges;
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
 }
 
-.sequence-viewer tr td{
-    text-align: left;
+.sequence-viewer tr td {
+  text-align: left;
 }
 
 .sequence-viewer .sequence, .sequence-viewer .ref-coords {
-    padding-left: 0px;
+  padding-left: 0px;
 }
 
 .nostretch {
-    width:1%;
-    white-space:nowrap;
+  width: 1%;
+  white-space: nowrap;
 }
 
 .addwrap {
-    white-space: normal;
+  white-space: normal;
 }
 
 .seq-predef {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .select-cell {
-    width: 12px;
+  width: 12px;
 }
 
 .evo_area {
@@ -143,12 +141,17 @@ canvas {
 }
 
 #sequence-viewer .ref-coords th:hover {
-    background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .protein_legend {
     font: 12px sans-serif;
-}
+  }
+
+.gene_legend {
+    font: 12px sans-serif;
+  }
+
 
 .c3-line {
   stroke-width: 2px;
@@ -163,10 +166,10 @@ canvas {
 }
 
 a.fill-div {
-    display: block;
-    height: 100%;
-    width: 100%;
-    text-decoration: none;
+  display: block;
+  height: 100%;
+  width: 100%;
+  text-decoration: none;
 }
 
 path.branch {
@@ -176,140 +179,141 @@ path.branch {
 }
 
 .ref_coord {
-    float: left;
-    line-height: 95%;
+  float: left;
+  line-height: 95%;
 }
 
 .seperator {
-    color: red;
-    font-decoration: bold;
-    opacity: 1.0;
+  color: red;
+  font-decoration: bold;
+  opacity: 1.0;
 }
 
 .aaA {
-    color: #1f77b4;
+  color: #1f77b4;
 }
 
 .aaC {
-    color: #aec7e8;
+  color: #aec7e8;
 }
 
 .aaD {
-    color: #ff7f0e;
+  color: #ff7f0e;
 }
 
 .aaE {
-    color: #ffbb78;
+  color: #ffbb78;
 }
 
 .aaF {
-    color: #2ca02c;
+  color: #2ca02c;
 }
 
 .aaG {
-    color: #98df8a;
+  color: #98df8a;
 }
 
 .aaH {
-    color: #d62728;
+  color: #d62728;
 }
 
 .aaI {
-    color: #ff9896;
+  color: #ff9896;
 }
 
 .aaK {
-    color: #9467bd;
+  color: #9467bd;
 }
 
 .aaL {
-    color: #c5b0d5;
+  color: #c5b0d5;
 }
 
 .aaM {
-    color: #8c564b;
+  color: #8c564b;
 }
 
 .aaN {
-    color: #c49c94;
+  color: #c49c94;
 }
 
 .aaP {
-    color: #e377c2;
+  color: #e377c2;
 }
 
 .aaQ {
-    color: #f7b6d2;
+  color: #f7b6d2;
 }
 
 .aaR {
-    color: #7f7f7f;
+  color: #7f7f7f;
 }
 
 .aaS {
-    color: #c7c7c7;
+  color: #c7c7c7;
 }
 
 .aaT {
-    color: #bcbd22;
+  color: #bcbd22;
 }
 
 .aaV {
-    color: #dbdb8d;
+  color: #dbdb8d;
 }
 
 .aaW {
-    color: #17becf;
+  color: #17becf;
 }
 
 .aaY {
-    color: #9edae5;
+  color: #9edae5;
 }
 
 .pngs {
-    background-color: rgba(0,0,0,0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .loading-pane {
-    margin-top: 200px;
+  margin-top: 200px;
 }
 
 .loading-message {
-    font-size:22px;
-    font-weight:300;
-    font-family:sans-serif;
-    text-align: center;
- }
+  font-size: 22px;
+  font-weight: 300;
+  font-family: sans-serif;
+  text-align: center;
+}
 
 .error-pane {
-    margin-top: 200px;
+  margin-top: 200px;
 }
 
 .error-title {
-    font-size:22px;
-    font-weight:300;
-    font-family:sans-serif;
-    text-align: center;
+  font-size: 22px;
+  font-weight: 300;
+  font-family: sans-serif;
+  text-align: center;
 }
 
 .error-message {
-    margin-top: 10px;
-    font-size:16px;
-    font-family:sans-serif;
-    text-align: center;
-    color: rgba(0,0,0, 0.5);
+  margin-top: 10px;
+  font-size: 16px;
+  font-family: sans-serif;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .flea-label {
-    vertical-align: middle;
-    font-size: 14px;
-    margin: 0;
+  vertical-align: middle;
+  font-size: 14px;
+  margin: 0;
 }
 
 .flea-value {
-    vertical-align: middle;
-    font-size: 14px;
+  vertical-align: middle;
+  font-size: 14px;
 }
+
 
 /*
 
@@ -317,72 +321,77 @@ spinner taken from spinkit
 TODO: install with bower instead
 
  */
+
 .spinner {
-    margin: 10px auto;
-    width: 50px;
-    height: 30px;
-    text-align: center;
-    font-size: 10px;
+  margin: 10px auto;
+  width: 50px;
+  height: 30px;
+  text-align: center;
+  font-size: 10px;
 }
 
-.spinner > div {
-    background-color: #333;
-    height: 100%;
-    width: 6px;
-    display: inline-block;
-
-    -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
-    animation: stretchdelay 1.2s infinite ease-in-out;
+.spinner>div {
+  background-color: #333;
+  height: 100%;
+  width: 6px;
+  display: inline-block;
+  -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+  animation: stretchdelay 1.2s infinite ease-in-out;
 }
 
 .spinner .rect2 {
-    -webkit-animation-delay: -1.1s;
-    animation-delay: -1.1s;
+  -webkit-animation-delay: -1.1s;
+  animation-delay: -1.1s;
 }
 
 .spinner .rect3 {
-    -webkit-animation-delay: -1.0s;
-    animation-delay: -1.0s;
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
 }
 
 .spinner .rect4 {
-    -webkit-animation-delay: -0.9s;
-    animation-delay: -0.9s;
+  -webkit-animation-delay: -0.9s;
+  animation-delay: -0.9s;
 }
 
 .spinner .rect5 {
-    -webkit-animation-delay: -0.8s;
-    animation-delay: -0.8s;
+  -webkit-animation-delay: -0.8s;
+  animation-delay: -0.8s;
 }
 
 @-webkit-keyframes stretchdelay {
-    0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
-    20% { -webkit-transform: scaleY(1.0) }
+  0%, 40%, 100% {
+    -webkit-transform: scaleY(0.4)
+  }
+  20% {
+    -webkit-transform: scaleY(1.0)
+  }
 }
 
 @keyframes stretchdelay {
-    0%, 40%, 100% {
-        transform: scaleY(0.4);
-        -webkit-transform: scaleY(0.4);
-    }  20% {
-        transform: scaleY(1.0);
-        -webkit-transform: scaleY(1.0);
-    }
+  0%, 40%, 100% {
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }
+  20% {
+    transform: scaleY(1.0);
+    -webkit-transform: scaleY(1.0);
+  }
 }
 
 .input-invalid {
-    background-color: #ffdddd;
-    border: 2px solid #ffdddd;
+  background-color: #ffdddd;
+  border: 2px solid #ffdddd;
 }
 
 tbody tr.positivePositions td.seq-cell {
-    height: 1em;
-    padding-top: 0;
-    padding-bottom: 0;
+  height: 1em;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
-#sequence-viewer > tbody > tr > th.seq-cell.notopborder {
-    border-style: none;
+#sequence-viewer>tbody>tr>th.seq-cell.notopborder {
+  border-style: none;
 }
 
 .tooltip {
@@ -436,11 +445,7 @@ td, th {
   outline: 0;
 }
 
-
-td:hover::after,
-thead th.col:not(:empty):hover::after,
-td:focus::after,
-thead th.col:not(:empty):focus::after {
+td:hover::after, thead th.col:not(:empty):hover::after, td:focus::after, thead th.col:not(:empty):focus::after {
   content: '';
   height: 10000px;
   left: 0;
@@ -450,14 +455,12 @@ thead th.col:not(:empty):focus::after {
   z-index: -1;
 }
 
-td:hover::after,
-th.col:hover::after {
-  background-color: #FFF5EE;
+td:hover::after, th.col:hover::after {
+  background-color: rgba(255, 245, 238, 0.6);
+  z-index: 101;
 }
 
-
-thead th.selected_position::after,
-thead th.selected_position::after {
+thead th.selected_position::after, thead th.selected_position::after {
   content: '';
   height: 10000px;
   left: 0;
@@ -467,21 +470,39 @@ thead th.selected_position::after {
   z-index: -1;
 }
 
-td.selected_position::after,
-th.selected_position::after {
-  background-color: rgba(244,217,198,0.4);
+td.selected_position::after, th.selected_position::after {
+  background-color: rgba(244, 217, 198, 0.4);
+  z-index: 101;
 }
 
-
-.table-condensed > thead > tr > th, .table-condensed > tbody > tr > th, .table-condensed > tfoot > tr > th, .table-condensed > thead > tr > td, .table-condensed > tbody > tr > td, .table-condensed > tfoot > tr > td {
-    padding: 0px;
+.table-condensed>thead>tr>th, .table-condensed>tbody>tr>th, .table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td, .table-condensed>tbody>tr>td, .table-condensed>tfoot>tr>td {
+  padding: 0px;
 }
 
-td.seq-cell.pad{
+td.seq-cell.pad {
   padding-left: 5px;
   padding-right: 5px;
 }
 
-.table-hover > tbody > tr:hover {
-    background-color: rgba(0,0,0,0);
+.table-hover>tbody>tr:hover {
+  background-color: rgba(0, 0, 0, 0);
+}
+#sequence-viewer>thead {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+th.row{
+  width: 80px;
+}
+#sequence-viewer_top{
+  background-color: white;
+  z-index: 100;
+}
+#sequence-viewer_bottom{
+  z-index: -1;
+}
+
+.sticky-element--sticky{
+  z-index: 100;
 }
