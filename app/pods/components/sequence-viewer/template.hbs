@@ -76,7 +76,7 @@
           <tr>
             <th class="row notopborder"></th>
           {{amino-acid seq.sequence ranges=seq.highlights mask=seq.mask}}
-          <td class="seq-cell pad">{{#bootstrap-popover title="" dataContent=seq.html placement="left"}}
+          <td class="seq-cell pad">{{#bootstrap-popover title="" dataContent=seq.html placement="right" container="#sequence-viewer-container"}}
           {{seq.copyNumber}}
           {{/bootstrap-popover}}</td>
           <td class="seq-cell pad">{{format-percent seq.percent}}%</td>

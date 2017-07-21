@@ -15,11 +15,13 @@ export default Ember.Component.extend({
   dataContent: "Content",
   html: true,
   placement: 'auto right',
+  container: null,
 
   didInsertElement: function () {
     this.$().popover({
       html: this.get('html'),
-      placement: this.get('placement')
+      placement: this.get('placement'),
+      container: this.get('container')
     });
-  }.observes('dataContent', 'html', 'placement')
+  }.observes('dataContent', 'html', 'placement', 'container')
 });
