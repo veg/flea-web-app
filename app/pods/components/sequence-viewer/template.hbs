@@ -65,49 +65,22 @@
     <tr class="positivePositions">
       <th class="row">{{obj.group.label}}</th>
       {{{obj.pos}}}
-      <td class="seq-cell"></td>
-      <td class="seq-cell"></td>
+      <td class="seq-cell pad"></td>
+      <td class="seq-cell pad"></td>
     </tr>
     {{/if}}
 
 
           {{#each obj.group.sequences as |seq|}}
           <tr>
-            <!--
-              Chat to Rob about this does obj.group.label have a purpose??
-              for now, i assumed not can fix it in future if needs be
-              {{#if markPositive}}
-                <td class="seq-cell notopborder"></td>
-              {{else}}
-                <td class="seq-cell">{{obj.group.label}}</td>
-              {{/if}}
-            -->
             <th class="row notopborder"></th>
           {{amino-acid seq.sequence ranges=seq.highlights mask=seq.mask}}
-          <td class="seq-cell pad">{{#bootstrap-popover title="" dataContent=seq.html placement="right"}}
+          <td class="seq-cell pad">{{#bootstrap-popover title="" dataContent=seq.html placement="left"}}
           {{seq.copyNumber}}
           {{/bootstrap-popover}}</td>
           <td class="seq-cell pad">{{format-percent seq.percent}}%</td>
          </tr>
           {{/each}}
-      <!-- <td class="seq-cell">
-        <ul>
-          {{#each obj.group.sequences as |seq|}}
-          <li>
-            {{#bootstrap-popover title="" dataContent=seq.html placement="right"}}
-            {{seq.copyNumber}}
-            {{/bootstrap-popover}}
-          </li>
-          {{/each}}
-        </ul>
-      </td>
-      <td class="seq-cell">
-        <ul>
-          {{#each obj.group.sequences as |seq|}}
-          <li>{{format-percent seq.percent}}%</li>
-          {{/each}}
-        </ul>
-      </td> -->
     {{/each}}
   </tbody>
 </div>

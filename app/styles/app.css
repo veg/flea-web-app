@@ -13,19 +13,6 @@ body {
   stroke-width: 3px;
 }
 
-.popover-link {
-  cursor: pointer;
-}
-
-#neutralization .popover-link {
-  color: black;
-  text-decoration: none;
-}
-
-.popover {
-  max-width: 100%;
-}
-
 canvas {
   display: block;
   margin: 0 auto 0 auto;
@@ -142,6 +129,7 @@ canvas {
 
 #sequence-viewer .ref-coords th:hover {
   background-color: rgba(0, 0, 0, 0.4);
+  z-index:101;
 }
 
 .protein_legend {
@@ -435,8 +423,10 @@ FIXME: this should not be necessary.
     border: 1px darkgrey solid;
 }
 
-table {
-  overflow: hidden;
+#sequence-viewer {
+  overflow-y: hidden;
+  overflow-x: hidden;
+  width: 150%;
 }
 
 td, th {
@@ -445,7 +435,7 @@ td, th {
   outline: 0;
 }
 
-td:hover::after, thead th.col:not(:empty):hover::after, td:focus::after, thead th.col:not(:empty):focus::after {
+td.seq-cell:hover::after, thead th.col:not(:empty):hover::after {
   content: '';
   height: 10000px;
   left: 0;
@@ -455,9 +445,14 @@ td:hover::after, thead th.col:not(:empty):hover::after, td:focus::after, thead t
   z-index: -1;
 }
 
-td:hover::after, th.col:hover::after {
+td.seq-cell:hover::after, th.seq-cell.ref-coords.col:hover::after {
   background-color: rgba(255, 245, 238, 0.6);
   z-index: 101;
+}
+
+td.pad:hover::after{
+  background-color: rgba(255, 245, 238, 0.6);
+  z-index: -1;
 }
 
 thead th.selected_position::after, thead th.selected_position::after {
@@ -470,7 +465,7 @@ thead th.selected_position::after, thead th.selected_position::after {
   z-index: -1;
 }
 
-td.selected_position::after, th.selected_position::after {
+td.selected_position::after, th.seq-cell.ref-coords.col.selected_position::after {
   background-color: rgba(244, 217, 198, 0.4);
   z-index: 101;
 }
@@ -497,12 +492,27 @@ th.row{
 }
 #sequence-viewer_top{
   background-color: white;
-  z-index: 100;
+  z-index: 1;
 }
 #sequence-viewer_bottom{
   z-index: -1;
 }
 
 .sticky-element--sticky{
-  z-index: 100;
+  z-index: 1;
+  position: absolute;
+}
+
+.popover-link {
+  cursor: pointer;
+}
+
+#neutralization .popover-link {
+  color: black;
+  text-decoration: none;
+}
+
+.popover {
+  width: auto;
+  z-index: 105;
 }
