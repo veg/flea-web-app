@@ -5,7 +5,8 @@ module.exports = function(environment) {
     modulePrefix: 'flea-app',
     podModulePrefix: 'flea-app/pods',
     environment: environment,
-    rootURL: '/',
+    rootURL: '/results/',
+    apiURL: '/api/',
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
@@ -20,7 +21,8 @@ module.exports = function(environment) {
     }
   };
 
-  if (environment === 'development') {
+  if (environment === 'dev') {
+
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
@@ -39,7 +41,7 @@ module.exports = function(environment) {
     ENV.APP.rootElement = '#ember-testing';
   }
   if (environment === 'demo') {
-    ENV.locationType = 'history';
+    ENV.locationType = 'auto';
     ENV.rootURL = '/flea-demo/';
   }
 

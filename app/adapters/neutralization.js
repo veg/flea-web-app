@@ -5,7 +5,7 @@ export default Ember.Object.extend({
   ajax: Ember.inject.service(),
 
   find: function(session_id) {
-    var url = config.rootURL + 'data/' + session_id + '/neutralization';
+    var url = config.apiURL + 'sessions/' + session_id + '/neutralization';
     return this.get("ajax").request(url).then(function(result) {
       return result;
     });

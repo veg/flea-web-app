@@ -19,7 +19,7 @@ export default Ember.Object.extend({
   */
 
   find: function(session_id) {
-    let url = config.rootURL + 'data/' + session_id + '/sequences';
+    let url = config.apiURL + 'sessions/' + session_id + '/sequences';
     return this.get("ajax").request(url).then(function(result) {
       let observed = [];
       let ancestors = [];

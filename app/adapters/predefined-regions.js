@@ -5,7 +5,7 @@ export default Ember.Object.extend({
   ajax: Ember.inject.service(),
 
   find: function() {
-    var url = config.rootURL + 'assets/predefined_regions.json';
+    var url = '/assets/predefined_regions.json';
     return this.get("ajax").request(url).then(function(data) {
       var regions = data['regions'];
       // convert from 1-indexed [start, stop] to  0-index [start, stop)

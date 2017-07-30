@@ -42,7 +42,7 @@ export default Ember.Object.extend({
   ajax: Ember.inject.service(),
 
   find: function(session_id) {
-    var url = config.rootURL + 'data/' + session_id + '/rates';
+    var url = config.apiURL + 'sessions/' + session_id + '/rates';
     return this.get("ajax").request(url).then(function(result) {
       var new_result = [];
       for (let key in result) {
