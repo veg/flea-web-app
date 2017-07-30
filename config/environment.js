@@ -42,12 +42,10 @@ module.exports = function(environment) {
   }
   if (environment === 'demo') {
     ENV.locationType = 'auto';
-    ENV.rootURL = '/flea-demo/';
   }
 
   if (environment === 'production') {
     ENV.locationType = 'history';
-    ENV.rootURL = '/flea/';
   }
 
   return ENV;
