@@ -11,7 +11,7 @@ export default Ember.Object.extend({
   /* formats sequences to flat format:
 
      [{ id: "mrca",
-        date: new Date(),
+        timepoint: new Date(),
         sequence: "ACGT",
       }
       { etc... }

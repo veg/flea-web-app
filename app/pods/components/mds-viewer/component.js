@@ -30,13 +30,11 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
   }.property('width', 'xDomain', 'yDomain'),
 
   xDomain: function() {
-    // return d3.extent(this.get('data').map(d => d.x));
-    return [-5, 3];
+    return d3.extent(this.get('data').map(d => d.x));
   }.property('data.[]'),
 
   yDomain: function() {
-    // return d3.extent(this.get('data').map(d => d.y));
-    return [-2, 4];
+    return d3.extent(this.get('data').map(d => d.y));
   }.property('data.[]'),
 
   scale: function(domain, minval, maxval) {
