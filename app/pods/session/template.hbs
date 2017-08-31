@@ -1,11 +1,7 @@
 <div class='container' id='allofit'>
   <ul class="nav nav-tabs">
     <li>{{#link-to 'session.mds' model.session_id data-toggle="tab"}}MDS{{/link-to}}</li>
-    {{#if showTrajectory}}
-      <li>{{#link-to 'session.trajectory' model.session_id data-toggle="tab"}}Evolutionary trajectory{{/link-to}}</li>
-    {{else}}
-      <li><a href="" data-toggle="tab" class="disabled">Evolutionary trajectory</a></li>
-    {{/if}}
+    <li>{{#link-to 'session.trajectory' model.session_id data-toggle="tab"}}Evolutionary trajectory{{/link-to}}</li>
     <li>{{#link-to 'session.protein' model.session_id data-toggle="tab"}}Protein{{/link-to}}</li>
     <li>{{#link-to 'session.sequences' model.session_id data-toggle="tab"}}Sequences{{/link-to}}</li>
     <li>{{#link-to 'session.trees' model.session_id data-toggle="tab"}}Trees{{/link-to}}</li>
