@@ -10,6 +10,15 @@ export default Ember.Component.extend({
 
   selectDefault: false,
 
+ didInsertElement: function() {
+   // make fixed header work
+   // see https://stackoverflow.com/a/25902860
+   this.$('#wrapped-table').on('scroll', function() {
+     var translate = "translate(0,"+this.scrollTop+"px)";
+     this.querySelector("thead").style.transform = translate;
+   });
+ },
+
   refHTML: function() {
     var result = [];
     var map = this.get('alnToRef');
