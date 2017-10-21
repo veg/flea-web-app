@@ -8,11 +8,11 @@
     </td>
     <td class="seq-cell ref-coords">
       {{#each refHTML as |elt|}}
-      <span class="{{elt._class}}"
-            data-coord="{{elt.dataCoord}}"
-            {{action "togglePosition" elt.dataCoord}}>
-	{{{elt.html}}}
-      </span>
+	<span class="{{elt._class}}"
+              data-coord="{{elt.dataCoord}}"
+              {{action "togglePosition" elt.dataCoord}}>
+	  {{{elt.html}}}
+	</span>
       {{/each}}
     </td>
     <td class="seq-cell"></td>
@@ -20,21 +20,21 @@
   </thead>
   <tbody>
     {{#if markPositive}}
-    <tr class="positivePositions">
-      <td class="seq-cell"></td>
-      <td class="seq-cell"><span class="addwrap">{{{combinedSelectionString}}}</span></td>
-      <td class="seq-cell"></td>
-      <td class="seq-cell"></td>
-    </tr>
+      <tr class="positivePositions">
+	<td class="seq-cell"></td>
+	<td class="seq-cell"><span class="addwrap">{{{combinedSelectionString}}}</span></td>
+	<td class="seq-cell"></td>
+	<td class="seq-cell"></td>
+      </tr>
     {{/if}}
 
     {{#if reference}}
-    <tr>
-      <td class="seq-cell">Reference</td>
-      <td class="seq-cell sequence"><span class="reference">{{amino-acid reference}}</span></td>
-      <td class="seq-cell"></td>
-      <td class="seq-cell"></td>
-    </tr>
+      <tr>
+	<td class="seq-cell">Reference</td>
+	<td class="seq-cell sequence"><span class="reference">{{amino-acid reference}}</span></td>
+	<td class="seq-cell"></td>
+	<td class="seq-cell"></td>
+      </tr>
     {{/if}}
     <tr>
       <td class="seq-cell">MRCA</td>
@@ -44,46 +44,46 @@
     </tr>
     {{#each groupedAndSelected as |obj|}}
 
-    {{#if markPositive}}
-    <tr class="positivePositions">
-      <td class="seq-cell">{{obj.group.label}}</td>
-      <td class="seq-cell"><span class="addwrap">{{{obj.pos}}}</span></td>
-      <td class="seq-cell"></td>
-      <td class="seq-cell"></td>
-    </tr>
-    {{/if}}
-    <tr>
       {{#if markPositive}}
-      <td class="seq-cell notopborder"></td>
-      {{else}}
-      <td class="seq-cell">{{obj.group.label}}</td>
+	<tr class="positivePositions">
+	  <td class="seq-cell">{{obj.group.label}}</td>
+	  <td class="seq-cell"><span class="addwrap">{{{obj.pos}}}</span></td>
+	  <td class="seq-cell"></td>
+	  <td class="seq-cell"></td>
+	</tr>
       {{/if}}
-      <td class="seq-cell sequence">
-        <ul class="list-unstyled">
-          {{#each obj.group.sequences as |seq|}}
-          <li>{{amino-acid seq.sequence ranges=seq.highlights mask=seq.mask}}</li>
-          {{/each}}
-        </ul>
-      </td>
-      <td class="seq-cell">
-        <ul class="list-unstyled">
-          {{#each obj.group.sequences as |seq|}}
-          <li>
-            {{#bootstrap-popover title="" dataContent=seq.html placement="right"}}
-            {{seq.copyNumber}}
-            {{/bootstrap-popover}}
-          </li>
-          {{/each}}
-        </ul>
-      </td>
-      <td class="seq-cell">
-        <ul class="list-unstyled">
-          {{#each obj.group.sequences as |seq|}}
-          <li>{{format-percent seq.percent}}%</li>
-          {{/each}}
-        </ul>
-      </td>
-    </tr>
+      <tr>
+	{{#if markPositive}}
+	  <td class="seq-cell notopborder"></td>
+	{{else}}
+	  <td class="seq-cell">{{obj.group.label}}</td>
+	{{/if}}
+	<td class="seq-cell sequence">
+          <ul class="list-unstyled">
+            {{#each obj.group.sequences as |seq|}}
+              <li>{{amino-acid seq.sequence ranges=seq.highlights mask=seq.mask}}</li>
+            {{/each}}
+          </ul>
+	</td>
+	<td class="seq-cell">
+          <ul class="list-unstyled">
+            {{#each obj.group.sequences as |seq|}}
+              <li>
+		{{#bootstrap-popover title="" dataContent=seq.html placement="right"}}
+		  {{seq.copyNumber}}
+		{{/bootstrap-popover}}
+              </li>
+            {{/each}}
+          </ul>
+	</td>
+	<td class="seq-cell">
+          <ul class="list-unstyled">
+            {{#each obj.group.sequences as |seq|}}
+              <li>{{format-percent seq.percent}}%</li>
+            {{/each}}
+          </ul>
+	</td>
+      </tr>
     {{/each}}
   </tbody>
 </table>
