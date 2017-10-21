@@ -1,17 +1,23 @@
-/* jshint node: true */
+/* eslint-env node */
+'use strict';
 
 module.exports = function(environment) {
-  var ENV = {
+  let ENV = {
     modulePrefix: 'flea-app',
     podModulePrefix: 'flea-app/pods',
     environment: environment,
-    rootURL: '/results/',
+    rootURL: '/',
+    resultsURL: '/results/',
     apiURL: '/api/',
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
+      },
+      EXTEND_PROTOTYPES: {
+        // Prevent Ember Data from overriding Date.parse.
+        Date: false
       }
     },
 
@@ -21,8 +27,7 @@ module.exports = function(environment) {
     }
   };
 
-  if (environment === 'dev') {
-
+  if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;

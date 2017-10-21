@@ -1,4 +1,5 @@
 import Ember from 'ember';
+const {computed, getOwner} = Ember;
 
 var cache = {};
 
@@ -9,7 +10,8 @@ export default Ember.Object.extend({
       return cache[key];
     }
 
-    var adapter = this.container.lookup('adapter:' + name);
+    const owner = getOwner(this);
+    const adapter = owner.lookup('adapter:' + name);
     return adapter.find(session_id).then(function(record) {
       cache[key] = record;
       return record;
