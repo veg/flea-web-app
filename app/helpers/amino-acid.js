@@ -1,18 +1,11 @@
 import Ember from 'ember';
 
-export default Ember.Helper.helper(function(params, hash) {
+export default Ember.Helper.helper(function(params, {ranges_arg, mask}) {
   if (params.length !==1) {
     throw('helper called without sequence');
   }
   var sequence = params[0];
-  var ranges = [];
-  if (hash.hasOwnProperty('ranges')) {
-    ranges = hash['ranges'];
-  }
-  var mask = false;
-  if (hash.hasOwnProperty('mask')) {
-    mask = hash['mask'];
-  }
+  var ranges = ranges || [];
   var escaped = sequence.split('').map(Ember.Handlebars.Utils.escapeExpression);
   var range_idx = 0;
   var result = escaped.map(function(aa, idx) {
@@ -45,5 +38,5 @@ export default Ember.Helper.helper(function(params, hash) {
     }
     return html_str;
   });
-  return new Ember.Handlebars.SafeString(result.join(''));
+  return new Ember.String.htmlSafe(result.join(''));
 });

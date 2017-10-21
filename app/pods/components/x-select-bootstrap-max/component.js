@@ -1,5 +1,6 @@
 import XSelectBootstrap from '../x-select-bootstrap/component';
 
+// Only allows up to a certain number of selected items
 export default XSelectBootstrap.extend({
   maxSelected: -1,
   multiple: true,

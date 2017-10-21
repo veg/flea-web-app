@@ -43,10 +43,10 @@
       <span class="input-group-addon">
         Node names
       </span>
-      {{#x-select-bootstrap value=nodeNameType action="selectNodeNameType"}}
-      {{#each nodeNameTypes as |nameType|}}
-      {{#x-option value=nameType}}{{nameType}}{{/x-option}}
-      {{/each}}
+      {{#x-select-bootstrap value=nodeNameType on-change=(action "selectNodeNameType") as |xs|}}
+	{{#each nodeNameTypes as |nameType|}}
+	  {{#xs.option value=nameType}}{{nameType}}{{/xs.option}}
+	{{/each}}
       {{/x-select-bootstrap}}
     </div>
   </div>

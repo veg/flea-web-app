@@ -1,15 +1,9 @@
 import XSelect from 'emberx-select/components/x-select';
 
+// an extension of the x-select component that uses Bootstrap
 export default XSelect.extend({
   classNames: ['form-control'],
   makeMulti: false,
-
-  didInsertElement: function () {
-    this.setInitial();
-    if (this.get('makeMulti') || this.get('multiple')) {
-      this.$().multiselect();
-    }
-  },
 
   setInitial: function() {
     var values = this.get('value');
@@ -21,6 +15,14 @@ export default XSelect.extend({
       if (values.indexOf(elt[0].value) > -1) {
         elt.prop('selected', true);
       }
-    });
+    })
+  },
+
+  didInsertElement: function () {
+    this._super.apply(this, arguments);
+    this.setInitial();
+    if (this.get('makeMulti') || this.get('multiple')) {
+      this.$().multiselect();
+    }
   }
 });

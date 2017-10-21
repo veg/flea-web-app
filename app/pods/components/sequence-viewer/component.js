@@ -42,7 +42,7 @@ export default Ember.Component.extend({
           str = " - ";
         }
         var _class = 'ref_coord';
-        if (this.get('selectedPositions').contains(s)) {
+        if (this.get('selectedPositions').includes(s)) {
           _class += ' selected_position';
         }
         str = str.split('').join("<br/>");
