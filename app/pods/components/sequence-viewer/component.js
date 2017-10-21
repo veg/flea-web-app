@@ -32,7 +32,7 @@ export default Ember.Component.extend({
         if (last_hs === hs) {
           str = " - ";
         }
-        var _class = 'seq-cell ref-coords col';
+        var _class = 'ref_coord';
         if (this.get('selectedPositions').contains(s)) {
           _class += ' selected_position';
         }
@@ -84,7 +84,7 @@ export default Ember.Component.extend({
     var arrs = this.get('visiblePositiveSites');
     var ranges = this.get('alnRanges');
     var all_indices = _.flatten(ranges.map(r => _.range(r[0], r[1])));
-    return arrs.map(arr => all_indices.map(idx => (arr.indexOf(idx) >=0) ? "<td class = 'seq-cell'>+</td>" : "<td class = 'seq-cell'></td>").join(''));
+    return arrs.map(arr => all_indices.map(idx => (arr.indexOf(idx) >=0) ? "+" : "&nbsp;").join(''));
   }.property('visiblePositiveSites.[]', 'alnRanges.[]'),
 
   combinedSelectionString: function() {

@@ -105,7 +105,7 @@ canvas {
 }
 
 .sequence-viewer .sequence, .sequence-viewer .ref-coords {
-    padding-left: 0px;
+    padding-left: 5px;
 }
 
 .nostretch {
@@ -142,7 +142,11 @@ canvas {
   cursor: pointer;
 }
 
-#sequence-viewer .ref-coords th:hover {
+.selected_position {
+    background-color: rgba(0,0,0,0.2);
+}
+
+#sequence-viewer .ref-coords span:hover {
     background-color: rgba(0,0,0,0.4);
 }
 
@@ -381,7 +385,7 @@ tbody tr.positivePositions td.seq-cell {
     padding-bottom: 0;
 }
 
-#sequence-viewer > tbody > tr > th.seq-cell.notopborder {
+#sequence-viewer > tbody > tr > td.seq-cell.notopborder {
     border-style: none;
 }
 
@@ -424,63 +428,4 @@ FIXME: this should not be necessary.
     font-family: sans-serif;
     height: 300px;
     border: 1px darkgrey solid;
-}
-
-table {
-  overflow: hidden;
-}
-
-td, th {
-  padding: 0px;
-  position: relative;
-  outline: 0;
-}
-
-body:not(.nohover) tbody tr:hover{
-  background-color: #FFF5EE;
-}
-
-td:hover::after,
-thead th.col:not(:empty):hover::after,
-td:focus::after,
-thead th.col:not(:empty):focus::after {
-  content: '';
-  height: 10000px;
-  left: 0;
-  position: absolute;
-  top: -5000px;
-  width: 100%;
-  z-index: -1;
-}
-
-td:hover::after,
-th.col:hover::after {
-  background-color: #FFF5EE;
-}
-
-
-thead th.selected_position::after,
-thead th.selected_position::after {
-  content: '';
-  height: 10000px;
-  left: 0;
-  position: absolute;
-  top: -5000px;
-  width: 100%;
-  z-index: -1;
-}
-
-td.selected_position::after,
-th.selected_position::after {
-  background-color: rgba(244,217,198,0.4);
-}
-
-
-.table-condensed > thead > tr > th, .table-condensed > tbody > tr > th, .table-condensed > tfoot > tr > th, .table-condensed > thead > tr > td, .table-condensed > tbody > tr > td, .table-condensed > tfoot > tr > td {
-    padding: 0px;
-}
-
-td.seq-cell.pad{
-  padding-left: 5px;
-  padding-right: 5px;
 }
