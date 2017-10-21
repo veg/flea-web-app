@@ -46,15 +46,17 @@ export default Ember.Mixin.create({
 
   innerGroupTransform: function() {
     let margin = this.get('margin');
-    return 'translate(%@, %@)'.fmt(margin.left, margin.top);
+    return `translate(${margin.left}, ${margin.top})`;
   }.property('margin'),
 
   xAxisTransform: function() {
-    return 'translate(0, %@)'.fmt(this.get('innerHeight'));
+    let height = this.get('innerHeight');
+    return `translate(0, ${height})`;
   }.property('innerHeight'),
 
   yAxisTransform: function() {
-    return 'translate(%@, 0)'.fmt(this.get('innerWidth'));
+    let width = this.get('innerWidth');
+    return `translate(${width}, 0)`;
   }.property('innerWidth'),
 
 });
