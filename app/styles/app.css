@@ -374,18 +374,24 @@ TODO: install with bower instead
     }
 }
 
+/* other styles */
+
 .input-invalid {
     background-color: #ffdddd;
     border: 2px solid #ffdddd;
 }
 
-tbody tr.positivePositions td.seq-cell {
+#sequence-viewer .seq-cell {
     height: 1em;
     padding-top: 0;
     padding-bottom: 0;
 }
 
-#sequence-viewer > tbody > tr > td.seq-cell.notopborder {
+#sequence-viewer .list-unstyled {
+    margin-bottom: 0;
+}
+
+#sequence-viewer .seq-cell.notopborder {
     border-style: none;
 }
 

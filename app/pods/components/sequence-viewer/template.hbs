@@ -1,19 +1,19 @@
-<table class="table table-hover table-condensed nostretch sequence-viewer fixed-heads" id="sequence-viewer">
+<table class="table table-condensed nostretch sequence-viewer fixed-heads" id="sequence-viewer">
   <thead>
     <td class="seq-cell">ref. coord.<br>
       <div>
-      <button title="Select positive sites" type="button" class="btn btn-default btn-sm" {{action "selectPositiveClicked"}}><i class="fa fa-plus"></i></button>
-      <button title="Clear sites" type="button" class="btn btn-default btn-sm" {{action "clearPositions"}}><i class="fa fa-remove"></i></button>
+	<button title="Select positive sites" type="button" class="btn btn-default btn-sm" {{action "selectPositiveClicked"}}><i class="fa fa-plus"></i></button>
+	<button title="Clear sites" type="button" class="btn btn-default btn-sm" {{action "clearPositions"}}><i class="fa fa-remove"></i></button>
       </div>
     </td>
     <td class="seq-cell ref-coords">
-    {{#each refHTML as |elt|}}
-    <span class="{{elt._class}}"
-          data-coord="{{elt.dataCoord}}"
-          {{action "togglePosition" elt.dataCoord}}>
-      {{{elt.html}}}
-    </span>
-    {{/each}}
+      {{#each refHTML as |elt|}}
+      <span class="{{elt._class}}"
+            data-coord="{{elt.dataCoord}}"
+            {{action "togglePosition" elt.dataCoord}}>
+	{{{elt.html}}}
+      </span>
+      {{/each}}
     </td>
     <td class="seq-cell"></td>
     <td class="seq-cell"></td>
@@ -54,11 +54,11 @@
     {{/if}}
     <tr>
       {{#if markPositive}}
-        <td class="seq-cell notopborder"></td>
+      <td class="seq-cell notopborder"></td>
       {{else}}
-        <td class="seq-cell">{{obj.group.label}}</td>
+      <td class="seq-cell">{{obj.group.label}}</td>
       {{/if}}
-         <td class="seq-cell sequence">
+      <td class="seq-cell sequence">
         <ul class="list-unstyled">
           {{#each obj.group.sequences as |seq|}}
           <li>{{amino-acid seq.sequence ranges=seq.highlights mask=seq.mask}}</li>
