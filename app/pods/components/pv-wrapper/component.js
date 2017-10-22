@@ -1,12 +1,11 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 import WidthHeightMixin from 'flea-app/mixins/width-height-mixin'
 
-export default Ember.Component.extend(WidthHeightMixin, {
+export default Component.extend(WidthHeightMixin, {
   // options
   shouldLabelCoordinates: false,
 
-  // renderMode
-  renderMode: 'tube',
   renderOptions: {'radius': 1.5},
 
   // where to draw spheres
@@ -50,24 +49,73 @@ export default Ember.Component.extend(WidthHeightMixin, {
     this.set('viewer', viewer);
   },
 
-  viewModel: Ember.observer('viewer', 'structure', function() {
+  updateView: function() {
+    this._updateView()
+  }.observes('viewer', 'structure', 'renderMode'),
+
+  renderMode: computed('selectedPositions.length', function() {
+    let n = this.get('selectedPositions.length');
+    if (n > 0) {
+      return 'sline';
+    }
+    return 'tube';
+  }),
+
+  _updateView() {
     let viewer = this.get('viewer');
-    if (!viewer) {
+    let structure = this.get('structure');
+    if (!viewer || !structure) {
       return;
     }
-    viewer.rm('*');
-    let structure = this.get('structure');
+    viewer.clear();
     viewer.fitTo(structure);
     let geometry = viewer.renderAs('protein', structure, this.get('renderMode'), this.get('renderOptions'));
     this.set('geometry', geometry);
-    this.updateColors();
     this.labelCoordinates();
+    this.updateColors();
     this.drawSelected();
-  }),
+  },
+
+  updateRenderMode: function() {
+    let viewer = this.get('viewer');
+    viewer.clear();
+    let structure = this.get('structure');
+    viewer.fitTo(structure);
+
+    let geometry = viewer.renderAs('protein', structure, this.get('renderMode'), this.get('renderOptions'));
+    viewer.cartoon('structure', structure, { color: pv.color.ssSuccession() });
+  }.observes('renderMode', 'viewer', 'structure'),
 
   updateColors: function() {
     Ember.run.once(this, '_updateColors');
-  }.observes('data.[]', 'range.[]', 'structure', 'geometry'),
+  }.observes('data.[]', 'range.[]', 'structure', 'geometry', 'gradient'),
+
+  gradient: computed('range', function() {
+    let range = this.get('range');
+    let gradient = pv.color.gradient(['white', 'darkred']);
+    if (range[0] < 0) {
+      // TODO: get gradient stops working, so this is unnecessary
+      // map [range[0], 0] to [0, 0.5]
+      // map [0, range[1]] to [0, 0.5]
+      gradient = pv.color.gradient(['darkblue', 'white', 'darkred']);
+    }
+    return gradient;
+  }),
+
+  // remap to [0, 1], since pv's stops seems broken
+  normalizedData: computed('data.[]', 'range.[]', function() {
+    let data = this.get('data');
+    let range = this.get('range');
+    let minval = d3.min(data);
+    let maxval = d3.max(data);
+    if (range[0] > minval) {
+      throw {name: 'RangeError', message: 'range[0] too large'};
+    }
+    if (range[1] < maxval) {
+      throw {name: 'RangeError', message: 'range[1] too small'};
+    }
+    return _.map(data, d => (d - range[0]) / (range[1] - range[0]));
+  }),
 
   _updateColors() {
     let geometry = this.get('geometry');
@@ -75,40 +123,22 @@ export default Ember.Component.extend(WidthHeightMixin, {
     if (structure === null) {
       return;
     }
-    let data = this.get('data');
-    let minval = 0;
-    let maxval = 0;
-    let gradient = pv.color.gradient(['white', 'darkred']);
-    if (data) {
-      // remap to [0, 1], since pv's stops seems broken
-      let range = this.get('range');
-      minval = d3.min(data);
-      maxval = d3.max(data);
-      if (range[0] > minval) {
-        throw {name: 'RangeError', message: 'range[0] too large'};
-      }
-      if (range[1] < maxval) {
-        throw {name: 'RangeError', message: 'range[1] too small'};
-      }
-      if (range[0] < 0) {
-        // TODO: get gradient stops working, so this is unnecessary
-        // map [range[0], 0] to [0, 0.5]
-        // map [0, range[1]] to [0, 0.5]
-        gradient = pv.color.gradient(['darkblue', 'white', 'darkred']);
-      }
-      data = _.map(data, d => (d - range[0]) / (range[1] - range[0]));
-
-      structure.eachResidue(function(res) {
-        let ref_coord = res.num();
-        let val = data[ref_coord];
-        val = (val === undefined ? 0 : val);
-        res.customData = function() {return val;};
-      });
-      let newrange = [0, 1];
-      let colorOp = pv.color.byResidueProp('customData', gradient, newrange);
-      geometry.colorBy(colorOp);
-      this.get('viewer').requestRedraw();
+    let data = this.get('normalizedData');
+    if (!data) {
+      return;
     }
+    structure.eachResidue(function(res) {
+      let ref_coord = res.num();
+      let val = data[ref_coord];
+      val = (val === undefined ? 0 : val);
+      res.customData = function() {return val;};
+    });
+    let newrange = [0, 1];
+    let gradient = this.get('gradient');
+    let colorOp = pv.color.byResidueProp('customData', gradient, newrange);
+    geometry.colorBy(colorOp);
+    this.drawSelected();
+    this.get('viewer').requestRedraw();
   },
 
   labelCoordinates: function() {
@@ -137,7 +167,7 @@ export default Ember.Component.extend(WidthHeightMixin, {
     this.get('viewer').requestRedraw();
   },
 
-  drawSelected: Ember.observer('viewer', 'structure', 'selectedPositions.[]', function() {
+  drawSelected: Ember.observer('viewer', 'structure', 'gradient', 'selectedPositions.[]', function() {
     Ember.run.once(this, '_drawSelected');
   }),
 
@@ -145,19 +175,21 @@ export default Ember.Component.extend(WidthHeightMixin, {
     let viewer = this.get('viewer');
     let structure = this.get('structure');
     let positions = this.get('selectedPositions');
+    let gradient = this.get('gradient');
 
-    if (!viewer || !structure || !positions) {
+    if (!viewer || !structure || !gradient || !positions) {
       return;
     }
-    console.log(positions)
     viewer.rm('selectedPositions');
     let cm = viewer.customMesh('selectedPositions');
+    let newrange = [0, 1];
     structure.eachResidue(function(res) {
       let ref_coord = res.num();
-      if (selectedPositions.contians(ref_coord)) {
+      if (positions.includes(ref_coord)) {
 	let coords = res.atom(0).pos();
-	// TODO: color by data
-	cm.addSphere(coords, 2, { color : 'yellow' });
+	let color = [1, 1, 1, 1];
+	gradient.colorAt(color, res.customData());
+	cm.addSphere(coords, 2, { 'color' : color });
       }
     });
   }
