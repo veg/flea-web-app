@@ -1,8 +1,8 @@
 import Ember from 'ember';
 import D3Plot from "flea-app/mixins/d3-plot-mixin";
-import WidthMixin from "flea-app/mixins/width-mixin";
+import WidthHeightMixin from 'flea-app/mixins/width-height-mixin';
 
-export default Ember.Component.extend(D3Plot, WidthMixin, {
+export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
   copynumbers: null,
   nameToNodeLabel: null,
   nameToNodeColor: null,
@@ -11,23 +11,6 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
 
   legendLabels: [],
   legendColors: null,
-
-  width: 100,
-
-  height: function() {
-    // adjust height so that axes are equal
-    let xDomain = this.get('xDomain');
-    let yDomain = this.get('yDomain');
-    let width = this.get('width');
-
-    let xmin = xDomain[0];
-    let xmax = xDomain[1];
-    let ymin = yDomain[0];
-    let ymax = yDomain[1];
-
-    let ratio = (ymax - ymin) / (xmax - xmin);
-    return width * ratio;
-  }.property('width', 'xDomain', 'yDomain'),
 
   xDomain: function() {
     return d3.extent(this.get('data').map(d => d.x));

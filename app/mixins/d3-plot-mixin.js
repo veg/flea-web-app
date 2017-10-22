@@ -4,8 +4,9 @@ export default Ember.Mixin.create({
   tagName: 'svg',
   attributeBindings: ['width', 'height'],
 
-  width: 1200,
-  height: 800,
+  // fallback in cause auto resizing fails
+  width: 100,
+  height: 100,
 
   margin: {
     top:    5,
@@ -17,6 +18,7 @@ export default Ember.Mixin.create({
   data: null,
 
   didInsertElement: function() {
+    this._super(...arguments);
     this._updateChart();
   },
 

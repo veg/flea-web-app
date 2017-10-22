@@ -13,6 +13,7 @@ export default Ember.Component.extend({
  didInsertElement: function() {
    // make fixed header work
    // see https://stackoverflow.com/a/25902860
+   this._super(...arguments);
    this.$('#wrapped-table').on('scroll', function() {
      var translate = "translate(0,"+this.scrollTop+"px)";
      this.querySelector("thead").style.transform = translate;

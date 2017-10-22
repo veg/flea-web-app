@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import {oneIndex, alignmentTicks} from 'flea-app/utils/utils';
 import D3Plot from "flea-app/mixins/d3-plot-mixin";
-import WidthMixin from "flea-app/mixins/width-mixin";
+import WidthMixin from 'flea-app/mixins/width-mixin';
 
 // input: (first is used for brushable navigation)
 // - names ['name1', 'name2', ...]
@@ -14,7 +14,6 @@ import WidthMixin from "flea-app/mixins/width-mixin";
 
 
 export default Ember.Component.extend(D3Plot, WidthMixin, {
-  // width:  800,
   heightEach: 80,
   labelHeight: 25,
 

@@ -17,6 +17,7 @@ export default Ember.Component.extend({
   placement: 'auto right',
 
   didInsertElement: function () {
+    this._super(...arguments);
     this.$().popover({
       html: this.get('html'),
       placement: this.get('placement')

@@ -11,6 +11,7 @@ export default Ember.Component.extend({
   legendColors: null,
 
   didInsertElement: function() {
+    this._super(...arguments);
     this._updateLegend();
   },
 

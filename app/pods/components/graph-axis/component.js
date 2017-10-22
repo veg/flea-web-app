@@ -35,6 +35,7 @@ export default Ember.Component.extend({
              'tickFormat', 'tickPadding'),
 
   didInsertElement: function() {
+    this._super(...arguments);
     this._updateAxis();
   },
 

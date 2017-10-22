@@ -1,14 +1,14 @@
 import Ember from 'ember';
 import {zeroIndex, oneIndex, transformIndex, alignmentTicks} from 'flea-app/utils/utils';
+import WidthMixin from 'flea-app/mixins/width-mixin';
 
 // FIXME: use an x-axis to scale to div width
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(WidthMixin, {
   tagName: 'svg',
   attributeBindings: ['width', 'height'],
   classNames: ['alignment-overview'],
 
-  width: 10,
   labelHeight: 15,
   mainHeight: 30,
   axisHeight: 20,
@@ -57,9 +57,7 @@ export default Ember.Component.extend({
   }.property('innerWidth'),
 
   didInsertElement: function() {
-    let parentWidth = this.$().parents('div').width();
-    this.set('width', parentWidth);
-    this._super();
+    this._super(...arguments);
 
     this.transformGroup();
     this.transformMain();

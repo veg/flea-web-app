@@ -63,6 +63,7 @@ export default Ember.Component.extend({
   }.property('seqIdToNodeColor', 'seqIdToMotifColor', 'radialLayout'),
 
   didInsertElement: function() {
+    this._super(...arguments);
     var svg = d3.select('#' + this.get('elementId'));
     var tree_widget = d3.layout.phylotree()
         .svg(svg)

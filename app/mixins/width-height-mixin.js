@@ -1,11 +1,14 @@
 import Ember from 'ember';
+import ResizeAware from 'ember-resize/mixins/resize-aware';
 
-export default Ember.Mixin.create({
+export default Ember.Mixin.create(ResizeAware, {
 
   doResize() {
     let w = this.$().parents('div').width();
+    let h = this.$().parents('div').height();
     this.set('width', w);
-    console.log(`WidthMixin. ${w}x${w}`);
+    this.set('height', h);
+    console.log(`WidthHeightMixin. ${w}x${h}`);
   },
 
   init() {
