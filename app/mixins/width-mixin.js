@@ -2,24 +2,26 @@ import Ember from 'ember';
 
 export default Ember.Mixin.create({
 
-  doResize() {
-    let w = this.$().parents('div').width();
-    this.set('width', w);
+  doResize(self) {
+    let w = self.$().parents('div').width();
+    self.set('width', w);
     console.log(`WidthMixin. ${w}x${w}`);
   },
 
   init() {
     this._super(...arguments);
+    let self = this;
     this.get('resizeService').on('didResize', (e) => {
-      this.doResize();
+      this.doResize(self);
     });
     this.get('resizeService').on('debouncedDidResize', (e) => {
-      this.doResize();
+      this.doResize(self);
     });
   },
 
   didInsertElement() {
-    this.doResize();
+    let self = this;
+    this.doResize(this);
     this._super(...arguments);
   }
 
