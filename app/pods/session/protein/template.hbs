@@ -1,5 +1,15 @@
-<div class="pv-viewer">
-  {{pv-wrapper structure=model.structure data=selectedStructureData range=structureDataRange}}
+<div class="row">
+  <div class="col-sm-12">
+    <div class="pv-viewer">
+      {{pv-wrapper
+	structure=model.structure
+	data=selectedStructureData
+	range=structureDataRange
+	selectedPositions=model.sequences.selectedPositions
+	shouldLabelCoordinates=labelCoordinates
+      }}
+    </div>
+  </div>
 </div>
 
 <div class="form-horizontal control-group">
@@ -8,11 +18,17 @@
       <i class="{{buttonClass}}"></i>
     </button>
   </div>
-  <div class="col-sm-9">
+  <div class="col-sm-7">
     {{range-selector values=timepoints selectedIdx=selectedTimepointIdx selectedIdxChanged="selectTimepointIdx"}}
   </div>
   <div class="col-sm-2 flea-value">
     <output>{{selectedName}}</output>
+  </div>
+  <div class="col-sm-2">
+    <span class="input-group-addon">
+      <label>Label coordinates</label>
+      {{input type="checkbox" name="labelCoordinates" checked=labelCoordinates}}
+    </span>
   </div>
 </div>
 
@@ -34,7 +50,6 @@
     </div>
   </div>
 </div>
-
 
 <div class="row">
   <div class="col-sm-12" id="_protein_plots">

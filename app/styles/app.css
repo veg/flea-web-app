@@ -472,11 +472,13 @@ path.branch {
  */
 
 .pv-viewer {
-    border: 2px solid black;
-    width: 90vw;
-    margin-left: 5vw;
-    margin-right: 5vw;
+    border: 1px solid gray;
     height: 80vh;
+    width: 80vw;
+    margin: 5px 10vw 10px 10vw;
+
+    max-width: 90%;
+    max-height: 90%;
 }
 
 #_mds_viewer {
@@ -503,6 +505,7 @@ path.branch {
 #_timeseries_plot {
     height: 40vh;
     width: 100vw;
+    min-height: 200px;
 }
 
 #_alignment_overview {

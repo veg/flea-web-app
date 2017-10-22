@@ -7,6 +7,7 @@ export default Ember.Controller.extend({
   _metrics: ["dNdS", "JS Divergence", "Entropy"],
   selectedMetric: "JS Divergence",
   markPositive: true,
+  labelCoordinates: false,
 
   selectedTimepointIdx: 0,
 
