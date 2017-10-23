@@ -2,8 +2,8 @@ import Ember from 'ember';
 import {seqIdToProperty, mapIfPresent} from 'flea-app/utils/utils';
 
 export default Ember.Mixin.create({
-  nodeNameTypes: ['visit_code', 'seq_id', 'motif', 'none'],
-  nodeNameType: 'visit_code',
+  nodeNameTypes: ['none', 'visit_code', 'seq_id', 'motif'],
+  nodeNameType: 'none',
   rankColors: false,
 
   sortedDates: function() {

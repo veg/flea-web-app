@@ -5,7 +5,7 @@ export default Ember.Controller.extend(ColorLabelMixin, {
 
   showCopynumber: true,
   overlapNodes: true,
-  radialLayout: false,
+  radialLayout: true,
 
   sortState: 'ascending',
   heightScale: 1.0,
