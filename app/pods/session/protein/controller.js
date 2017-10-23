@@ -3,9 +3,9 @@ import {parse_date, isString, mapIfPresent} from 'flea-app/utils/utils';
 
 export default Ember.Controller.extend({
 
-  // FIXME: selecting and checking by string value is verbose and error-prone.
-  _metrics: ["dNdS", "JS Divergence", "Entropy"],
+  _metrics: ["JS Divergence", "dNdS", "Entropy"],
   selectedMetric: "JS Divergence",
+
   markPositive: true,
   labelCoordinates: false,
 

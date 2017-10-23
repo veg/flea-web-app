@@ -153,7 +153,7 @@ export default Component.extend(WidthHeightMixin, {
       let uniq_res_id = 0;
       let label_options = {
         fontSize: 10,
-        fontColor: "rgba(0, 0, 1, 0.9)"
+        fontColor: "gray"
       };
       structure.eachResidue(function(res) {
         let ref_coord = res.num();

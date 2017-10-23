@@ -12,23 +12,18 @@
   </div>
 </div>
 
-<div class="form-horizontal control-group">
-  <div class="col-sm-1">
-    <button {{action "togglePlayback"}} type="button" class="btn btn-default btn-sm" title="Toggle playback">
-      <i class="{{buttonClass}}"></i>
-    </button>
-  </div>
-  <div class="col-sm-7">
-    {{range-selector values=timepoints selectedIdx=selectedTimepointIdx selectedIdxChanged="selectTimepointIdx"}}
-  </div>
-  <div class="col-sm-2 flea-value">
-    <output>{{selectedName}}</output>
-  </div>
-  <div class="col-sm-2">
-    <span class="input-group-addon">
-      <label>Label coordinates</label>
-      {{input type="checkbox" name="labelCoordinates" checked=labelCoordinates}}
-    </span>
+<div class="row">
+  <div class="form-horizontal control-group">
+    <div class="col-sm-2">
+    </div>
+    <div class="col-sm-8">
+      {{range-selector values=timepoints selectedIdx=selectedTimepointIdx selectedIdxChanged="selectTimepointIdx"}}
+    </div>
+    <div class="col-sm-2 flea-value">
+      <output>{{selectedName}}</output>
+    </div>
+    <div class="col-sm-2">
+    </div>
   </div>
 </div>
 
@@ -36,12 +31,20 @@
   <div class="col-sm-12">
     <div class="input-group input-group-sm">
       <span class="input-group-addon">
-        <label for="evo_regions">Metrics(s) to plot</label>
-        {{#x-select-bootstrap makeMulti=true value=selectedMetric on-change=(action "selectMetric") id="protein_metrics"}} as |xs|
-          {{#each metrics as |metric|}}
-            {{#xs.option value=metric}}{{metric}}{{/xs.option}}
-          {{/each}}
-        {{/x-select-bootstrap}}
+        <label for="protein_regions">Metric to plot</label>
+	{{#power-select
+	   options=metrics
+	   selected=selectedMetric
+	   searchPlaceholder="Select metric"
+	   onchange=(action (mut selectedMetric))
+	   as |metric|
+	}}
+	  {{metric}}
+	{{/power-select}}
+      </span>
+      <span class="input-group-addon">
+	<label>Label coordinates</label>
+	{{input type="checkbox" name="labelCoordinates" checked=labelCoordinates}}
       </span>
       <span class="input-group-addon">
         <label>Mark positively selected sites</label>

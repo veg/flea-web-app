@@ -475,7 +475,7 @@ path.branch {
     border: 1px solid gray;
     height: 80vh;
     width: 80vw;
-    margin: 5px 10vw 10px 10vw;
+    margin: auto;
 
     max-width: 90%;
     max-height: 90%;
@@ -487,8 +487,8 @@ path.branch {
     /* make it square, to preserve distances */
     max-width: 95vh;
     max-height: 95vw;
-    /* ensure it is centered */
-    margin: 0 calc((95vw - 95vh) / 2);
+    /* give it some margin */
+    margin-left: calc((80vw - 80vh) / 2);
 }
 
 /* prevent negative margin when height > width */
