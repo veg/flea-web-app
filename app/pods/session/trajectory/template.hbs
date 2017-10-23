@@ -13,42 +13,30 @@
       <label for="evo_regions">Region(s) to plot</label>
     </div>
     <div class="form-group">
-      {{#if multipleRegions}}
-	{{#x-select-bootstrap-max multiple=true value=selectedRegions maxSelected=maxRegions
-	   on-change=(action "selectRegions") id="evo_regions" as |xs|}}
-          {{#each regions as |region|}}
-            {{#xs.option value=region}}{{region}}{{/xs.option}}
-          {{/each}}
-	{{/x-select-bootstrap-max}}
-    {{else}}
-	{{#x-select-bootstrap makeMulti=true value=selectedRegions
-	   on-change=(action "selectRegions") id="evo_regions" as |xs|}}
-          {{#each regions as |region|}}
-            {{#xs.option value=region}}{{region}}{{/xs.option}}
-          {{/each}}
-	{{/x-select-bootstrap}}
-      {{/if}}
+      {{#x-select
+	 multiple=true
+	 value=selectedRegions
+	 d="evo_regions" as |xs|
+      }}
+	{{#each regions as |region|}}
+	  {{#xs.option value=region}}{{region}}{{/xs.option}}
+	{{/each}}
+      {{/x-select}}
     </div>
 
     <div class="form-group">
       <label for="evo_metrics">Evolutionary metrics</label>
     </div>
     <div class="form-group">
-      {{#if multipleEvoMetrics}}
-	{{#x-select-bootstrap-max multiple=true value=selectedEvoMetrics maxSelected=maxEvoMetrics
-	   on-change=(action "selectEvoMetrics") id="evo_metrics" as |xs|}}
-          {{#each evoMetrics as |metric|}}
-            {{#xs.option value=metric}}{{metric}}{{/xs.option}}
-          {{/each}}
-	{{/x-select-bootstrap-max}}
-    {{else}}
-	{{#x-select-bootstrap makeMulti=true value=selectedEvoMetrics
-	   on-change=(action "selectEvoMetrics") id="evo_metrics" as |xs|}}
-          {{#each evoMetrics as |metric|}}
-            {{#xs.option value=metric}}{{metric}}{{/xs.option}}
-          {{/each}}
-	{{/x-select-bootstrap}}
-      {{/if}}
+      {{#x-select
+	 multiple=true
+	 value=selectedEvoMetrics
+	 id="evo_metrics" as |xs|
+      }}
+        {{#each evoMetrics as |metric|}}
+          {{#xs.option value=metric}}{{metric}}{{/xs.option}}
+        {{/each}}
+      {{/x-select}}
     </div>
 
   </div>
@@ -64,21 +52,15 @@
       <label for="_pheno_metrics">Phenotype metrics</label>
     </div>
     <div class="form-group">
-      {{#if multiplePhenoMetrics}}
-	{{#x-select-bootstrap-max multiple=true value=selectedPhenoMetrics maxSelected=maxPhenoMetrics
-	   on-change=(action "selectPhenoMetrics") id="pheno_metrics" as |xs|}}
-          {{#each phenoMetrics as |metric|}}
-            {{#xs.option value=metric}}{{metric}}{{/xs.option}}
-          {{/each}}
-	{{/x-select-bootstrap-max}}
-    {{else}}
-	{{#x-select-bootstrap makeMulti=true value=selectedPhenoMetrics
-	   on-change=(action "selectPhenoMetrics") id="pheno_metrics" as |xs|}}
-          {{#each phenoMetrics as |metric|}}
-            {{#xs.option value=metric}}{{metric}}{{/xs.option}}
-          {{/each}}
-	{{/x-select-bootstrap}}
-      {{/if}}
+      {{#x-select
+	 multiple=true
+	 value=selectedPhenoMetrics
+	 id="pheno_metrics" as |xs|
+      }}
+        {{#each phenoMetrics as |metric|}}
+          {{#xs.option value=metric}}{{metric}}{{/xs.option}}
+        {{/each}}
+      {{/x-select}}
     </div>
   </div>
 

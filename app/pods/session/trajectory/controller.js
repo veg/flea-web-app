@@ -35,12 +35,6 @@ export default Ember.Controller.extend({
   }.property('selectedEvoMetrics.length',
              'selectedPhenoMetrics.length'),
 
-  // TODO: multiselect component, not controller, should handle this
-  // and the if/else xselect selection in the template.
-  multipleRegions: function() {
-    return this.get('maxRegions') > 1;
-  }.property('maxRegions'),
-
   maxEvoMetrics: function () {
     var r = (this.get('selectedRegions.length') > 1);
     if (r) {
@@ -49,10 +43,6 @@ export default Ember.Controller.extend({
     return 4;
   }.property('selectedRegions.length'),
 
-  multipleEvoMetrics: function() {
-    return this.get('maxEvoMetrics') > 1;
-  }.property('maxEvoMetrics'),
-
   maxPhenoMetrics: function () {
     var r = (this.get('selectedRegions.length') > 1);
     if (r) {
@@ -60,10 +50,6 @@ export default Ember.Controller.extend({
     }
     return 2;
   }.property('selectedRegions.length'),
-
-  multiplePhenoMetrics: function() {
-    return this.get('maxPhenoMetrics') > 1;
-  }.property('maxPhenoMetrics'),
 
   evoData: function() {
     var all_data = this.get('model.trajectory');
@@ -101,40 +87,18 @@ export default Ember.Controller.extend({
     return result;
   }.property('model.trajectory',
              'selectedRegions.[]',
-             'selectedPhenoMetrics.[]'),
-
-  handleSelection: function(key, values) {
-    if (values != null) {
-      if (typeof values === 'string' || values instanceof String) {
-        values = [values];
-      }
-      this.set(key, values);
-    }
-  },
-
-  actions: {
-    selectRegions: function(values) {
-      this.handleSelection('selectedRegions', values);
-    },
-
-    selectEvoMetrics: function(values) {
-      this.handleSelection('selectedEvoMetrics', values);
-    },
-
-    selectPhenoMetrics: function(values) {
-      this.handleSelection('selectedPhenoMetrics', values);
-    }
-  }
+             'selectedPhenoMetrics.[]')
 });
 
 
 function prepData(all_data, regions, metrics) {
-  if (metrics.length === 1) {
+  if (regions.length > 1 && metrics.length > 1) {
+    // just use first region
+    return singleRegion(all_data, regions[0], metrics);    
+  } else if (metrics.length <= 1) {
     return singleMetric(all_data, regions, metrics[0]);
-  } else if (regions.length === 1) {
+  } else if (regions.length <= 1) {
     return singleRegion(all_data, regions[0], metrics);
-  } else {
-    throw "Must use either single region or single metric";
   }
 }
 
