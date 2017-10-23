@@ -152,8 +152,10 @@ export default Component.extend(WidthHeightMixin, {
       let structure = this.get('structure');
       let uniq_res_id = 0;
       let label_options = {
-        fontSize: 10,
-        fontColor: "gray"
+        fontSize: 12,
+        fontColor: 'yellow',
+        backgroundColor: 'black',
+        backgroundAlpha: 0.9,
       };
       structure.eachResidue(function(res) {
         let ref_coord = res.num();

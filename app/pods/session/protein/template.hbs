@@ -1,6 +1,9 @@
 <div class="row">
   <div class="col-sm-12">
     <div class="pv-viewer">
+      {{#if selectedName}}
+	<span class="pv-title">{{selectedName}}</span>
+      {{/if}}
       {{pv-wrapper
 	structure=model.structure
 	data=selectedStructureData
@@ -13,22 +16,22 @@
 </div>
 
 <div class="row">
-  <div class="form-horizontal control-group">
-    <div class="col-sm-2">
+  <div class="form-horizontal control-group timepoint-slider">
+    <div class="col-sm-3 timepoint-label">
+      <output>Select time point:</output>
     </div>
-    <div class="col-sm-8">
+    <div class="col-sm-6">
       {{range-selector values=timepoints selectedIdx=selectedTimepointIdx selectedIdxChanged="selectTimepointIdx"}}
     </div>
-    <div class="col-sm-2 flea-value">
-      <output>{{selectedName}}</output>
-    </div>
-    <div class="col-sm-2">
+    <div class="col-sm-3">
     </div>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-sm-12">
+  <div class="col-sm-1">
+  </div>
+  <div class="col-sm-10">
     <div class="input-group input-group-sm">
       <span class="input-group-addon">
         <label for="protein_regions">Metric to plot</label>
@@ -51,6 +54,8 @@
         {{input type="checkbox" name="markPositive" checked=markPositive}}
       </span>
     </div>
+  </div>
+  <div class="col-sm-1">
   </div>
 </div>
 

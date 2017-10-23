@@ -471,6 +471,32 @@ path.branch {
  * OTHER
  */
 
+.timepoint-slider {
+    margin-top: 1em;
+    margin-bottom: 5em;
+}
+
+.timepoint-label {
+    text-align: right;
+    z-index: 1;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.label {
+    font-size: 14px;
+}
+
+.pv-title {
+    position: absolute;
+    text-align: right;
+    z-index: 1;
+    font-weight: bold;
+    font-size: 60px;
+    margin: .5em;
+    color: gray;
+}
+
 .pv-viewer {
     border: 1px solid gray;
     height: 80vh;
