@@ -13,31 +13,39 @@
       <label for="evo_regions">Region(s) to plot</label>
     </div>
     <div class="form-group">
-      {{#x-select
-	 multiple=true
-	 value=selectedRegions
-	 d="evo_regions" as |xs|
+      {{#power-select-multiple
+	 options=regions
+	 selected=selectedRegions
+	 searchPlaceholder="Select region(s)"
+	 searchField='name'
+	 onchange=(action (mut selectedRegions))
+	 as |region|
       }}
-	{{#each regions as |region|}}
-	  {{#xs.option value=region}}{{region}}{{/xs.option}}
-	{{/each}}
-      {{/x-select}}
+	{{region.name}}
+      {{/power-select-multiple}}
     </div>
 
     <div class="form-group">
       <label for="evo_metrics">Evolutionary metrics</label>
     </div>
     <div class="form-group">
-      {{#x-select
-	 multiple=true
-	 value=selectedEvoMetrics
-	 id="evo_metrics" as |xs|
+      {{#power-select-multiple
+	 options=evoMetrics
+	 selected=selectedEvoMetrics
+	 searchPlaceholder="Select metric(s)"
+	 searchField='name'
+	 onchange=(action (mut selectedEvoMetrics))
+	 as |evoMetric|
       }}
-        {{#each evoMetrics as |metric|}}
-          {{#xs.option value=metric}}{{metric}}{{/xs.option}}
-        {{/each}}
-      {{/x-select}}
+	{{evoMetric.name}}
+      {{/power-select-multiple}}
     </div>
+
+    {{#if firstEvoRegion}}
+      <div class="form-group">
+	<label class="text-error">(Only showing {{firstEvoRegion}})</label>
+      </div>
+    {{/if}}
 
   </div>
 
@@ -52,16 +60,27 @@
       <label for="_pheno_metrics">Phenotype metrics</label>
     </div>
     <div class="form-group">
-      {{#x-select
-	 multiple=true
-	 value=selectedPhenoMetrics
-	 id="pheno_metrics" as |xs|
+      {{#power-select-multiple
+	 options=phenoMetrics
+	 selected=selectedPhenoMetrics
+	 searchPlaceholder="Select metric(s)"
+	 searchField='name'
+	 onchange=(action (mut selectedPhenoMetrics))
+	 as |phenoMetric|
       }}
-        {{#each phenoMetrics as |metric|}}
-          {{#xs.option value=metric}}{{metric}}{{/xs.option}}
-        {{/each}}
-      {{/x-select}}
+	{{phenoMetric.name}}
+      {{/power-select-multiple}}
     </div>
+    {{#if firstPhenoRegion}}
+      <div class="form-group">
+	<label class="text-error">(Only showing {{firstPhenoRegion}})</label>
+      </div>
+    {{/if}}
+    {{#if excludedPhenoMetric}}
+      <div class="form-group">
+	<label class="text-error">(Not showing {{excludedPhenoMetric}})</label>
+      </div>
+    {{/if}}
   </div>
 
   <div class = 'row'>

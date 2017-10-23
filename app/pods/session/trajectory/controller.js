@@ -3,66 +3,87 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
 
   // TODO: populate these on the fly
-  regions: ['gp160', 'signal', 'c1', 'v1', 'v2',
-            'c2', 'v3', 'c3', 'v4', 'c4', 'v5',
-            'c5', 'fusion', 'gp41ecto', 'mper',
-            'gp41endo'],
-  selectedRegions: ['gp160'],
+  regions: [{name: 'gp160'},
+	    {name: 'signal'},
+	    {name: 'c1'},
+	    {name: 'v1'},
+	    {name: 'v2'},
+            {name: 'c2'},
+	    {name: 'v3'},
+	    {name: 'c3'},
+	    {name: 'v4'},
+	    {name: 'c4'},
+	    {name: 'v5'},
+            {name: 'c5'},
+	    {name: 'fusion'},
+	    {name: 'gp41ecto'},
+	    {name: 'mper'},
+            {name: 'gp41endo'}],
+  selectedRegions: [{name: 'gp160'}],
 
-  evoMetrics: ['ds_divergence',
-               'dn_divergence',
-               'total_divergence',
-               'ds_diversity',
-               'dn_diversity',
-               'total_diversity'],
-  selectedEvoMetrics: ['ds_divergence',
-                       'dn_divergence',
-                       'total_divergence',
-                       'total_diversity'],
+  evoMetrics: [{name: 'ds_divergence'},
+	       {name: 'dn_divergence'},
+	       {name: 'total_divergence'},
+	       {name: 'ds_diversity'},
+	       {name: 'dn_diversity'},
+	       {name: 'total_diversity'}],
 
-  phenoMetrics: ['Length',
-                 'PNGS',
-                 "IsoelectricPoint",],
-  selectedPhenoMetrics: ['Length', 'PNGS'],
+  selectedEvoMetrics: [{name: 'ds_divergence'},
+                       {name: 'dn_divergence'},
+                       {name: 'total_divergence'},
+                       {name: 'total_diversity'}],
 
-  maxRegions: function () {
-    var m = ((this.get('selectedEvoMetrics.length') > 1) ||
-             this.get('selectedPhenoMetrics.length') > 1);
-    if (m) {
-      return 1;
+  phenoMetrics: [{name: 'Length'},
+		 {name: 'PNGS'},
+                 {name: 'IsoelectricPoint'}],
+
+  selectedPhenoMetrics: [{name: 'Length'},
+			 {name: 'PNGS'}],
+
+  firstEvoRegion: function() {
+    let selectedRegions = this.get('selectedRegions');
+    let n_evo = this.get('selectedEvoMetrics.length');
+    if (n_evo > 1 && selectedRegions.length > 1) {
+      return selectedRegions[0].name;
     }
-    return 10;
-  }.property('selectedEvoMetrics.length',
-             'selectedPhenoMetrics.length'),
+    return "";
+  }.property("selectedRegions.[]", "selectedEvoMetrics.length"),
 
-  maxEvoMetrics: function () {
-    var r = (this.get('selectedRegions.length') > 1);
-    if (r) {
-      return 1;
+  firstPhenoRegion: function() {
+    let selectedRegions = this.get('selectedRegions');
+    let n_pheno = this.get('selectedPhenoMetrics.length');
+    if (n_pheno > 1 && selectedRegions.length > 1) {
+      return selectedRegions[0].name;
     }
-    return 4;
-  }.property('selectedRegions.length'),
+    return "";
+  }.property("selectedRegions.[]", "selectedPhenoMetrics.length"),
 
-  maxPhenoMetrics: function () {
-    var r = (this.get('selectedRegions.length') > 1);
-    if (r) {
-      return 1;
+  excludedPhenoMetric: function() {
+    let n_pheno = this.get('selectedPhenoMetrics.length');
+    if (n_pheno > 2) {
+      return "extra metrics";
     }
-    return 2;
-  }.property('selectedRegions.length'),
+    return "";
+  }.property("selectedPhenoMetrics.length"),
 
   evoData: function() {
-    var all_data = this.get('model.trajectory');
-    var regions = this.get('selectedRegions');
-    var metrics = this.get('selectedEvoMetrics');
+    let all_data = this.get('model.trajectory');
+    let regions = this.get('selectedRegions');
+    let metrics = this.get('selectedEvoMetrics');
     return prepData(all_data, regions, metrics);
   }.property('model.trajectory', 'selectedRegions.[]',
              'selectedEvoMetrics.[]'),
 
   _phenoData: function(index) {
-    var all_data = this.get('model.trajectory');
-    var regions = this.get('selectedRegions');
-    var metrics = this.get('selectedPhenoMetrics');
+    let all_data = this.get('model.trajectory');
+    let regions = this.get('selectedRegions');
+    let metrics = this.get('selectedPhenoMetrics');
+    if (metrics.length > 2) {
+      metrics = metrics.slice(0, 2);
+    }
+    if (regions.length === 0 || metrics.length === 0) {
+      return [];
+    }
     if (regions.length > 1) {
       return prepData(all_data, regions, metrics);
     } else if (metrics.length > 1) {
@@ -73,14 +94,14 @@ export default Ember.Controller.extend({
   },
 
   phenoData: function() {
-    var result = this._phenoData(0);
+    let result = this._phenoData(0);
     return result;
   }.property('model.trajectory',
              'selectedRegions.[]',
              'selectedPhenoMetrics.[]'),
 
   phenoData2: function() {
-    var result = [];
+    let result = [];
     if (this.get('selectedPhenoMetrics.length') > 1) {
       result = this._phenoData(1);
     }
@@ -92,33 +113,36 @@ export default Ember.Controller.extend({
 
 
 function prepData(all_data, regions, metrics) {
-  if (regions.length > 1 && metrics.length > 1) {
+  if (regions.length === 0 || metrics.length === 0) {
+    return [];
+  }
+  else if (regions.length > 1 && metrics.length > 1) {
     // just use first region
     return singleRegion(all_data, regions[0], metrics);    
-  } else if (metrics.length <= 1) {
+  } else if (metrics.length == 1) {
     return singleMetric(all_data, regions, metrics[0]);
-  } else if (regions.length <= 1) {
+  } else if (regions.length == 1) {
     return singleRegion(all_data, regions[0], metrics);
   }
 }
 
 
 function singleMetric(all_data, regions, metric) {
-  var result = [];
+  let result = [];
   // TODO: do this more functionally
   // possible with d3.nest?
   for (let i=0; i<regions.length; i++) {
-    var region = regions[i];
-    var series = {'name': region};
-    var values = [];
+    let region = regions[i];
+    let series = {'name': region.name};
+    let values = [];
     for (let k=0; k<all_data.length; k++) {
-      if (region === all_data[k]["Segment"]) {
-        var datum = {'x': all_data[k].Date,
-                     'y': all_data[k][metric]};
+      if (region.name === all_data[k]["Segment"]) {
+        let datum = {'x': all_data[k].Date,
+                     'y': all_data[k][metric.name]};
         values.push(datum);
       }
     }
-    values.sort((a,b) => a.x - b.x);
+    values.sort((a, b) => a.x - b.x);
     series['values'] = values;
     result.push(series);
   }
@@ -128,19 +152,19 @@ function singleMetric(all_data, regions, metric) {
 
 // TODO: code duplication
 function singleRegion(all_data, region, metrics) {
-  var result = [];
+  let result = [];
   for (let i=0; i<metrics.length; i++) {
-    var metric = metrics[i];
-    var series = {'name': metric};
-    var values = [];
+    let metric = metrics[i];
+    let series = {'name': metric.name};
+    let values = [];
     for (let k=0; k<all_data.length; k++) {
-      if (region === all_data[k]["Segment"]) {
-        var datum = {'x': all_data[k].Date,
-                     'y': all_data[k][metric]};
+      if (region.name === all_data[k]["Segment"]) {
+        let datum = {'x': all_data[k].Date,
+                     'y': all_data[k][metric.name]};
         values.push(datum);
       }
     }
-    values.sort((a,b) => a.x - b.x);
+    values.sort((a, b) => a.x - b.x);
     series['values'] = values;
     result.push(series);
   }
