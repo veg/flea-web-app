@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-export default Ember.Helper.helper(function(params, {ranges_arg, mask}) {
+export default Ember.Helper.helper(function(params, {ranges, mask}) {
   if (params.length !==1) {
     throw('helper called without sequence');
   }
