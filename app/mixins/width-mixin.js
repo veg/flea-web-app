@@ -5,7 +5,6 @@ export default Ember.Mixin.create({
   doResize(self) {
     let w = self.$().parents('div').width();
     self.set('width', w);
-    console.log(`WidthMixin. ${w}x${w}`);
   },
 
   init() {

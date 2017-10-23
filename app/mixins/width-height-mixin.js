@@ -8,7 +8,6 @@ export default Ember.Mixin.create(ResizeAware, {
     let h = self.$().parents('div').height();
     self.set('width', w);
     self.set('height', h);
-    console.log(`WidthHeightMixin. ${w}x${h}`);
   },
 
   init() {
