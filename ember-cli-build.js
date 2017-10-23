@@ -6,7 +6,23 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 module.exports = function(defaults) {
   let app = new EmberApp(defaults, {
 
-    // Add options here
+    outputPaths: {
+        app: {
+            css: {
+                  app: "/assets/flea-app.css",
+            },
+            js: "/assets/flea-app.js",
+        },
+
+        vendor: {
+            css: "/assets/vendor.css",
+            js: "/assets/vendor.js",
+        },
+    },
+
+    'ember-font-awesome': {
+        fontsOutput: "/assets/fonts"
+    },
 
     'ember-power-select': {
       theme: 'bootstrap'
@@ -53,14 +69,6 @@ module.exports = function(defaults) {
   
   app.import('bower_components/bootstrap-multiselect/dist/css/bootstrap-multiselect.css')
   app.import('bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect.js')
-  
-  app.import("bower_components/font-awesome/css/font-awesome.css");
-  app.import("bower_components/font-awesome/fonts/fontawesome-webfont.eot", { destDir: "fonts" });
-  app.import("bower_components/font-awesome/fonts/fontawesome-webfont.svg", { destDir: "fonts" });
-  app.import("bower_components/font-awesome/fonts/fontawesome-webfont.ttf", { destDir: "fonts" });
-  app.import("bower_components/font-awesome/fonts/fontawesome-webfont.woff", { destDir: "fonts" });
-  app.import("bower_components/font-awesome/fonts/fontawesome-webfont.woff2", { destDir: "fonts" });
-  app.import("bower_components/font-awesome/fonts/FontAwesome.otf", { destDir: "fonts" });
   
   app.import('bower_components/lodash/lodash.js');
   

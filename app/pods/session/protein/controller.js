@@ -11,8 +11,6 @@ export default Ember.Controller.extend({
 
   selectedTimepointIdx: 0,
 
-  playing: false,
-
   application: Ember.inject.controller(),
   session: Ember.inject.controller(),
 
@@ -180,51 +178,12 @@ export default Ember.Controller.extend({
     return [];
   }.property('markPositive', 'model.rates.positiveSelection'),
 
-  startPlayback: function() {
-    this.set('timer', this.schedule(this.get('nextTimepoint')));
-    this.set('playing', true);
-  },
-
-  stopPlayback: function() {
-    Ember.run.cancel(this.get('timer'));
-    this.set('playing', false);
-  }.observes('selectedMetric'),
-
-  buttonClass: function() {
-    if (this.get('playing')) {
-      return "fa fa-stop";
-    } else {
-      return "fa fa-play";
-    }
-  }.property('playing'),
-
-  interval: function() {
-    return 1000; // Time between updates (in ms)
-  }.property().readOnly(),
-
-  // Schedules the function `f` to be executed every `interval` time.
-  schedule: function(f) {
-    return Ember.run.later(this, function() {
-      f.apply(this);
-      this.set('timer', this.schedule(f));
-    }, this.get('interval'));
-  },
-
   nextTimepoint: function(){
     var idx = (this.get('selectedTimepointIdx') + 1) % this.get('timepoints.length');
     this.set('selectedTimepointIdx', idx);
   },
 
   actions: {
-    // FIXME: move viewer, selector, and play controls to a component.
-    togglePlayback: function() {
-      if (this.get('playing')) {
-        this.stopPlayback();
-      } else{
-        this.startPlayback();
-      }
-    },
-
     selectMetric: function(value) {
       if (value != null) {
         this.set('selectedMetric', value);
