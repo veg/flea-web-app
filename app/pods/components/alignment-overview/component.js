@@ -91,8 +91,10 @@ export default Ember.Component.extend(WidthMixin, {
                  [w - 1, h/3, w - 1, 2 * h / 3]];
 
     let lines = svg.selectAll("lines")
-        .data(coords)
-        .enter()
+        .data(coords);
+
+    lines.exit().remove()
+    lines.enter()
         .append("line");
 
     lines
@@ -120,7 +122,7 @@ export default Ember.Component.extend(WidthMixin, {
       .attr("class", "x axis")
       .attr("transform", "translate(0," + (this.get('labelHeight') + this.get('mainHeight')) + ")")
       .call(xAxis);
-  }.observes('innerWidth', 'mainHeight', 'labelHeight', 'refToFirstAlnCoords'),
+  }.observes('innerWidth', 'xscale', 'mainHeight', 'labelHeight', 'refToFirstAlnCoords'),
 
   drawLabels: function() {
     let xscale = this.get('xscale');
@@ -149,38 +151,38 @@ export default Ember.Component.extend(WidthMixin, {
       return mapLast[zeroIndex(stop)] - mapFirst[start];
     };
 
-    text
-      .enter()
+    text.exit().remove();
+    text.enter()
       .append("text")
       .style("text-anchor", "middle")
       .style('dominant-baseline', 'middle')
-      .attr("x", d => xscale(mapFirst[d.start] + width(d.start, d.stop) / 2))
-      .attr("y", () => h)
-      .text( d => d.name)
+      .text(d => d.name)
       .attr("font-family", "sans-serif")
       .attr("font-size", "8px");
 
-    text.exit().remove();
+    text
+      .attr("x", d => xscale(mapFirst[d.start] + width(d.start, d.stop) / 2))
+      .attr("y", () => h)
 
     let rects = svg.selectAll("rect")
         .data(regions, d => d.name);
 
-    rects
-      .enter()
+    rects.exit().remove();
+    rects.enter()
       .append("rect")
       .on('click', click)
       .style("cursor", "pointer")
-      .attr("x", d => xscale(transformIndex(d.start, mapFirst, false)))
-      .attr("y", () => 0)
-      .attr("width", d => xscale(width(d.start, d.stop)))
       .attr("height", () => height)
       .attr("stroke-width", 1)
       .attr("stroke", "black")
       .attr("fill-opacity", 0);
 
-    rects.exit().remove();
+    rects
+      .attr("x", d => xscale(transformIndex(d.start, mapFirst, false)))
+      .attr("y", () => 0)
+      .attr("width", d => xscale(width(d.start, d.stop)));
 
-  }.observes('predefinedRegions', 'labelHeight', 'refToFirstAlnCoords', 'refToLastAlnCoords'),
+  }.observes('innerWidth', 'xscale', 'predefinedRegions', 'labelHeight', 'refToFirstAlnCoords', 'refToLastAlnCoords'),
 
   makeBrush: function() {
     let self = this;
@@ -244,16 +246,18 @@ export default Ember.Component.extend(WidthMixin, {
     let lines = svg.selectAll("line").data(insertions, r => String(r));
     let xscale = this.get('xscale');
 
-    lines.enter().append("line")
+    lines.exit().remove();
+    lines.enter()
+      .append("line")
+      .attr("stroke-width", 3)
+      .attr("stroke", "black");
+
+    lines
       .attr("x1", d => xscale(d[0]))
       .attr("y1", () => h)
       .attr("x2", d => xscale(d[1]))
       .attr("y2", () => h)
-      .attr("stroke-width", 3)
-      .attr("stroke", "black");
-
-    lines.exit().remove();
-  }.observes('insertions', 'mainHeight'),
+  }.observes('insertions', 'mainHeight', 'xscale'),
 
   drawPositive: function() {
     let posns = [];
@@ -265,16 +269,19 @@ export default Ember.Component.extend(WidthMixin, {
     let lines = svg.selectAll("line").data(posns, function(p) { return p; });
     let xscale = this.get('xscale');
 
-    lines.enter().append("line")
-      .attr("x1", d => xscale(d))
-      .attr("y1", () => h / 3)
-      .attr("x2", d => xscale(d))
-      .attr("y2", () => 2 * h / 3)
+    lines.exit().remove();
+    lines.enter()
+      .append("line")
       .attr("stroke-width", 1)
       .attr("stroke", "green");
 
-    lines.exit().remove();
-  }.observes('markPositive', 'positiveSelection', 'mainHeight'),
+    lines
+      .attr("x1", d => xscale(d))
+      .attr("y1", () => h / 3)
+      .attr("x2", d => xscale(d))
+      .attr("y2", () => 2 * h / 3);
+
+  }.observes('xscale', 'markPositive', 'positiveSelection', 'mainHeight'),
 
   drawSelected: function() {
     let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.selected');
@@ -284,16 +291,19 @@ export default Ember.Component.extend(WidthMixin, {
     let lines = svg.selectAll("line").data(posns, p => p);
     let xscale = this.get('xscale');
 
-    lines.enter().append("line")
-      .attr("x1", d => xscale(d))
-      .attr("y1", () => 0)
-      .attr("x2", d => xscale(d))
-      .attr("y2", () => h)
+    lines.exit().remove();
+    lines.enter()
+      .append("line")
       .attr("stroke-width", 1)
       .attr("stroke", "red");
 
-    lines.exit().remove();
-  }.observes('selectedPositions.[]', 'mainHeight'),
+    lines
+      .attr("x1", d => xscale(d))
+      .attr("y1", () => 0)
+      .attr("x2", d => xscale(d))
+      .attr("y2", () => h);
+
+  }.observes('xscale', 'selectedPositions.[]', 'mainHeight'),
 
   closedRanges: function() {
     return this.get('alnRanges').map(r => [r[0], r[1] - 1]);
@@ -329,6 +339,7 @@ export default Ember.Component.extend(WidthMixin, {
         .on("drag", dragmove)
         .on("dragend", dragend);
 
+    // start from scratch every time
     svg.selectAll("rect").remove();
 
     svg.selectAll("rect").data(ranges)
@@ -350,6 +361,6 @@ export default Ember.Component.extend(WidthMixin, {
         }
         self.sendAction('rmRange', i);
       });
-  }.observes('closedRanges', 'innerWidth', 'mainHeight')
+  }.observes('xscale', 'closedRanges', 'innerWidth', 'mainHeight')
 
 });
