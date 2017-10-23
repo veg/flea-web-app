@@ -43,11 +43,15 @@
       <span class="input-group-addon">
         Node names
       </span>
-      {{#x-select-bootstrap value=nodeNameType on-change=(action "selectNodeNameType") as |xs|}}
-	{{#each nodeNameTypes as |nameType|}}
-	  {{#xs.option value=nameType}}{{nameType}}{{/xs.option}}
-	{{/each}}
-      {{/x-select-bootstrap}}
+	{{#power-select
+	   options=nodeNameTypes
+	   selected=nodeNameType
+	   placeholder="Node label"
+	   onchange=(action (mut nodeNameType))
+	   as |nodeNameType|
+	}}
+	  {{nodeNameType}}
+	{{/power-select}}
     </div>
   </div>
 </div>
