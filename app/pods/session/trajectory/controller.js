@@ -81,16 +81,7 @@ export default Ember.Controller.extend({
     if (metrics.length > 2) {
       metrics = metrics.slice(0, 2);
     }
-    if (regions.length === 0 || metrics.length === 0) {
-      return [];
-    }
-    if (regions.length > 1) {
-      return prepData(all_data, regions, metrics);
-    } else if (metrics.length > 1) {
-      return singleRegion(all_data, regions[0], [metrics[index]]);
-    } else {
-      return singleRegion(all_data, regions[0], metrics);
-    }
+    return prepData(all_data, regions, metrics);
   },
 
   phenoData: function() {
@@ -116,12 +107,14 @@ function prepData(all_data, regions, metrics) {
   if (regions.length === 0 || metrics.length === 0) {
     return [];
   }
-  else if (regions.length > 1 && metrics.length > 1) {
-    // just use first region
-    return singleRegion(all_data, regions[0], metrics);    
-  } else if (metrics.length == 1) {
-    return singleMetric(all_data, regions, metrics[0]);
-  } else if (regions.length == 1) {
+  else if (regions.length > 1) {
+    if (metrics.length > 1) {
+      // just use first region
+      return singleRegion(all_data, regions[0], metrics);
+    } else {
+      return singleMetric(all_data, regions, metrics[0]);
+    }
+  } else {
     return singleRegion(all_data, regions[0], metrics);
   }
 }
