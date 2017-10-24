@@ -27,16 +27,12 @@ export default Component.extend(WidthHeightMixin, {
     }
     let name = res.name();
     let num = res.num();
-    let data = Math.round(res.customData(), -2);
-    // TODO: print correct position
     // TODO: also print region (like v1, mper, etc)
-    return `${name} ${num} ${data}`;
+    return `${name} ${num}`;
   }.property('hoveredResidue'),
 
   didInsertElement: function () {
     this._super(...arguments);
-
-    // Ember.run.scheduleOnce('afterRender', setSize);
     Ember.run.next(this, this.get('setupView'));
   },
 
@@ -177,8 +173,9 @@ export default Component.extend(WidthHeightMixin, {
       return;
     }
     structure.eachResidue(function(res) {
-      let ref_coord = res.num();
-      let val = data[ref_coord];
+      let ref_num = res.num();
+      // subtract 1 because ref_num is 1-indexed.
+      let val = data[ref_num - 1];
       val = (val === undefined ? 0 : val);
       res.customData = function() {return val;};
     });
@@ -218,7 +215,11 @@ export default Component.extend(WidthHeightMixin, {
     this.get('viewer').requestRedraw();
   },
 
-  drawSelected: Ember.observer('viewer', 'structure', 'gradient', 'selectedPositions.[]', function() {
+  drawSelected: Ember.observer('viewer', 'structure', 'gradient',
+			       'normalizedData.[]',
+			       'selectedPositions.[]', function() {
+    // ensure colors are available as res.customData() before trying
+    // to color spheres
     Ember.run.once(this, '_drawSelected');
   }),
 
@@ -228,7 +229,9 @@ export default Component.extend(WidthHeightMixin, {
     let positions = this.get('selectedPositions');
     let gradient = this.get('gradient');
 
-    if (!viewer || !structure || !gradient || !positions) {
+    let data = this.get('normalizedData');
+
+    if (!viewer || !structure || !gradient || !positions || !data) {
       return;
     }
     viewer.rm('selectedPositions');
@@ -240,13 +243,10 @@ export default Component.extend(WidthHeightMixin, {
       // need to make them comparable
       if (positions.includes(ref_num - 1)) {
 	let coord = res.atom(0).pos();
-	// let allAtomCoords = _.map(res.atoms(), a => a.pos());
-	// let x = d3.mean(_.map(allAtomCoords, c => c[0]));
-	// let y = d3.mean(_.map(allAtomCoords, c => c[1]));
-	// let z = d3.mean(_.map(allAtomCoords, c => c[2]));
-	// let coord = [x, y z];
 	let color = [1, 1, 1, 1];
-	gradient.colorAt(color, res.customData());
+	let val = data[ref_num - 1];
+	val = (val === undefined ? 0 : val);
+	gradient.colorAt(color, val);
 	cm.addSphere(coord, 2, { 'color' : color });
       }
     });

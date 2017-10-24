@@ -64,10 +64,6 @@ export default Ember.Controller.extend({
     return divergence.map(elt => elt.divergence);
   }.property('model.divergence.sortedDivergence'),
 
-  addCombined: function() {
-    return this.get('selectedMetric') === "JS Divergence";
-  }.property('selectedMetric'),
-
   data1: function() {
     var metric = this.get('selectedMetric');
     if (metric === "Entropy") {

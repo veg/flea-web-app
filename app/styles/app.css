@@ -476,6 +476,11 @@ path.branch {
     margin-bottom: 5em;
 }
 
+.timepoint-label {
+    text-align: right;
+    font-weight: bold;
+}
+
 .label {
     font-size: 14px;
 }

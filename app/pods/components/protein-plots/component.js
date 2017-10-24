@@ -20,9 +20,6 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
   tick: 100,
   yticks: 5,
 
-  // if false, use first data element as a combined view
-  addCombined: true,
-
   margin: {
     top:    20,
     right:  20,
@@ -43,7 +40,7 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
     Ember.run.once(this, '_updateChart');
   }.observes('names.[]', 'data1', 'data2', 'positions',
              'labels.[]', 'width', 'height', 'heightEach', 'margin', 'yMax',
-             'labelHeight', 'addCombined'),
+             'labelHeight'),
 
   yMax: function() {
     var data1 = this.get('data1');
@@ -52,12 +49,8 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
   }.property('data1', 'data2'),
 
   nPlots: function() {
-    var result = this.get('names.length');
-    if (this.get('addCombined')) {
-      result += 1;
-    }
-    return result;
-  }.property('names.length', 'addCombined'),
+    return this.get('names.length');
+  }.property('names.length'),
 
   _updateChart: function() {
     try {
@@ -91,21 +84,6 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
     var n_sites = data1[0].length;
     var n_plots = this.get('nPlots');
     var two_d = data2.length > 0;
-
-    if (this.get('addCombined') && names[0] !== "Combined") {
-      var zeros = [];
-      for (let i=0; i < n_sites; i++) {
-        zeros.push(0);
-      }
-      data1 = addFront(zeros, data1);
-      if (two_d) {
-        data1 = addFront(zeros, data2);
-      }
-      if (positions.length > 0) {
-        positions = addFront([], positions);
-      }
-      names = addFront("Combined", names);
-    }
 
     // check data consistency
     if (two_d && data1.length !== data2.length) {
