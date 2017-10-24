@@ -6,8 +6,6 @@ export default Component.extend(WidthHeightMixin, {
   // options
   shouldLabelCoordinates: false,
 
-  renderOptions: {'radius': 1.5},
-
   // where to draw spheres
   selectedPositions: null,
 
@@ -19,6 +17,21 @@ export default Component.extend(WidthHeightMixin, {
   // created
   viewer: null,
   geometry: null,
+
+  hoveredResidue: null,
+
+  hoveredLabel: function() {
+    let res = this.get('hoveredResidue');
+    if (!res) {
+      return "";
+    }
+    let name = res.name();
+    let num = res.num();
+    let data = Math.round(res.customData(), -2);
+    // TODO: print correct position
+    // TODO: also print region (like v1, mper, etc)
+    return `${name} ${num} ${data}`;
+  }.property('hoveredResidue'),
 
   didInsertElement: function () {
     this._super(...arguments);
@@ -51,14 +64,22 @@ export default Component.extend(WidthHeightMixin, {
 
   updateView: function() {
     this._updateView()
-  }.observes('viewer', 'structure', 'renderMode'),
+  }.observes('viewer', 'structure', 'renderMode', 'renderOptions'),
 
   renderMode: computed('selectedPositions.length', function() {
     let n = this.get('selectedPositions.length');
     if (n > 0) {
-      return 'sline';
+      return 'tube';
     }
     return 'tube';
+  }),
+
+  renderOptions: computed('selectedPositions.length', function() {
+    let n = this.get('selectedPositions.length');
+    if (n > 0) {
+      return {'radius': 0.2};
+    }
+    return {'radius': 1.5};
   }),
 
   _updateView() {
@@ -70,10 +91,39 @@ export default Component.extend(WidthHeightMixin, {
     viewer.clear();
     viewer.fitTo(structure);
     let geometry = viewer.renderAs('protein', structure, this.get('renderMode'), this.get('renderOptions'));
+
     this.set('geometry', geometry);
     this.labelCoordinates();
     this.updateColors();
     this.drawSelected();
+  },
+
+  // handle this browser event to highlight residue under the mouse
+  mouseMove: function(event) {
+    let viewer = this.get('viewer');
+    if (!viewer) {
+      return;
+    }
+    var rect = viewer.boundingClientRect();
+    var picked = viewer.pick({ x : event.clientX - rect.left,
+			       y : event.clientY - rect.top });
+    if (picked === null || picked.target() === null) {
+      this.set("hoveredResidue", null);
+      return;
+    }
+    // don't to anything if the clicked structure does not have an atom.
+    if (picked.node().structure === undefined) {
+      this.set("hoveredResidue", null);
+      return;
+    }
+    let atom = picked.target();
+    this.set("hoveredResidue", atom.residue());
+    var sel = picked.node().structure().createEmptyView();
+    if (!sel.removeAtom(picked.target(), true)) {
+      sel.addAtom(picked.target());
+    }
+    picked.node().setSelection(sel);
+    viewer.requestRedraw();
   },
 
   updateRenderMode: function() {
@@ -83,7 +133,6 @@ export default Component.extend(WidthHeightMixin, {
     viewer.fitTo(structure);
 
     let geometry = viewer.renderAs('protein', structure, this.get('renderMode'), this.get('renderOptions'));
-    viewer.cartoon('structure', structure, { color: pv.color.ssSuccession() });
   }.observes('renderMode', 'viewer', 'structure'),
 
   updateColors: function() {
@@ -186,12 +235,19 @@ export default Component.extend(WidthHeightMixin, {
     let cm = viewer.customMesh('selectedPositions');
     let newrange = [0, 1];
     structure.eachResidue(function(res) {
-      let ref_coord = res.num();
-      if (positions.includes(ref_coord)) {
-	let coords = res.atom(0).pos();
+      let ref_num = res.num();
+      // positions are 0-indexed, and reference numbers are 1-indexed.
+      // need to make them comparable
+      if (positions.includes(ref_num - 1)) {
+	let coord = res.atom(0).pos();
+	// let allAtomCoords = _.map(res.atoms(), a => a.pos());
+	// let x = d3.mean(_.map(allAtomCoords, c => c[0]));
+	// let y = d3.mean(_.map(allAtomCoords, c => c[1]));
+	// let z = d3.mean(_.map(allAtomCoords, c => c[2]));
+	// let coord = [x, y z];
 	let color = [1, 1, 1, 1];
 	gradient.colorAt(color, res.customData());
-	cm.addSphere(coords, 2, { 'color' : color });
+	cm.addSphere(coord, 2, { 'color' : color });
       }
     });
   }

@@ -123,12 +123,23 @@ export default Ember.Controller.extend({
       // a hack; presumable selectedIdx will be updated later
       idx = this.get('names.length') - 1;
     }
+
+    // map data onto reference coordinates
+    // we expect the pdb structure to contain reference coordinates
+    // for the residues.
     var data = this.get('structureData')[idx];
-    // take only reference coordinates
     var coordMap = this.get('model.coordinates.refToFirstAlnCoords');
     var result = _.map(coordMap, alnCoord => data[alnCoord] || 0);
     return result;
   }.property('structureData', 'selectedTimepointIdx'),
+
+  selectedReferencePositions: function() {
+    let alnPosns = this.get('model.sequences.selectedPositions');
+    let alnToRef = this.get('model.coordinates.alnToRefCoords');
+    let result = _.map(alnPosns, i => alnToRef[i]);
+    return _.uniq(result);
+  }.property('model.sequences.selectedPositions',
+	     'model.coordinates.alnToRefCoords'),
 
   structureDataRange: function() {
     var data = this.get('structureData');
