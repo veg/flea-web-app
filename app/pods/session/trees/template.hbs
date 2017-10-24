@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-2">
     <div class="btn-toolbar" role="toolbar">
       <div class="btn-group">
         <button type="button" class="btn btn-default btn-sm" id="sort_ascending"
@@ -14,11 +14,22 @@
                 title="Restore original order" {{action "setSortState" "original"}}>
           <i>{{fa-icon "sort"}}</i>
         </button>
-        {{input type="range" id="vertical-spacing" min="0.1" value=heightScale max="1" step="0.1"}}
       </div>
     </div>
   </div>
-  <div class="col-md-8 pull-right">
+  <div class="col-md-3">
+    {{ui-slider
+      value=heightScale
+      step=0.1
+      tooltip='hide'
+      min=0
+      max=1
+      focus=false
+      naturalArrowKeys=false
+      immediateResponse=false
+    }}
+  </div>
+  <div class="col-md-7 pull-right">
     <div class="input-group input-group-sm">
       <span class="input-group-addon"
             title="Show copynumber">

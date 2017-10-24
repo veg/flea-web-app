@@ -21,7 +21,19 @@
       <output>Select time point:</output>
     </div>
     <div class="col-sm-6">
-      {{range-selector values=timepoints selectedIdx=selectedTimepointIdx selectedIdxChanged="selectTimepointIdx"}}
+      {{ui-slider 
+	defaultValue=0
+	value=selectedTimepointIdx
+	ticks=ticks
+	ticksLabels=timepointNames
+	step=1
+	tooltip='hide' 
+	min=0
+	max=ticks.length
+	focus=true
+	naturalArrowKeys=true
+	immediateResponse=true
+      }}
     </div>
     <div class="col-sm-3">
     </div>
@@ -61,7 +73,7 @@
 
 <div class="row">
   <div class="col-sm-12" id="_protein_plots">
-    {{protein-plots names=names data1=data1 data2=data2
+    {{protein-plots names=timepointNames data1=data1 data2=data2
       positions=positions labels=labels url=currentPath
       alnToRefCoords=model.coordinates.alnToRefCoords
       refToFirstAlnCoords=model.coordinates.refToFirstAlnCoords
