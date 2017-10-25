@@ -4,10 +4,13 @@ import ResizeAware from 'ember-resize/mixins/resize-aware';
 export default Ember.Mixin.create(ResizeAware, {
 
   doResize(self) {
-    let w = self.$().parents('div').width();
-    let h = self.$().parents('div').height();
-    self.set('width', w);
-    self.set('height', h);
+    let elt = self.$();
+    if (elt) {
+      let w = elt.parents('div').width();
+      let h = elt.parents('div').height();
+      self.set('width', w);
+      self.set('height', h);
+    }
   },
 
   init() {
@@ -22,8 +25,7 @@ export default Ember.Mixin.create(ResizeAware, {
   },
 
   didInsertElement() {
-    let self = this;
-    this.doResize(self);
+    this.doResize(this);
     this._super(...arguments);
   }
 

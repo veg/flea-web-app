@@ -532,7 +532,8 @@ path.branch {
 }
 
 #_protein_plots {
-    width: 100vw;
+    /* need extra space for axis labels */
+    width: 95vw;
 }
 
 #_timeseries_plot {
