@@ -77,14 +77,6 @@ canvas {
     text-anchor: start;
 }
 
-.seq-head {
-    font: 14px monospace;
-}
-
-.seq-prop {
-    font: 10px monospace;
-}
-
 .brush .extent {
     stroke: #fff;
     fill-opacity: .125;
@@ -125,10 +117,11 @@ canvas {
  */
 
 .sequence-viewer-table {
-    font: 12px monospace;
+    font-size: 12px;
+    font-family: monospace;
 }
 
-.sequence-viewer-table tr td{
+.sequence-viewer-table tr td {
     text-align: left;
 }
 
@@ -143,11 +136,31 @@ canvas {
 #wrapped-table {
     overflow: auto;
     height: 80vh;
+    max-width: 100%;
     background-color: white;
 }
 
+table.sequence-viewer-table {
+    /* TODO: go to fixed layout, which should render faster */
+    table-layout: auto;
+}
+
+.seq-group-label {
+    font-weight: bold;
+}
+
+.sequence-viewer-table .copynumber-cell {
+    text-align: right !important;
+    padding-left: 1em !important;
+}
+
+.sequence-viewer-table .abundance-cell {
+    text-align: right !important;
+    padding-left: 1em !important;
+}
+
 #sequence-viewer-table thead {
-    background-color: white;
+    background-color: #f7f7f7;
 }
 
 #sequence-viewer-table .ref-coords {
@@ -206,16 +219,6 @@ FIXME: this should not be necessary.
     height: 300px;
 }
 
-.placeholder {
-    padding-top: 10em;
-    background: snow;
-    color: darkgrey;
-    text-align: center;
-    font-family: sans-serif;
-    height: 300px;
-    border: 1px darkgrey solid;
-}
-
 .protein_legend {
     font: 12px sans-serif;
 }
@@ -254,6 +257,16 @@ path.branch {
     color: red;
     font-decoration: bold;
     opacity: 1.0;
+}
+
+#sequence-viewer-table tr td {
+  padding: 0;
+  margin: 0;
+}
+
+#sequence-viewer-table tr th {
+  padding: 0;
+  margin: 0;
 }
 
 .aaA {
@@ -334,6 +347,10 @@ path.branch {
 
 .aaY {
     color: #9edae5;
+}
+
+.aaGap {
+    color: black;
 }
 
 .pngs {

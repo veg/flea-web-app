@@ -61,7 +61,7 @@ export default Ember.Component.extend({
       }
     }
     return result;
-  }.property('alnRanges', 'alnToRef', 'markPositive', 'positiveSelection',
+  }.property('alnRanges', 'alnToRef',
              'selectedPositions', 'selectedPositions.[]'),
 
   visiblePositiveSites: function() {
@@ -72,46 +72,23 @@ export default Ember.Component.extend({
       var result = [];
       var positions = all_positions[k];
       for (let r=0; r<ranges.length; r++) {
-        var start = ranges[r][0];
-        var stop = ranges[r][1];
-        for (let i = 0; i < positions.length; i++) {
-          // could do binary search to speed this up
-          var pos = positions[i];
-          if (start <= pos && pos <= stop) {
-            result.push(pos);
-          }
-          if (pos > stop) {
-            break;
-          }
-        }
+	var start = ranges[r][0];
+	var stop = ranges[r][1];
+	for (let i = 0; i < positions.length; i++) {
+	  // could do binary search to speed this up
+	  var pos = positions[i];
+	  if (start <= pos && pos <= stop) {
+	    result.push(pos);
+	  }
+	  if (pos > stop) {
+	    break;
+	  }
+	}
       }
       all_results.push(result);
     }
     return all_results;
   }.property('positiveSelection.[]', 'alnRanges.[]'),
-
-  allSelectionStrings: function() {
-    var arrs = this.get('visiblePositiveSites');
-    var ranges = this.get('alnRanges');
-    var all_indices = _.flatten(ranges.map(r => _.range(r[0], r[1])));
-    return arrs.map(arr => all_indices.map(idx => (arr.indexOf(idx) >=0) ? "+" : "&nbsp;").join(''));
-  }.property('visiblePositiveSites.[]', 'alnRanges.[]'),
-
-  combinedSelectionString: function() {
-    return this.get('allSelectionStrings')[0];
-  }.property('allSelectionStrings.[]'),
-
-  individualSelectionStrings: function() {
-    var a = this.get('allSelectionStrings');
-    var result = a.slice(1, a.length);
-    return result;
-  }.property('allSelectionStrings.[]'),
-
-  groupedAndSelected: function() {
-    var groups = this.get('groupedSequences');
-    var sel = this.get('individualSelectionStrings');
-    return _.range(0, groups.length).map(i => ({ 'group': groups[i], 'pos': sel[i] }));
-  }.property('groupedSequences.[]', 'individualSelectionStrings.[]'),
 
   selectAllPositive: function () {
     var visibleCombined = this.get('visiblePositiveSites')[0];

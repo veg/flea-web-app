@@ -90,6 +90,10 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     return this.toSlices(mrca.sequence, ranges);
   }.property('model.sequences.mrca', 'alnRanges'),
 
+  mrcaSplit: function() {
+    return this.get('mrcaSlice').split('');
+  }.property('mrcaSlice'),
+
   refSlice: function() {
     var ref = this.get('reference');
     if (ref.length === 0) {
@@ -99,13 +103,16 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     return this.toSlices(ref.sequence, ranges);
   }.property('model.sequences.mrca', 'alnRanges'),
 
+  refSplit: function() {
+    return this.get('refSlice').split('');
+  }.property('refSlice'),
+
   groupedSequences: function() {
     var self = this;
     var sequences = this.get('model.sequences.observed');
     var copynumbers = this.get('model.copynumbers');
     var result = [];
     var ranges = this.get('alnRanges');
-    var mrca = this.get('mrcaSlice');
     var grouped = _.groupBy(sequences, s => s.get('date'));
     var slice = function(s) {
       var result = self.toSlices(s.sequence, ranges);
@@ -137,11 +144,15 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     result.forEach(function(elt) {
       elt.date = format_date(elt.date);
     });
+
+    // TODO: working here. make each one independent.
+
+    // TODO: do not redo everything on update. make DOM updates as
+    // small as possible.
     result = addPercent(result);
     result = filterPercent(result, this.get('threshold'));
     result = addHTML(result);
-    result = addHighlights(result, this.get('regex'));
-    result = addMask(result, mrca);
+    result = htmlRows(result, this.get('regex'), this.get('mrcaSlice'));
     return result;
   }.property('alnRanges', 'mrcaSlice',
              'model.copynumbers',
@@ -439,6 +450,7 @@ function collapse(seqs) {
   return result;
 }
 
+// TODO: do this with a helper or a component instead
 function addHTML(groups) {
   for (let i=0; i<groups.length; i++) {
     var seqs = groups[i].sequences;
@@ -450,23 +462,37 @@ function addHTML(groups) {
 }
 
 
-function addHighlights(groups, regex) {
+function htmlRows(groups, regex, mrca) {
   for (let i=0; i<groups.length; i++) {
     var seqs = groups[i].sequences;
     for (let j=0; j<seqs.length; j++) {
-      seqs[j].highlights = regexRanges(regex, seqs[j].sequence);
+      let seq = seqs[j];
+      let highlightRanges = regexRanges(regex, seq.sequence);
+      let highlightPositions = new Set();
+      for (let k=0; k<highlightRanges.length; k++) {
+        let range = highlightRanges[k];
+        for (let n=range[0]; n<=range[1]; n++) {
+          highlightPositions.add(n);
+        }
+      }
+      let htmlElts = _.map(seq.sequence.split(''), (aa, idx) => {
+	let highlight = highlightPositions.has(i);
+        return aaHTML(aa, mrca[idx], highlight);
+      });
+      seq.htmlRow = htmlElts.join('');
     }
   }
   return groups;
 }
 
-function addMask(groups, mrca) {
-  for (let i=0; i<groups.length; i++) {
-    var seqs = groups[i].sequences;
-    for (let j=0; j<seqs.length; j++) {
-      var seq = seqs[j];
-      seqs[j].mask = seq.sequence.split('').map((aa, idx) => aa === mrca[idx]);
-    }
+// TODO: this should not be in the controller
+function aaHTML(aa, other, highlight) {
+  aa = aa.toUpperCase();
+  let mask = aa === other
+  let aaClass = aa === "|" ? "seperator" : (aa === "-" ? "aa aaGap" : `aa aa${aa}`);
+  if (highlight) {
+    aaClass = `${aaClass} pngs`
   }
-  return groups;
+  aa = (mask && aa !== "-") ? "." : aa;
+  return Ember.String.htmlSafe(`<td class="${aaClass}">${aa}</td>`);
 }

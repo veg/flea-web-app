@@ -54,6 +54,9 @@ export var htmlTable = function(data, header) {
 
 export var regexRanges = function(regex, string) {
   var indices = [];
+  if (!regex) {
+    return indices;
+  }
   var result;
   var r = new RegExp(regex, 'g');
   while ((result = r.exec(string)) !== null) {

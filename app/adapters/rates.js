@@ -33,6 +33,7 @@ var RatesObject = Ember.Object.extend({
 
 
 function positive_selection_positions (mx) {
+  // TODO: do not hardcode indices or thresholds
   return mx.map((d, i) => [i, d[2]])
     .filter(d => d[1] >= 0.95)
     .map(d => d[0]);

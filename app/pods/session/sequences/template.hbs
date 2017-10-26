@@ -2,27 +2,27 @@
   <div class = "col-md-12">
     <div class="input-group input-group-sm">
       {{sequence-range-controls ranges=sortedRanges
-      validRange=model.coordinates.refRange
-      predefinedRegions=validPredefinedRegions
-      setRanges="setRanges"
+	validRange=model.coordinates.refRange
+	predefinedRegions=validPredefinedRegions
+	setRanges="setRanges"
       }}
       {{input type="text" class="form-control" value=_pattern
-      classNameBindings="patternClass"
-      placeholder="Pattern to highlight" autofocus="autofocus"
-      focus-out="doPattern" insert-newline="doPattern"
+	classNameBindings="patternClass"
+	placeholder="Pattern to highlight" autofocus="autofocus"
+	focus-out="doPattern" insert-newline="doPattern"
       }}
       <div class="input-group-btn">
         <button {{action "resetPattern"}} type="button"
-          class="btn btn-default btn-sm" title="Reset pattern">
+					  class="btn btn-default btn-sm" title="Reset pattern">
           <i>{{fa-icon "undo"}}</i>
         </button>
       </div>
       <span class="input-group-addon">Threshold %</span>
       {{input type="number" class="form-control" value=_threshold
-      min="0" max="100" step="0.01"
-      placeholder="%" autofocus="autofocus"
-      focus-out="doThreshold" insert-newline="doThreshold"
-      size="1"
+	min="0" max="100" step="0.01"
+	placeholder="%" autofocus="autofocus"
+	focus-out="doThreshold" insert-newline="doThreshold"
+	size="1"
       }}
       <span class="input-group-addon">
         Mark selected sites
@@ -30,10 +30,10 @@
       </span>
       <span class="input-group-addon">Motifs</span>
       {{input type="number" class="form-control" value=_maxMotifs
-      min="1" max="100" step="1"
-      placeholder="10" autofocus="autofocus"
-      focus-out="doMaxMotifs" insert-newline="doMaxMotifs"
-      size="1"
+	min="1" max="100" step="1"
+	placeholder="10" autofocus="autofocus"
+	focus-out="doMaxMotifs" insert-newline="doMaxMotifs"
+	size="1"
       }}
     </div>
   </div>
@@ -48,11 +48,6 @@
         transition=transition
         tooltip=tooltip
       }}
-    {{else}}
-    <div class="placeholder">
-      <h3>Motif trajectory viewer</h3>
-      Select alignment positions to plot motifs
-    </div>
     {{/if}}
   </div>
 </div>
@@ -60,19 +55,19 @@
 <div class = "row">
   <div class = "col-md-12" id="_alignment_overview">
     {{alignment-overview
-    alnRanges=alnRanges
-    validAlnRange=validAlnRange
-    markPositive=markPositive
-    positiveSelection=model.rates.positiveSelection
-    selectedPositions=model.sequences.selectedPositions
-    predefinedRegions=validPredefinedRegions
-    alnToRefCoords=model.coordinates.alnToRefCoords
-    refToFirstAlnCoords=model.coordinates.refToFirstAlnCoords
-    refToLastAlnCoords=model.coordinates.refToLastAlnCoords
-    updateRange="updateAlnRange"
-    setRanges="setRanges"
-    addRange="addRange"
-    rmRange="rmRange"
+      alnRanges=alnRanges
+      validAlnRange=validAlnRange
+      markPositive=markPositive
+      positiveSelection=model.rates.positiveSelection
+      selectedPositions=model.sequences.selectedPositions
+      predefinedRegions=validPredefinedRegions
+      alnToRefCoords=model.coordinates.alnToRefCoords
+      refToFirstAlnCoords=model.coordinates.refToFirstAlnCoords
+      refToLastAlnCoords=model.coordinates.refToLastAlnCoords
+      updateRange="updateAlnRange"
+      setRanges="setRanges"
+      addRange="addRange"
+      rmRange="rmRange"
     }}
   </div>
 </div>
@@ -80,15 +75,14 @@
 <div class = "row">
   <div class = "col-md-12" id="_sequence_viewer">
     {{sequence-viewer groupedSequences=groupedSequences
-    alnRanges=alnRanges mrca=mrcaSlice
-    reference=refSlice
-    selectedPositions=model.sequences.selectedPositions
-    markPositive=markPositive
-    alnToRef=model.coordinates.alnToRefCoords
-    positiveSelection=model.rates.positiveSelection
-    regex=regex
-    selectDefault=true
-    setSelectedPositions="setSelectedPositions"
+      alnRanges=alnRanges mrca=mrcaSplit
+      reference=refSplit
+      selectedPositions=model.sequences.selectedPositions
+      alnToRef=model.coordinates.alnToRefCoords
+      positiveSelection=model.rates.positiveSelection
+      regex=regex
+      selectDefault=true
+      setSelectedPositions="setSelectedPositions"
     }}
   </div>
 </div>
