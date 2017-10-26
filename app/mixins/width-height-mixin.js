@@ -16,10 +16,10 @@ export default Ember.Mixin.create(ResizeAware, {
   init() {
     this._super(...arguments);
     let self = this;
-    this.get('resizeService').on('didResize', (e) => {
+    this.get('resizeService').on('didResize', () => {
       this.doResize(self);
     });
-    this.get('resizeService').on('debouncedDidResize', (e) => {
+    this.get('resizeService').on('debouncedDidResize', () => {
       this.doResize(self);
     });
   },

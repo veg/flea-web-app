@@ -1,5 +1,5 @@
 import Ember from 'ember';
-const {computed, getOwner} = Ember;
+const {getOwner} = Ember;
 
 var cache = {};
 

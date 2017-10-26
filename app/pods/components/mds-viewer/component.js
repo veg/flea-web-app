@@ -64,8 +64,8 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
     }
     Ember.run.once(this, '_updateChart');
   }.observes('data.[]', 'nameToNodeColor', 'nameToMotif', 'nameToMotifColor',
-	     'xScale', 'yScale', 'cnScale',
-	     'copynumbers.[]', 'highlightedNodes'),
+             'xScale', 'yScale', 'cnScale',
+             'copynumbers.[]', 'highlightedNodes'),
 
   _updateChart: function() {
     let svg = d3.select('#' + this.get('elementId')).select('.inner').select('.circles');
@@ -83,8 +83,8 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
 
     d3.select("body").select(".tooltip").remove();
     let div = d3.select("body").append("div")
-	.attr("class", "tooltip")
-	.style("opacity", 0);
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
     circles.enter()
       .append("circle");
@@ -93,40 +93,40 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
 
     circles
       .attr("cx", function(d) {
-	return xScale(d.x);
+        return xScale(d.x);
       })
       .attr("cy", function(d) {
-	return yScale(d.y);
+        return yScale(d.y);
       })
       .attr("r", function(d) {
-	return 1.5 * Math.sqrt(cnScale(cns[d.name]));
+        return 1.5 * Math.sqrt(cnScale(cns[d.name]));
       })
       .style("fill", function(d) {
-	return nameToNodeColor[d.name];
+        return nameToNodeColor[d.name];
       }).style("opacity", function(d) {
-	if (highlightedNodes.length === 0) {
-	  return 1.0;
-	}
-	if (highlightedNodes.has(d.name)) {
-	  return 1.0;
-	} else {
-	  return 0.1;
-	}
+        if (highlightedNodes.length === 0) {
+          return 1.0;
+        }
+        if (highlightedNodes.has(d.name)) {
+          return 1.0;
+        } else {
+          return 0.1;
+        }
       })
       .on("mouseover", function(d) {
-	let html = d.name;
-	let color = 'black';
-	if (nameToMotif[d.name]) {
-	  html += ' : ' + nameToMotif[d.name];
-	  color = nameToMotifColor[d.name];
-	}
+        let html = d.name;
+        let color = 'black';
+        if (nameToMotif[d.name]) {
+          html += ' : ' + nameToMotif[d.name];
+          color = nameToMotifColor[d.name];
+        }
         div.transition()
           .duration(100)
           .style("opacity", 0.9);
         div.html(html)
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY - 30) + "px")
-	  .style('color', color);
+          .style('color', color);
       })
       .on("mouseout", function() {
         div.transition()

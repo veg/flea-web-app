@@ -46,7 +46,7 @@ export default Ember.Mixin.create({
     }
     return result;
   }.property('model.sequences.observedAndMrca.[]',
-	     'model.sequences.seqIdToDate.[]',
+             'model.sequences.seqIdToDate.[]',
              'model.sequences.idToMotif.[]',
              'nodeNameType'),
 

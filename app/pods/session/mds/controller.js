@@ -15,9 +15,9 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     let result = [];
     for (let i=0; i<seqs.length; i++) {
       for (let j=0; j<patterns.length; j++) {
-	if (seqs[i].id.search(patterns[j]) >= 0) {
-	  result.push(seqs[i].id);
-	}
+        if (seqs[i].id.search(patterns[j]) >= 0) {
+          result.push(seqs[i].id);
+        }
       }
     }
     return new Set(result);

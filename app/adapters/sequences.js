@@ -38,47 +38,47 @@ export default Ember.Object.extend({
           continue;
         }
         if (prop === "Ancestors") {
-	  let ancestors_json = result['Ancestors'];
+          let ancestors_json = result['Ancestors'];
           for (let id in ancestors_json) {
-	    if (!ancestors_json.hasOwnProperty(id)) {
-	      continue;
-	    }
-	    let seq = ancestors_json[id];
-	    let fseq = make_seq(id, null, seq);
-	    ancestors.push(fseq);
+            if (!ancestors_json.hasOwnProperty(id)) {
+              continue;
+            }
+            let seq = ancestors_json[id];
+            let fseq = make_seq(id, null, seq);
+            ancestors.push(fseq);
           }
         }
-	if (prop === "Observed") {
-	  let observed_json = result['Observed'];
-	  for (let date in observed_json) {
+        if (prop === "Observed") {
+          let observed_json = result['Observed'];
+          for (let date in observed_json) {
             if (!observed_json.hasOwnProperty(date)) {
               continue;
             }
             let timepoint = observed_json[date];
             for (let id in timepoint) {
-	      if (!timepoint.hasOwnProperty(id)) {
-		continue;
-	      }
-	      let seq = timepoint[id];
-	      let fseq = make_seq(id, date, seq);
-	      observed.push(fseq);
+              if (!timepoint.hasOwnProperty(id)) {
+                continue;
+              }
+              let seq = timepoint[id];
+              let fseq = make_seq(id, date, seq);
+              observed.push(fseq);
             }
-	  }
-	} else {
-	  // old-style json. assume the key is a date.
-	  let date = prop
-	  if (result[date].hasOwnProperty("Observed")) {
+          }
+        } else {
+          // old-style json. assume the key is a date.
+          let date = prop
+          if (result[date].hasOwnProperty("Observed")) {
             let timepoint = result[date]["Observed"];
             for (let id in timepoint) {
-	      if (!timepoint.hasOwnProperty(id)) {
-		continue;
-	      }
-	      let seq = timepoint[id];
-	      let fseq = make_seq(id, date, seq);
-	      observed.push(fseq);
+              if (!timepoint.hasOwnProperty(id)) {
+                continue;
+              }
+              let seq = timepoint[id];
+              let fseq = make_seq(id, date, seq);
+              observed.push(fseq);
             }
-	  }
-	}
+          }
+        }
       }
       return SequencesObject.create({
         reference: reference,

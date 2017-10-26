@@ -61,7 +61,7 @@ export default Ember.Controller.extend(ColorLabelMixin, {
         } else {
           var partvalue = part.value;
           if (part.premod === "^") {
-            partvalue += "\|\-";
+            partvalue += '\\|\\-';
           }
           result.push("[" + part.premod + partvalue + "]" + part.postmod);
         }

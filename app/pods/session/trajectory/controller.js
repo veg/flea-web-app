@@ -4,29 +4,29 @@ export default Ember.Controller.extend({
 
   // TODO: populate these on the fly
   regions: [{name: 'gp160'},
-	    {name: 'signal'},
-	    {name: 'c1'},
-	    {name: 'v1'},
-	    {name: 'v2'},
+            {name: 'signal'},
+            {name: 'c1'},
+            {name: 'v1'},
+            {name: 'v2'},
             {name: 'c2'},
-	    {name: 'v3'},
-	    {name: 'c3'},
-	    {name: 'v4'},
-	    {name: 'c4'},
-	    {name: 'v5'},
+            {name: 'v3'},
+            {name: 'c3'},
+            {name: 'v4'},
+            {name: 'c4'},
+            {name: 'v5'},
             {name: 'c5'},
-	    {name: 'fusion'},
-	    {name: 'gp41ecto'},
-	    {name: 'mper'},
+            {name: 'fusion'},
+            {name: 'gp41ecto'},
+            {name: 'mper'},
             {name: 'gp41endo'}],
   selectedRegions: [{name: 'gp160'}],
 
   evoMetrics: [{name: 'ds_divergence'},
-	       {name: 'dn_divergence'},
-	       {name: 'total_divergence'},
-	       {name: 'ds_diversity'},
-	       {name: 'dn_diversity'},
-	       {name: 'total_diversity'}],
+               {name: 'dn_divergence'},
+               {name: 'total_divergence'},
+               {name: 'ds_diversity'},
+               {name: 'dn_diversity'},
+               {name: 'total_diversity'}],
 
   selectedEvoMetrics: [{name: 'ds_divergence'},
                        {name: 'dn_divergence'},
@@ -34,11 +34,11 @@ export default Ember.Controller.extend({
                        {name: 'total_diversity'}],
 
   phenoMetrics: [{name: 'Length'},
-		 {name: 'PNGS'},
+                 {name: 'PNGS'},
                  {name: 'IsoelectricPoint'}],
 
   selectedPhenoMetrics: [{name: 'Length'},
-			 {name: 'PNGS'}],
+                         {name: 'PNGS'}],
 
   firstEvoRegion: function() {
     let selectedRegions = this.get('selectedRegions');
@@ -74,7 +74,7 @@ export default Ember.Controller.extend({
   }.property('model.trajectory', 'selectedRegions.[]',
              'selectedEvoMetrics.[]'),
 
-  _phenoData: function(index) {
+  _phenoData: function() {
     let all_data = this.get('model.trajectory');
     let regions = this.get('selectedRegions');
     let metrics = this.get('selectedPhenoMetrics');

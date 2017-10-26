@@ -331,11 +331,3 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
     }
   }
 });
-
-
-function addFront(elt, arr) {
-  // add `elt` to front of `arr`, without modifying `arr`.
-  var result = [elt];
-  result.pushObjects(arr);
-  return result;
-}

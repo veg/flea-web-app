@@ -1,3 +1,4 @@
+import Ember from "ember";
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import WidthHeightMixin from 'flea-app/mixins/width-height-mixin'
@@ -102,7 +103,7 @@ export default Component.extend(WidthHeightMixin, {
     }
     var rect = viewer.boundingClientRect();
     var picked = viewer.pick({ x : event.clientX - rect.left,
-			       y : event.clientY - rect.top });
+                               y : event.clientY - rect.top });
     if (picked === null || picked.target() === null) {
       this.set("hoveredResidue", null);
       return;
@@ -129,6 +130,7 @@ export default Component.extend(WidthHeightMixin, {
     viewer.fitTo(structure);
 
     let geometry = viewer.renderAs('protein', structure, this.get('renderMode'), this.get('renderOptions'));
+    this.set('geometry', geometry);
   }.observes('renderMode', 'viewer', 'structure'),
 
   updateColors: function() {
@@ -216,8 +218,8 @@ export default Component.extend(WidthHeightMixin, {
   },
 
   drawSelected: Ember.observer('viewer', 'structure', 'gradient',
-			       'normalizedData.[]',
-			       'selectedPositions.[]', function() {
+                               'normalizedData.[]',
+                               'selectedPositions.[]', function() {
     // ensure colors are available as res.customData() before trying
     // to color spheres
     Ember.run.once(this, '_drawSelected');
@@ -236,18 +238,19 @@ export default Component.extend(WidthHeightMixin, {
     }
     viewer.rm('selectedPositions');
     let cm = viewer.customMesh('selectedPositions');
-    let newrange = [0, 1];
+    // TODO: don't we need to use this?
+    // let newrange = [0, 1];
     structure.eachResidue(function(res) {
       let ref_num = res.num();
       // positions are 0-indexed, and reference numbers are 1-indexed.
       // need to make them comparable
       if (positions.includes(ref_num - 1)) {
-	let coord = res.atom(0).pos();
-	let color = [1, 1, 1, 1];
-	let val = data[ref_num - 1];
-	val = (val === undefined ? 0 : val);
-	gradient.colorAt(color, val);
-	cm.addSphere(coord, 2, { 'color' : color });
+        let coord = res.atom(0).pos();
+        let color = [1, 1, 1, 1];
+        let val = data[ref_num - 1];
+        val = (val === undefined ? 0 : val);
+        gradient.colorAt(color, val);
+        cm.addSphere(coord, 2, { 'color' : color });
       }
     });
   }

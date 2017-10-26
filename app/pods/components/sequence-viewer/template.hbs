@@ -11,8 +11,8 @@
 	<th class="seq-cell ref-coords">
 	  {{#each refHTML as |elt|}}
 	    <span class="{{elt._class}}"
-			 data-coord="{{elt.dataCoord}}"
-			 {{action "togglePosition" elt.dataCoord}}>
+		  data-coord="{{elt.dataCoord}}"
+		  {{action "togglePosition" elt.dataCoord}}>
 	      {{{elt.html}}}
 	    </span>
 	  {{/each}}

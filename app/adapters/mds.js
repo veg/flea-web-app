@@ -12,12 +12,12 @@ export default Ember.Object.extend({
         if (!data.hasOwnProperty(id)) {
           continue;
         }
-	let coords = data[id];
-	result.push({
-	  name: id,
-	  x: coords[0],
-	  y: coords[1],
-	});
+        let coords = data[id];
+        result.push({
+          name: id,
+          x: coords[0],
+          y: coords[1],
+        });
       }
       return result;
     });

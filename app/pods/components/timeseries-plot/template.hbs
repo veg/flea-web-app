@@ -1,26 +1,26 @@
 <g transform="{{innerGroupTransform}}" class="inner">
 
   {{graph-axis class="x axis"
-  transform=xAxisTransform
-  scale=xScale
-  tickFormat=xAxisFormat
-  tickValues=xTickValues
-  tickSize=12
-  tickPadding=3
-  rotate=45
+    transform=xAxisTransform
+    scale=xScale
+    tickFormat=xAxisFormat
+    tickValues=xTickValues
+    tickSize=12
+    tickPadding=3
+    rotate=45
   }}
 
   {{graph-axis class="y axis"
-  orient='left'
-  scale=yScale
-  tickFormat=yAxisFormat}}
+    orient='left'
+    scale=yScale
+    tickFormat=yAxisFormat}}
 
   {{#if data2}}
-  {{graph-axis class="y axis"
-  transform=yAxisTransform
-  orient='right'
-  scale=yScale2
-  tickFormat=yAxisFormat}}
+    {{graph-axis class="y axis"
+      transform=yAxisTransform
+      orient='right'
+      scale=yScale2
+      tickFormat=yAxisFormat}}
   {{/if}}
 
   <g class="lines"></g>

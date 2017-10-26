@@ -2,21 +2,21 @@
   <thead>
     <tr>
       {{#each header as |h|}}
-      <td>{{h}}</td>
+	<td>{{h}}</td>
       {{/each}}
     </tr>
   </thead>
   <tbody>
     {{#each data as |row|}}
-    <tr>
-      {{#each row as |elt|}}
-      <td style="{{elt.style}}">
-        {{#bootstrap-popover title="" dataContent=elt.html}}
-        {{elt.value}}
-        {{/bootstrap-popover}}
-      </td>
-    {{/each}}
-    </tr>
+      <tr>
+	{{#each row as |elt|}}
+	  <td style="{{elt.style}}">
+            {{#bootstrap-popover title="" dataContent=elt.html}}
+              {{elt.value}}
+            {{/bootstrap-popover}}
+	  </td>
+	{{/each}}
+      </tr>
     {{/each}}
   </tbody>
 </table>

@@ -5,7 +5,7 @@ export default Ember.Helper.helper(function(params, {ranges, mask}) {
     throw('helper called without sequence');
   }
   var sequence = params[0];
-  var ranges = ranges || [];
+  ranges = ranges || [];
   var escaped = sequence.split('').map(Ember.Handlebars.Utils.escapeExpression);
   var range_idx = 0;
   var result = escaped.map(function(aa, idx) {

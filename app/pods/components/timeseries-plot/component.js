@@ -171,5 +171,5 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
              'data2.[].values.[].x',
              'data2.[].values.[].y',
              'd3Line', 'd3Line2',
-	     'xScale', 'yScale', 'yScale2'),
+             'xScale', 'yScale', 'yScale2'),
 });

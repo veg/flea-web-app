@@ -126,9 +126,9 @@ export default Ember.Controller.extend({
     let result = _.map(coordMap, alnCoord => data[alnCoord] || 0);
     return result;
   }.property('structureData',
-	     'selectedTimepointIdx',
-	     'timepointNames.length',
-	     'model.coordinates.refToFirstAlnCoords'),
+             'selectedTimepointIdx',
+             'timepointNames.length',
+             'model.coordinates.refToFirstAlnCoords'),
 
   selectedReferencePositions: function() {
     let alnPosns = this.get('model.sequences.selectedPositions');
@@ -136,7 +136,7 @@ export default Ember.Controller.extend({
     let result = _.map(alnPosns, i => alnToRef[i]);
     return _.uniq(result);
   }.property('model.sequences.selectedPositions',
-	     'model.coordinates.alnToRefCoords'),
+             'model.coordinates.alnToRefCoords'),
 
   structureDataRange: function() {
     let data = this.get('structureData');
