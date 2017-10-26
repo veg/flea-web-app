@@ -86,22 +86,22 @@ export default Ember.Component.extend(WidthMixin, {
     let h = this.get('mainHeight');
     let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.track');
 
-    let coords = [[0, h / 2, w, h / 2],
-                 [0, h/3, 0, 2 * h / 3],
-                 [w - 1, h/3, w - 1, 2 * h / 3]];
+    let coords = [{'x1': 0, 'y1': h / 2, 'x2': w, 'y2': h / 2, 'name': 'middle'},
+                  {'x1': 0, 'y1': h/3, 'x2': 0, 'y2': 2 * h / 3, 'name': 'left'},
+                  {'x1': w - 1, 'y1': h/3, 'x2': w - 1, 'y2': 2 * h / 3, 'name': 'right'}
+                 ];
 
-    let lines = svg.selectAll("lines")
-        .data(coords);
+    let lines = svg.selectAll("line").data(coords, c => c.name);
 
     lines.exit().remove()
     lines.enter()
         .append("line");
 
     lines
-      .attr("x1", d => d[0])
-      .attr("y1", d => d[1])
-      .attr("x2", d => d[2])
-      .attr("y2", d => d[3])
+      .attr("x1", d => d.x1)
+      .attr("y1", d => d.y1)
+      .attr("x2", d => d.x2)
+      .attr("y2", d => d.y2)
       .attr("stroke-width", 1)
       .attr("stroke", "black");
   }.observes('innerWidth', 'mainHeight'),
@@ -113,7 +113,7 @@ export default Ember.Component.extend(WidthMixin, {
     let ticks = alignmentTicks(a2r, r2a, tick);
     let xscale = this.get('xscale');
     let xAxis = d3.svg.axis()
-	.scale(xscale).orient("bottom")
+        .scale(xscale).orient("bottom")
         .tickValues(ticks)
         .tickFormat(t => oneIndex(a2r[t]));
     let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.axis');
@@ -288,7 +288,7 @@ export default Ember.Component.extend(WidthMixin, {
     let h = this.get('mainHeight');
     let posns = this.get('selectedPositions');
 
-    let lines = svg.selectAll("line").data(posns, p => p);
+    let lines = svg.selectAll("line").data(posns);
     let xscale = this.get('xscale');
 
     lines.exit().remove();
