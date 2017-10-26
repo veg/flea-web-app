@@ -3,6 +3,10 @@ import {oneIndex} from 'flea-app/utils/utils';
 
 export default Ember.Component.extend({
 
+  // just for setting colspan of divider rows
+  // TODO: update this dynamically
+  nCols: 1000,
+
   // bound to controller
   groupedSequences: {},
   alnToRef: null,
