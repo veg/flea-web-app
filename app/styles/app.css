@@ -85,11 +85,6 @@ canvas {
     font: 10px monospace;
 }
 
-.alignment-overview {
-    float:left;
-    margin-top: 1em;
-}
-
 .brush .extent {
     stroke: #fff;
     fill-opacity: .125;
@@ -543,5 +538,7 @@ path.branch {
 }
 
 #_alignment_overview {
-    width: 100vw;
+    float:left;
+    margin-top: 1em;
+    width: 97%;
 }
