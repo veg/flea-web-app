@@ -122,6 +122,9 @@ export default Ember.Controller.extend({
     // we expect the pdb structure to contain reference coordinates
     // for the residues.
     let data = this.get('structureData')[idx];
+    if (!data) {
+      return null;
+    }
     let coordMap = this.get('model.coordinates.refToFirstAlnCoords');
     let result = _.map(coordMap, alnCoord => data[alnCoord] || 0);
     return result;

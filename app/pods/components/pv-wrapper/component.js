@@ -152,6 +152,9 @@ export default Component.extend(WidthHeightMixin, {
   // remap to [0, 1], since pv's stops seems broken
   normalizedData: computed('data.[]', 'range.[]', function() {
     let data = this.get('data');
+    if (!data) {
+      return null;
+    }
     let range = this.get('range');
     let minval = d3.min(data);
     let maxval = d3.max(data);
