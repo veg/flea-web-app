@@ -76,18 +76,18 @@ export default Ember.Component.extend({
       var result = [];
       var positions = all_positions[k];
       for (let r=0; r<ranges.length; r++) {
-	var start = ranges[r][0];
-	var stop = ranges[r][1];
-	for (let i = 0; i < positions.length; i++) {
-	  // could do binary search to speed this up
-	  var pos = positions[i];
-	  if (start <= pos && pos <= stop) {
-	    result.push(pos);
-	  }
-	  if (pos > stop) {
-	    break;
-	  }
-	}
+        var start = ranges[r][0];
+        var stop = ranges[r][1];
+        for (let i = 0; i < positions.length; i++) {
+          // could do binary search to speed this up
+          var pos = positions[i];
+          if (start <= pos && pos <= stop) {
+            result.push(pos);
+          }
+          if (pos > stop) {
+            break;
+          }
+        }
       }
       all_results.push(result);
     }
