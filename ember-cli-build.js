@@ -21,7 +21,11 @@ module.exports = function(defaults) {
     },
 
     'ember-font-awesome': {
-        fontsOutput: "/assets/fonts"
+      fontsOutput: "/assets/fonts",
+
+      // The remove unused icons feature is not working for production
+      // builds. Revisit this when ember-font-awesome gets updated.
+      removeUnusedIcons: false
     },
 
     'ember-power-select': {
@@ -47,28 +51,9 @@ module.exports = function(defaults) {
   app.import('bower_components/bootstrap/dist/css/bootstrap.css.map', {
     destDir: 'assets'
   });
-  app.import('bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.eot', {
-    destDir: 'fonts'
-  });
-  app.import('bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf', {
-    destDir: 'fonts'
-  });
-  app.import('bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.svg', {
-    destDir: 'fonts'
-  });
-  app.import('bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.woff', {
-    destDir: 'fonts'
-  });
-  app.import('bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2', {
-    destDir: 'fonts'
-  });
-  
   app.import('bower_components/bootstrap/dist/js/bootstrap.js');
   
   app.import('bower_components/d3/d3.js');
-  
-  app.import('bower_components/bootstrap-multiselect/dist/css/bootstrap-multiselect.css')
-  app.import('bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect.js')
   
   app.import('bower_components/lodash/lodash.js');
   
@@ -78,7 +63,6 @@ module.exports = function(defaults) {
   app.import('bower_components/phylotree/phylotree.css');
   
   app.import('bower_components/bio-pv/bio-pv.min.js');
-  
   
   return app.toTree();
 };
