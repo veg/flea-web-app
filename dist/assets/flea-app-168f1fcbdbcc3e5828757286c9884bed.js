@@ -299,11 +299,11 @@ for(var a=0;a<n.length;a++)n[a].percent=100*n[a].copyNumber/r}return e}function 
 e[n].sequences=r}return e}function o(e){var t=_.groupBy(e,function(e){return e.sequence}),n=[]
 for(var r in t)if(t.hasOwnProperty(r)){for(var s=t[r],a=[],o=0,i=0;i<s.length;i++)a.push(s[i].ids[0]),o+=s[i].copyNumber
 n.push({sequence:s[0].sequence,ids:a,copyNumber:o})}return n}function i(e){for(var n=0;n<e.length;n++)for(var r=e[n].sequences,s=0;s<r.length;s++)r[s].html=(0,t.htmlTable1D)(r[s].ids,["Sequence ID"])
-return e}function l(e,n,r){for(var s=0;s<e.length;s++){var a;(function(s){a=e[s].sequences
-for(var o=0;o<a.length;o++)(function(e){for(var o=a[e],i=(0,t.regexRanges)(n,o.sequence),l=new Set,u=0;u<i.length;u++)for(var c=i[u],p=c[0];p<=c[1];p++)l.add(p)
-var f=_.map(o.sequence.split(""),function(e,t){var n=l.has(s)
+return e}function l(e,n,r){for(var s=0;s<e.length;s++)for(var a=e[s].sequences,o=function(e){for(var s=a[e],o=(0,t.regexRanges)(n,s.sequence),i=new Set,l=0;l<o.length;l++)for(var u=o[l],c=u[0];c<=u[1];c++)i.add(c)
+var p=_.map(s.sequence.split(""),function(e,t){var n=i.has(t)
 return d(e,r[t],n)})
-o.htmlRow=f.join("")})(o)})(s)}return e}function d(e,t,n){var r="|"===(e=e.toUpperCase())?"seperator":"-"===e?"aa aaGap":"aa aa"+e
+s.htmlRow=p.join("")},i=0;i<a.length;i++)o(i)
+return e}function d(e,t,n){var r="|"===(e=e.toUpperCase())?"seperator":"-"===e?"aa aaGap":"aa aa"+e
 return n&&(r+=" pngs"),e=e===t&&"-"!==e?".":e,Ember.String.htmlSafe('<td class="'+r+'">'+e+"</td>")}Object.defineProperty(e,"__esModule",{value:!0})
 var u=function(){function e(e,t){var n=[],r=!0,s=!1,a=void 0
 try{for(var o,i=e[Symbol.iterator]();!(r=(o=i.next()).done)&&(n.push(o.value),!t||n.length!==t);r=!0);}catch(e){s=!0,a=e}finally{try{!r&&i.return&&i.return()}finally{if(s)throw a}}return n}return function(t,n){if(Array.isArray(t))return t
@@ -420,4 +420,4 @@ if(r[o]=a,o!==s&&(n[o]=a),s>-1)for(var i=s+1;i<o;i++)n[i]=a,r[i]=a-1
 s=o}return[n,r]},e.mapIfPresent=function(e,t){return t in e?e[t]:t},e.insertNested=function(e,t,n){for(var r=0;r<t.length-1;r++){var s=t[r]
 s in e||(e[s]={}),e=e[s]}e[t[t.length-1]]=n},e.seqIdToProperty=function(e,t){return e?e.reduce(function(e,n){return e[n.get("id")]=n.get(t),e},{}):{}}})
 define("flea-app/config/environment",[],function(){try{var e="flea-app/config/environment",t=document.querySelector('meta[name="'+e+'"]').getAttribute("content"),n={default:JSON.parse(unescape(t))}
-return Object.defineProperty(n,"__esModule",{value:!0}),n}catch(t){throw new Error('Could not read config from meta tag with name "'+e+'".')}}),runningTests||require("flea-app/app").default.create({name:"flea-app",version:"0.0.0+2f1a17e7"})
+return Object.defineProperty(n,"__esModule",{value:!0}),n}catch(t){throw new Error('Could not read config from meta tag with name "'+e+'".')}}),runningTests||require("flea-app/app").default.create({name:"flea-app",version:"0.0.0+fd4b6623"})
