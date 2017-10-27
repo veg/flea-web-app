@@ -154,14 +154,9 @@ export default Ember.Controller.extend({
   }.property('structureData'),
 
   timepoints: function() {
-    if (this.get('selectedMetric') === "JS Divergence") {
-      let divergence = this.get('model.divergence.sortedDivergence');
-      return divergence.map(elt => elt.date);
-    }
-    let sorted = this.get('model.rates.sortedRates');
-    let result = sorted.map(d => d.date);
-    return result;
-  }.property('model.rates.sortedRates.[].[]', 'selectedMetric'),
+    let divergence = this.get('model.divergence.sortedDivergence');
+    return divergence.map(elt => elt.date);
+  }.property('model.divergence.sortedDivergence.[].[]', 'selectedMetric'),
 
   timepointNames: function() {
     let timepoints = this.get('timepoints');
