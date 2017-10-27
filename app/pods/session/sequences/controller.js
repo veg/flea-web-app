@@ -476,7 +476,7 @@ function htmlRows(groups, regex, mrca) {
         }
       }
       let htmlElts = _.map(seq.sequence.split(''), (aa, idx) => {
-	let highlight = highlightPositions.has(i);
+	let highlight = highlightPositions.has(idx);
         return aaHTML(aa, mrca[idx], highlight);
       });
       seq.htmlRow = htmlElts.join('');
