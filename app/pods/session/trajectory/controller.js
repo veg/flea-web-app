@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { computed } from 'ember-decorators/object';
 
 export default Ember.Controller.extend({
 
@@ -40,66 +41,56 @@ export default Ember.Controller.extend({
   selectedPhenoMetrics: [{name: 'Length'},
                          {name: 'PNGS'}],
 
-  firstEvoRegion: function() {
-    let selectedRegions = this.get('selectedRegions');
-    let n_evo = this.get('selectedEvoMetrics.length');
+  @computed("selectedRegions.[]", "selectedEvoMetrics.length")
+  firstEvoRegion(selectedRegions, n_evo) {
     if (n_evo > 1 && selectedRegions.length > 1) {
       return selectedRegions[0].name;
     }
     return "";
-  }.property("selectedRegions.[]", "selectedEvoMetrics.length"),
+  },
 
-  firstPhenoRegion: function() {
-    let selectedRegions = this.get('selectedRegions');
-    let n_pheno = this.get('selectedPhenoMetrics.length');
+  @computed("selectedRegions.[]", "selectedPhenoMetrics.length")
+  firstPhenoRegion(selectedRegions, n_pheno) {
     if (n_pheno > 1 && selectedRegions.length > 1) {
       return selectedRegions[0].name;
     }
     return "";
-  }.property("selectedRegions.[]", "selectedPhenoMetrics.length"),
+  },
 
-  excludedPhenoMetric: function() {
-    let n_pheno = this.get('selectedPhenoMetrics.length');
+  @computed("selectedPhenoMetrics.length")
+  excludedPhenoMetric(n_pheno) {
     if (n_pheno > 2) {
       return "extra metrics";
     }
     return "";
-  }.property("selectedPhenoMetrics.length"),
+  },
 
-  evoData: function() {
-    let all_data = this.get('model.trajectory');
-    let regions = this.get('selectedRegions');
-    let metrics = this.get('selectedEvoMetrics');
+  @computed('model.trajectory', 'selectedRegions.[]', 'selectedEvoMetrics.[]')
+  evoData(all_data, regions, metrics) {
     return prepData(all_data, regions, metrics);
-  }.property('model.trajectory', 'selectedRegions.[]',
-             'selectedEvoMetrics.[]'),
+  },
 
-  _phenoData: function() {
-    let all_data = this.get('model.trajectory');
-    let regions = this.get('selectedRegions');
-    let metrics = this.get('selectedPhenoMetrics');
+
+  _phenoData(all_data, regions, metrics) {
     if (metrics.length > 2) {
       metrics = metrics.slice(0, 2);
     }
     return prepData(all_data, regions, metrics);
   },
 
-  phenoData: function() {
-    let result = this._phenoData(0);
-    return result;
-  }.property('model.trajectory',
-             'selectedRegions.[]',
-             'selectedPhenoMetrics.[]'),
+  @computed('model.trajectory', 'selectedRegions.[]', 'selectedPhenoMetrics.[]')
+  phenoData(all_data, regions, metrics) {
+    return this._phenoData(all_data, regions, metrics);
+  },
 
-  phenoData2: function() {
+  @computed('model.trajectory', 'selectedRegions.[]', 'selectedPhenoMetrics.[]')
+  phenoData2(all_data, regions, metrics) {
     let result = [];
     if (this.get('selectedPhenoMetrics.length') > 1) {
-      result = this._phenoData(1);
+      result = this._phenoData(all_data, regions, metrics);
     }
     return result;
-  }.property('model.trajectory',
-             'selectedRegions.[]',
-             'selectedPhenoMetrics.[]')
+  },
 });
 
 

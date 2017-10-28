@@ -1,5 +1,8 @@
 import Ember from 'ember';
 import {parse_date, isString, mapIfPresent} from 'flea-app/utils/utils';
+import { computed, observes, action } from 'ember-decorators/object';
+import { conditional, eq, array } from 'ember-awesome-macros';
+import raw from 'ember-macro-helpers/raw';
 
 export default Ember.Controller.extend({
 
@@ -9,6 +12,8 @@ export default Ember.Controller.extend({
   markPositive: true,
   labelCoordinates: false,
 
+  emptyArray: [],
+
   // TODO: do not use two-way binding with slider.
   // TODO: when metric changes, this index might be invalid
   selectedTimepointIdx: 0,
@@ -16,133 +21,108 @@ export default Ember.Controller.extend({
   application: Ember.inject.controller(),
   session: Ember.inject.controller(),
 
-  currentPath: function() {
-    let base = this.get('application.rootURL');
-    let path = this.get('application.currentPath');
-    let session_id = this.get('session.model.session_id');
+  @computed('application.rootURL',
+            'application.currentPath',
+            'session.session_id')
+  currentPath(base, path, session_id) {
     path = path.replace('session', session_id).replace('.', '/');
     return base + path;
-  }.property('application.rootURL',
-             'application.currentPath',
-             'session.session_id'),
-
-  metrics: function() {
-    if (this.get('model.rates.exists')) {
-      return this.get('_metrics');
-    }
-    return ["JS Divergence"];
-  }.property('model.rates.exists', '_metrics'),
-
-  labels: function() {
-    let metric = this.get('selectedMetric');
-    if (metric === "dNdS") {
-      return ['Mean dS', 'Mean dN'];
-    }
-    return [metric];
-  }.property('selectedMetric'),
-
-  getRate: function(data, idx) {
-    let result = data.map(d => d.rates.map(r => r[idx]));
-    return result;
   },
 
-  meanDS: function() {
-    let rates = this.get('model.rates.sortedRates');
+  @computed('model.rates.exists', '_metrics')
+  metrics(exists, metrics) {
+    return exists ? metrics : ["JS Divergence"];
+  },
+
+  @computed('selectedMetric')
+  labels(metric) {
+    return metric === "dNdS" ? ['Mean dS', 'Mean dN'] : [metric]
+  },
+
+  getRate(data, idx) {
+    return data.map(d => d.rates.map(r => r[idx]));
+  },
+
+  @computed('model.rates.sortedRates.[]')
+  meanDS(rates) {
     return this.getRate(rates, 0);
-  }.property('model.rates.sortedRates.[].[]'),
+  },
 
-  meanDN: function() {
-    let rates = this.get('model.rates.sortedRates');
+  @computed('model.rates.sortedRates.[]')
+  meanDN(rates) {
     return this.getRate(rates, 1);
-  }.property('model.rates.sortedRates.[].[]'),
+  },
 
-  entropy: function() {
-    let rates = this.get('model.rates.sortedRates');
+  @computed('model.rates.sortedRates.[]')
+  entropy(rates) {
     return this.getRate(rates, 4);
-  }.property('model.rates.sortedRates.[].[]'),
+  },
 
-  divergence: function() {
-    let divergence = this.get('model.divergence.sortedDivergence');
+  @computed('model.divergence.sortedDivergence')
+  divergence(divergence) {
     return divergence.map(elt => elt.divergence);
-  }.property('model.divergence.sortedDivergence'),
+  },
 
-  data1: function() {
-    let metric = this.get('selectedMetric');
+  @computed('selectedMetric', 'divergence', 'entropy', 'meanDS')
+  data1(metric, divergence, entropy, meanDS) {
     if (metric === "Entropy") {
-      return this.get('entropy');
+      return entropy;
     }
     else if (metric === "JS Divergence") {
-      return this.get('divergence');
+      return divergence;
     }
     else if (metric === "dNdS") {
-      return this.get('meanDS');
+      return meanDS;
     }
     throw "Invalid metric";
-  }.property('selectedMetric', 'divergence', 'entropy', 'meanDS'),
+  },
 
-  data2: function() {
-    let metric = this.get('selectedMetric');
-    if (metric === "dNdS") {
-      return this.get('meanDN');
-    }
-    return [];
-  }.property('selectedMetric', 'divergence', 'entropy', 'meanDN'),
+  data2: conditional(eq('selectedMetric', raw('dNdS')), 'meanDN', 'emptyArray'),
 
-  structureData: function() {
-    let metric = this.get('selectedMetric');
+  @computed('selectedMetric',
+	    'entropy', 'divergence', 'meanDN', 'meanDS')
+  structureData(metric, entropy, divergence, meanDN, meanDS, map) {
     if (metric === "Entropy") {
-      return this.get('entropy');
+      return entropy;
     }
     if (metric === "JS Divergence") {
-      return this.get('divergence');
+      return divergence;
     }
     if (metric === 'dNdS') {
-      let dn = this.get('meanDN');
-      let ds = this.get('meanDS');
       let result = [];
-      for (let idx=0; idx<dn.length; idx++) {
-        let zipped = _.zip(dn[idx], ds[idx]);
-        let logratios = zipped.map(function(pair) {
-          let logratio = Math.log(pair[0] / pair[1]);
-          return logratio;
-        });
+      for (let idx=0; idx<meanDN.length; idx++) {
+        let zipped = R.zip(meanDN[idx], meanDS[idx]);
+        let logratios = zipped.map(pair => Math.log(pair[0] / pair[1]));
         result.push(logratios);
       }
       return result;
     }
     throw {name: 'UnknownMetricError', message: metric};
-  }.property('model.coordinates.refToFirstAlnCoords',
-             'meanDN', 'meanDS', 'entropy', 'divergence',
-             'selectedMetric'),
+  },
 
-  selectedStructureData: function() {
-    let idx = this.get('selectedTimepointIdx');
-
+  @computed('selectedTimepointIdx', 'structureData',
+	    'model.coordinates.refToFirstAlnCoords')
+  selectedStructureData(idx, structureData, coordMap) {
     // map data onto reference coordinates
     // we expect the pdb structure to contain reference coordinates
     // for the residues.
-    let data = this.get('structureData')[idx];
+    let data = structureData[idx];
     if (!data) {
       return null;
     }
-    let coordMap = this.get('model.coordinates.refToFirstAlnCoords');
-    let result = _.map(coordMap, alnCoord => data[alnCoord] || 0);
+    let result = R.map(alnCoord => data[alnCoord] || 0, coordMap);
     return result;
-  }.property('structureData',
-             'selectedTimepointIdx',
-             'timepointNames.length',
-             'model.coordinates.refToFirstAlnCoords'),
+  },
 
-  selectedReferencePositions: function() {
-    let alnPosns = this.get('model.sequences.selectedPositions');
-    let alnToRef = this.get('model.coordinates.alnToRefCoords');
-    let result = _.map(alnPosns, i => alnToRef[i]);
-    return _.uniq(result);
-  }.property('model.sequences.selectedPositions',
-             'model.coordinates.alnToRefCoords'),
+  @computed('model.sequences.selectedPositions',
+	    'model.coordinates.alnToRefCoords')
+  selectedReferencePositions(alnPosns, alnToRef) {
+    let result = R.map(i => alnToRef[i], alnPosns);
+    return R.uniq(result);
+  },
 
-  structureDataRange: function() {
-    let data = this.get('structureData');
+  @computed('structureData')
+  structureDataRange(data) {
     let minval = d3.min(data, d => d3.min(d));
     let maxval = d3.max(data, d => d3.max(d));
     if (minval < 0 && maxval > 0) {
@@ -151,17 +131,16 @@ export default Ember.Controller.extend({
       maxval = r;
     }
     return [minval, maxval];
-  }.property('structureData'),
+  },
 
-  timepoints: function() {
-    let divergence = this.get('model.divergence.sortedDivergence');
+  @computed('model.divergence.sortedDivergence.[]')
+  timepoints(divergence) {
     return divergence.map(elt => elt.date);
-  }.property('model.divergence.sortedDivergence.[].[]', 'selectedMetric'),
+  },
 
-  timepointNames: function() {
-    let timepoints = this.get('timepoints');
-    let datemap = this.get('model.dates');
-    let names = timepoints.map(function(name) {
+  @computed('timepoints.[]', 'model.dates')
+  timepointNames(timepoints, datemap) {
+    let names = timepoints.map(name => {
       if (name === 'Combined') {
         return name;
       }
@@ -171,29 +150,20 @@ export default Ember.Controller.extend({
       return mapIfPresent(datemap, name);
     });
     return names;
-  }.property('timepoints.[]'),
+  },
 
-  ticks: function() {
-    let n = this.get('timepointNames.length');
-    return _.range(n);
-  }.property('timepointNames.length'),
+  @computed('timepointNames.length')
+  ticks(n) {
+    return R.range(0, n);
+  },
 
-  selectedName: function() {
-    return this.get('timepointNames')[this.get('selectedTimepointIdx')];
-  }.property('timepointNames', 'selectedTimepointIdx'),
+  selectedName: array.objectAt('timepointNames', 'selectedTimepointIdx'),
+  positions: conditional('markPositive', 'model.rates.positiveSelection', 'emptyArray'),
 
-  positions: function() {
-    if (this.get('markPositive')) {
-      return this.get('model.rates.positiveSelection');
+  @action
+  selectMetric(value) {
+    if (value != null) {
+      this.set('selectedMetric', value);
     }
-    return [];
-  }.property('markPositive', 'model.rates.positiveSelection'),
-
-  actions: {
-    selectMetric: function(value) {
-      if (value != null) {
-        this.set('selectedMetric', value);
-      }
-    },
   }
 });

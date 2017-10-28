@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import {zeroIndex, oneIndex, transformIndex, alignmentTicks} from 'flea-app/utils/utils';
 import WidthMixin from 'flea-app/mixins/width-mixin';
+import { computed, observes } from 'ember-decorators/object';
 
 // FIXME: use an x-axis to scale to div width
 
@@ -28,35 +29,43 @@ export default Ember.Component.extend(WidthMixin, {
 
   shiftKey: false,
 
-  height: function() {
-    return this.get('labelHeight') + this.get('mainHeight') + this.get('axisHeight') + this.get('margins.top') + this.get('margins.bottom');
-  }.property('labelHeight', 'mainHeight', 'axisHeight', 'margins.top', 'margins.bottom'),
+  @computed('labelHeight', 'mainHeight', 'axisHeight', 'margins')
+  height(labelHeight, mainHeight, axisHeight, margins) {
+    return labelHeight + mainHeight + axisHeight + margins.top + margins.bottom;
+  },
 
-  innerWidth: function() {
-    return this.get('width') - this.get('margins.left') - this.get('margins.right');
-  }.property('width', 'margins.left', 'margins.right'),
+  @computed('width', 'margins')
+  innerWidth(width, margins) {
+    return width - margins.left - margins.right;
+  },
 
-  innerHeight: function() {
-    return this.get('height') - this.get('margins.top') - this.get('margins.bottom');
-  }.property('height', 'margins.top', 'margins.bottom'),
+  @computed('height', 'margins')
+  innerHeight(height, margins) {
+    return height - margins.top - margins.bottom;
+  },
 
-  transformGroup: function (){
+  @observes('margins')
+  transformGroup() {
+    let margins = this.get('margins');
     d3.select('#' + this.get('elementId')).select('.overview')
-      .attr("transform", "translate(" + this.get('margins.left') + "," + this.get('margins.top') + ")");
-  }.observes('labelHeight'),
+      .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
+  },
 
-  transformMain: function (){
+  @observes('labelHeight')
+  transformMain() {
+    let labelHeight = this.get('labelHeight');
     d3.select('#' + this.get('elementId')).select('.overview').select('.main')
-      .attr("transform", "translate(0," + this.get('labelHeight') + ")");
-  }.observes('labelHeight'),
+      .attr("transform", "translate(0," + labelHeight + ")");
+  },
 
-  xscale: function() {
+  @computed('validAlnRange', 'innerWidth')
+  xscale(validAlnRange, innerWidth) {
     return d3.scale.linear()
-      .domain(this.get('validAlnRange'))
-      .range([0, this.get('innerWidth')]);
-  }.property('innerWidth'),
+      .domain(validAlnRange)
+      .range([0, innerWidth]);
+  },
 
-  didInsertElement: function() {
+  didInsertElement() {
     this._super(...arguments);
 
     this.transformGroup();
@@ -81,9 +90,10 @@ export default Ember.Component.extend(WidthMixin, {
     d3.select(window).on("keyup", key);
   },
 
-  drawTrack: function() {
+  @observes('innerWidth', 'mainHeight')
+  drawTrack() {
     let w = this.get('innerWidth');
-    let h = this.get('mainHeight');
+    let h = this.get('mainHeight')
     let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.track');
 
     let coords = [{'x1': 0, 'y1': h / 2, 'x2': w, 'y2': h / 2, 'name': 'middle'},
@@ -104,37 +114,47 @@ export default Ember.Component.extend(WidthMixin, {
       .attr("y2", d => d.y2)
       .attr("stroke-width", 1)
       .attr("stroke", "black");
-  }.observes('innerWidth', 'mainHeight'),
+  },
 
-  drawAxis: function() {
+  @observes('refToFirstAlnCoords.[]', 'alnToRefCoords.[]',
+            'tick', 'xscale',
+             'labelHeight', 'mainHeight')
+  drawAxis() {
     let r2a = this.get('refToFirstAlnCoords');
     let a2r = this.get('alnToRefCoords');
     let tick = this.get('tick');
-    let ticks = alignmentTicks(a2r, r2a, tick);
     let xscale = this.get('xscale');
+    let labelHeight = this.get('labelHeight');
+    let mainHeight = this.get('mainHeight');
+
+    let ticks = alignmentTicks(a2r, r2a, tick);
     let xAxis = d3.svg.axis()
         .scale(xscale).orient("bottom")
         .tickValues(ticks)
         .tickFormat(t => oneIndex(a2r[t]));
+
     let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.axis');
 
     svg
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + (this.get('labelHeight') + this.get('mainHeight')) + ")")
+      .attr("transform", "translate(0," + (labelHeight + mainHeight) + ")")
       .call(xAxis);
-  }.observes('innerWidth', 'xscale', 'mainHeight', 'labelHeight', 'refToFirstAlnCoords'),
+  },
 
-  drawLabels: function() {
+  @observes('xscale', 'refToFirstAlnCoords.[]', 'refToLastAlnCoords.[]',
+            'predefinedRegions', 'labelHeight')
+  drawLabels() {
     let xscale = this.get('xscale');
     let mapFirst = this.get('refToFirstAlnCoords');
     let mapLast = this.get('refToLastAlnCoords');
     let regions = this.get('predefinedRegions');
+    let labelHeight = this.get('labelHeight');
+
     let svg = d3.select('#' + this.get('elementId')).select('.labels');
-
-    let height = this.get('labelHeight');
+    let height = labelHeight;
     let h = height / 2;
-    let self = this;
 
+    let self = this;
     let click = function(d) {
       let range = [d.start, d.stop];
       if (self.get('shiftKey')) {
@@ -147,7 +167,7 @@ export default Ember.Component.extend(WidthMixin, {
     let text = svg.selectAll("text")
         .data(regions, d => d.name);
 
-    let width = function(start, stop) {
+    let width = (start, stop) => {
       return mapLast[zeroIndex(stop)] - mapFirst[start];
     };
 
@@ -170,7 +190,7 @@ export default Ember.Component.extend(WidthMixin, {
     rects.exit().remove();
     rects.enter()
       .append("rect")
-      .on('click', click)
+      .on('click', click.bind(this))
       .style("cursor", "pointer")
       .attr("height", () => height)
       .attr("stroke-width", 1)
@@ -182,17 +202,18 @@ export default Ember.Component.extend(WidthMixin, {
       .attr("y", () => 0)
       .attr("width", d => xscale(width(d.start, d.stop)));
 
-  }.observes('innerWidth', 'xscale', 'predefinedRegions', 'labelHeight', 'refToFirstAlnCoords', 'refToLastAlnCoords'),
+  },
 
-  makeBrush: function() {
-    let self = this;
+  @observes('alnToRefCoords', 'xscale', 'mainHeight')
+  makeBrush() {
     let map = this.get('alnToRefCoords');
+    let xscale = this.get('xscale');
+    let mainHeight = this.get('mainHeight');
 
     let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.brush');
-
-    let xscale = this.get('xscale');
     let brush = d3.svg.brush();
 
+    let self = this;
     let brushend = function() {
       let extent = brush.extent();
       let range = [transformIndex(d3.round(extent[0], 0), map, false),
@@ -211,12 +232,12 @@ export default Ember.Component.extend(WidthMixin, {
 
     svg.call(brush)
       .selectAll('rect')
-      .attr('height', this.get('mainHeight'));
-  }.observes('xscale', 'mainHeight', 'alnToRefCoords'),
+      .attr('height', mainHeight);
+  },
 
-  insertions: function() {
-    // 0-indexed [start, stop] intervals
-    let map = this.get('alnToRefCoords');
+  @computed('alnToRefCoords')
+  insertions(map) {
+    // map: 0-indexed [start, stop] intervals
     let ranges = [];
     let current = false;
     let start = -1;
@@ -237,14 +258,17 @@ export default Ember.Component.extend(WidthMixin, {
       }
     }
     return ranges;
-  }.property('alnToRefCoords'),
+  },
 
-  drawInsertions: function() {
-    let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.insertions');
+  @observes('insertions', 'mainHeight', 'xscale')
+  drawInsertions() {
     let insertions = this.get('insertions');
-    let h = this.get('mainHeight') / 2;
-    let lines = svg.selectAll("line").data(insertions, r => String(r));
+    let mainHeight = this.get('mainHeight');
     let xscale = this.get('xscale');
+
+    let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.insertions');
+    let h = mainHeight / 2;
+    let lines = svg.selectAll("line").data(insertions, r => String(r));
 
     lines.exit().remove();
     lines.enter()
@@ -257,17 +281,22 @@ export default Ember.Component.extend(WidthMixin, {
       .attr("y1", () => h)
       .attr("x2", d => xscale(d[1]))
       .attr("y2", () => h)
-  }.observes('insertions', 'mainHeight', 'xscale'),
+  },
 
-  drawPositive: function() {
+  @observes('xscale', 'markPositive', 'positiveSelection', 'mainHeight')
+  drawPositive() {
+    let xscale = this.get('xscale')
+    let markPositive = this.get('markPositive');
+    let positiveSelection = this.get('positiveSelection');
+    let mainHeight = this.get('mainHeight');
+
     let posns = [];
-    if (this.get('markPositive')) {
-      posns = this.get('positiveSelection')[0];
+    if (markPositive) {
+      posns = positiveSelection[0];
     }
-    let h = this.get('mainHeight');
+    let h = mainHeight;
     let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.positive');
-    let lines = svg.selectAll("line").data(posns, function(p) { return p; });
-    let xscale = this.get('xscale');
+    let lines = svg.selectAll("line").data(posns);
 
     lines.exit().remove();
     lines.enter()
@@ -280,16 +309,16 @@ export default Ember.Component.extend(WidthMixin, {
       .attr("y1", () => h / 3)
       .attr("x2", d => xscale(d))
       .attr("y2", () => 2 * h / 3);
+  },
 
-  }.observes('xscale', 'markPositive', 'positiveSelection', 'mainHeight'),
-
-  drawSelected: function() {
-    let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.selected');
-    let h = this.get('mainHeight');
-    let posns = this.get('selectedPositions');
-
-    let lines = svg.selectAll("line").data(posns);
+  @observes('xscale', 'selectedPositions.[]', 'mainHeight')
+  drawSelected() {
     let xscale = this.get('xscale');
+    let posns = this.get('selectedPositions');
+    let mainHeight = this.get('mainHeight');
+
+    let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.selected');
+    let lines = svg.selectAll("line").data(posns);
 
     lines.exit().remove();
     lines.enter()
@@ -301,27 +330,32 @@ export default Ember.Component.extend(WidthMixin, {
       .attr("x1", d => xscale(d))
       .attr("y1", () => 0)
       .attr("x2", d => xscale(d))
-      .attr("y2", () => h);
+      .attr("y2", () => mainHeight);
 
-  }.observes('xscale', 'selectedPositions.[]', 'mainHeight'),
+  },
 
-  closedRanges: function() {
-    return this.get('alnRanges').map(r => [r[0], r[1] - 1]);
-  }.property('alnRanges'),
+  @computed('alnRanges')
+  closedRanges(alnRanges) {
+    return alnRanges.map(r => [r[0], r[1] - 1]);
+  },
 
-  drawRanges: function() {
-    let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.ranges');
-    let h = this.get('mainHeight');
-    let ranges = this.get('closedRanges');
-    let self = this;
-    let totalWidth = this.get('innerWidth');
+  @observes('xscale', 'closedRanges', 'innerWidth',
+	    'mainHeight', 'validAlnRange')
+  drawRanges() {
     let xscale = this.get('xscale');
+    let ranges = this.get('closedRanges');
+    let innerWidth = this.get('innerWidth');
+    let mainHeight = this.get('mainHeight');
+    let validRange = this.get('validAlnRange');
+
+    let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.ranges');
+    let self = this;
 
     function dragmove() {
-      let dx = d3.round(+d3.event.dx, 0);
+     let dx = +d3.event.dx;
       let width = +this.getAttribute('width');
       let x = (+this.getAttribute('x')) + dx;
-      if (x >= 0 && x + width + 1 <= totalWidth) {
+      if (x >= 0 && x + width + 1 <= innerWidth) {
         d3.select(this)
           .attr("x", x);
       }
@@ -329,10 +363,13 @@ export default Ember.Component.extend(WidthMixin, {
 
     function dragend() {
       let idx = +this.getAttribute('idx');
-      let start = (+this.getAttribute('x'));
+      let x = (+this.getAttribute('x'));
       let width = +this.getAttribute('width');
-      let range = [start, start + width + 1];
-      self.sendAction('updateRange', idx, range);
+      let start = d3.round(xscale.invert(x), 0);
+      let stop = start + d3.round(xscale.invert(width)) + 1;
+      start = Math.max(start, validRange[0]);
+      stop = Math.min(stop, validRange[1]);
+      self.sendAction('updateRange', idx, [start, stop]);
     }
 
     let drag = d3.behavior.drag()
@@ -349,18 +386,18 @@ export default Ember.Component.extend(WidthMixin, {
       .attr("y", () => 0)
       .attr("idx", (d, i) => i)
       .attr("width", d => xscale(d[1] - d[0]))
-      .attr("height", () => h)
+      .attr("height", () => mainHeight)
       .attr("stroke-width", 1)
       .attr("stroke", "blue")
       .style("fill", "blue")
       .attr("fill-opacity", 0.1)
       .call(drag)
-      .on('click', function(d,i) {
+      .on('click', function(d, i) {
         if (d3.event.defaultPrevented) {
           return;
         }
         self.sendAction('rmRange', i);
       });
-  }.observes('xscale', 'closedRanges', 'innerWidth', 'mainHeight')
+  }
 
 });

@@ -4,7 +4,6 @@
     "bootstrap": "~3.3.7",
     "bootstrap-multiselect": "~0.9.13",
     "font-awesome": "~4.5.0",
-    "lodash": "~4.17.4",
     "moment": "~2.19.1",
     "bio-pv": "https://github.com/biasmv/pv/releases/download/v1.8.1/bio-pv-1.8.1.tgz",
     "phylotree": "https://github.com/kemaleren/phylotree.js.git#38e5b4fa9705c573fcf55297764e3e0dc5af8bd8",

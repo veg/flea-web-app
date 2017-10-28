@@ -3,19 +3,19 @@ import config from '../config/environment';
 import {parse_date} from 'flea-app/utils/utils';
 import { computed } from 'ember-decorators/object';
 
-var RateInfo = Ember.Object.extend({
+let RateInfo = Ember.Object.extend({
   date: null,
   rates: null,
 });
 
-var RatesObject = Ember.Object.extend({
+let RatesObject = Ember.Object.extend({
   data: [],
   exists: false,
 
   @computed('data.[]')
   sortedRates(rates) {
-    var timepoints = rates.filter(d => d.date !== 'Combined');
-    var combined = rates.filter(d => d.date === 'Combined');
+    let timepoints = rates.filter(d => d.date !== 'Combined');
+    let combined = rates.filter(d => d.date === 'Combined');
     timepoints.sort((a,b) => a.date - b.date);
     timepoints.splice(0, 0, combined[0]);
     return timepoints;
@@ -44,13 +44,13 @@ export default Ember.Object.extend({
   ajax: Ember.inject.service(),
 
   find: function(session_id) {
-    var url = config.apiURL + 'sessions/' + session_id + '/rates';
+    let url = config.apiURL + 'sessions/' + session_id + '/rates';
     return this.get("ajax").request(url).then(function(result) {
-      var new_result = [];
+      let new_result = [];
       for (let key in result) {
         if (result.hasOwnProperty(key)) {
-          var d = key;
-          var array = eval(result[key]);  // FIXME: remove eval
+          let d = key;
+          let array = eval(result[key]);  // FIXME: remove eval
           if (key !== "Combined") {
             d = parse_date(key);
           }

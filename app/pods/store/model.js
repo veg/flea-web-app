@@ -1,11 +1,11 @@
 import Ember from 'ember';
 const {getOwner} = Ember;
 
-var cache = {};
+let cache = {};
 
 export default Ember.Object.extend({
-  find: function(name, session_id) {
-    var key = session_id + name;
+  find(name, session_id) {
+    let key = session_id + name;
     if (cache[key]) {
       return cache[key];
     }

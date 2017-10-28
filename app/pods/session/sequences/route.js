@@ -1,8 +1,8 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  model: function() {
-    var session_id = this.modelFor('session').session_id;
+  model() {
+    let session_id = this.modelFor('session').session_id;
     return Ember.RSVP.hash({
       sequences: this.store.find('sequences', session_id),
       coordinates: this.store.find('coordinates', session_id),

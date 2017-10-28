@@ -1,7 +1,9 @@
 import Ember from 'ember';
-import {oneIndex, alignmentTicks} from 'flea-app/utils/utils';
+import { once } from "@ember/runloop"
+import { oneIndex, alignmentTicks } from 'flea-app/utils/utils';
 import D3Plot from "flea-app/mixins/d3-plot-mixin";
 import WidthMixin from 'flea-app/mixins/width-mixin';
+import { computed, observes } from 'ember-decorators/object';
 
 // input: (first is used for brushable navigation)
 // - names ['name1', 'name2', ...]
@@ -20,39 +22,37 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
   tick: 100,
   yticks: 5,
 
-  margin: {
+  margins: {
     top:    20,
     right:  20,
     bottom: 50,
     left:   30
   },
 
-  height: function() {
-    var margin = this.get('margin');
-    return margin.top + margin.bottom + this.get('nPlots') * this.get('heightEach') + this.get('labelHeight');
-  }.property('heightEach', 'margin', 'nPlots', 'labelHeight'),
+  @computed('margins', 'nPlots', 'heightEach', 'labelHeight')
+  height(margins, nPlots, heightEach, labelHeight) {
+    return margins.top + margins.bottom + nPlots * heightEach + labelHeight;
+  },
 
-  onChartChange: function() {
+  @observes('names.[]', 'data1', 'data2', 'positions',
+	    'labels.[]', 'width', 'height', 'heightEach',
+	    'margins', 'yMax', 'labelHeight')
+  onChartChange() {
     // FIXME: this gets called multiple times
     if (this._state !== 'inDOM') {
       return;
     }
-    Ember.run.once(this, '_updateChart');
-  }.observes('names.[]', 'data1', 'data2', 'positions',
-             'labels.[]', 'width', 'height', 'heightEach', 'margin', 'yMax',
-             'labelHeight'),
+    once(this, '_updateChart');
+  },
 
-  yMax: function() {
-    var data1 = this.get('data1');
-    var data2 = this.get('data2');
-    return [d3.max(_.flatten(data1)), d3.max(_.flatten(data2))];
-  }.property('data1', 'data2'),
+  @computed('data1', 'data2')
+  yMax(data1, data2) {
+    return [d3.max(R.flatten(data1)), d3.max(R.flatten(data2))];
+  },
 
-  nPlots: function() {
-    return this.get('names.length');
-  }.property('names.length'),
+  nPlots: Ember.computed.alias('names.length'),
 
-  _updateChart: function() {
+  _updateChart() {
     try {
       this.__updateChart();
     } catch (err) {
@@ -65,25 +65,25 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
     }
   },
 
-  _removeAll: function() {
-    var svg = d3.select('#' + this.get('elementId')).select('.inner');
+  _removeAll() {
+    let svg = d3.select('#' + this.get('elementId')).select('.inner');
 
     svg.selectAll("path").remove();
     svg.selectAll("g").remove();
     svg.selectAll("defs").remove();
   },
 
-  __updateChart: function() {
-    var names = this.get('names');
-    var data1 = this.get('data1');
-    var data2 = this.get('data2');
-    var positions = this.get('positions');
-    var labels = this.get('labels');
+  __updateChart() {
+    let names = this.get('names');
+    let data1 = this.get('data1');
+    let data2 = this.get('data2');
+    let positions = this.get('positions');
+    let labels = this.get('labels');
 
     // assume all arrays have same length
-    var n_sites = data1[0].length;
-    var n_plots = this.get('nPlots');
-    var two_d = data2.length > 0;
+    let n_sites = data1[0].length;
+    let n_plots = this.get('nPlots');
+    let two_d = data2.length > 0;
 
     // check data consistency
     if (two_d && data1.length !== data2.length) {
@@ -115,15 +115,15 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
       }
     }
 
-    var width = this.get('innerWidth');
-    var height = this.get('innerHeight');
-    var height_each = this.get('heightEach');
+    let width = this.get('innerWidth');
+    let height = this.get('innerHeight');
+    let height_each = this.get('heightEach');
 
     // necessary for clip path url
     // FIXME: there must be a more ember-friendly way to do this
-    var url = this.get('url');
+    let url = this.get('url');
 
-    var make_cx = function (d) {return x(d);};
+    let make_cx = function (d) {return x(d);};
 
     function brushed() {
       x.domain(brush.empty() ? x_overall.domain() : brush.extent());
@@ -139,7 +139,7 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
     }
 
     this._removeAll();
-    var svg = d3.select('#' + this.get('elementId')).select('.inner');
+    let svg = d3.select('#' + this.get('elementId')).select('.inner');
 
     svg.append("defs").append("clipPath")
       .attr("id", "clip")
@@ -149,58 +149,58 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
 
     svg = svg.append("g");
 
-    var x = d3.scale.linear()
+    let x = d3.scale.linear()
         .range([0, width])
         .domain([1, n_sites]);
 
-    var x_overall = d3.scale.linear()
+    let x_overall = d3.scale.linear()
         .range([0, width])
         .domain([1, n_sites]);
 
-    var brush = d3.svg.brush()
+    let brush = d3.svg.brush()
         .x(x_overall)
         .on("brush", brushed);
 
-    var ymax = this.get('yMax');
-    var y = d3.scale.linear()
+    let ymax = this.get('yMax');
+    let y = d3.scale.linear()
         .range([height_each, 0])
         .domain([two_d ? -ymax[1] : 0, ymax[0]]);
 
-    var r2a = this.get('refToFirstAlnCoords');
-    var a2r = this.get('alnToRefCoords');
-    var tick = this.get('tick');
-    var ticks = alignmentTicks(a2r, r2a, tick);
+    let r2a = this.get('refToFirstAlnCoords');
+    let a2r = this.get('alnToRefCoords');
+    let tick = this.get('tick');
+    let ticks = alignmentTicks(a2r, r2a, tick);
 
-    var xAxis = d3.svg.axis()
+    let xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom")
         .tickValues(ticks)
         .tickFormat(t => oneIndex(a2r[t]));
 
-    var xAxis_overall = d3.svg.axis()
+    let xAxis_overall = d3.svg.axis()
         .scale(x_overall)
         .orient("top")
         .tickValues(ticks)
         .tickFormat(t => oneIndex(a2r[t]));
 
-    var xAxis_blank = d3.svg.axis()
+    let xAxis_blank = d3.svg.axis()
         .scale(x)
         .orient("bottom")
         .ticks(0)
         .tickFormat('');
 
-    var yAxis = d3.svg.axis()
+    let yAxis = d3.svg.axis()
         .scale(y)
         .orient("right")
         .ticks(this.get('yticks'));
 
-    var focus_plots  = [];
-    var area_objects = [];
+    let focus_plots  = [];
+    let area_objects = [];
 
     for (let plot_id = 0; plot_id < names.length; plot_id++) {
-      var plot_svg = svg.append ("g")
+      let plot_svg = svg.append ("g")
           .attr("transform", "translate(0," + (height_each * plot_id) + ")");
-      var local_areas = [];
+      let local_areas = [];
       local_areas[0] = d3.svg.area()
         .x((d,i) => x(i+1))
         .y0(() => y(0))
@@ -289,7 +289,7 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
       .style("text-anchor", "start")
       .text("Site");
 
-    var labelHeight = this.get('labelHeight');
+    let labelHeight = this.get('labelHeight');
 
     svg.append("g")
       .attr("class", "pos x axis")
@@ -304,9 +304,9 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
 
     // FIXME: vertical spacing
     if (labels.length > 0) {
-      var legend_dim = {x: 0, y:height - labelHeight + 10, spacer:15, margin:5, font: 10, x_step : 100};
-      var me_colors = ['#2E66FF', '#FFB314'];
-      var legend = svg.append("g")
+      let legend_dim = {x: 0, y:height - labelHeight + 10, spacer:15, margin:5, font: 10, x_step : 100};
+      let me_colors = ['#2E66FF', '#FFB314'];
+      let legend = svg.append("g")
           .attr("class", "protein_legend")
           .attr("x", legend_dim.x)
           .attr("y", legend_dim.y)
@@ -315,7 +315,7 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
         .enter()
         .append('g')
         .each(function(d, i) {
-          var g = d3.select(this);
+          let g = d3.select(this);
           g.append("rect")
             .attr("y", legend_dim.spacer)
             .attr("x", i*(legend_dim.spacer + legend_dim.margin + legend_dim.x_step))

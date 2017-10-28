@@ -7,7 +7,7 @@ export default Ember.Object.extend({
 
   // gets rates-pheno.json and formats it to Dates and numbers.
   find: function(session_id) {
-    var url = config.apiURL + 'sessions/' + session_id + '/rates_pheno';
+    let url = config.apiURL + 'sessions/' + session_id + '/rates_pheno';
     return this.get("ajax").request(url).then(function(result) {
       result.forEach (function (d) {
         d.Date = parse_date(String(d.Date));

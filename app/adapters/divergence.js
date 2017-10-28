@@ -4,13 +4,13 @@ import {parse_date} from 'flea-app/utils/utils';
 import { computed } from 'ember-decorators/object';
 
 
-var DivergenceInfo = Ember.Object.extend({
+let DivergenceInfo = Ember.Object.extend({
   date: null,
   divergence: null
 });
 
 
-var DivergenceObject = Ember.Object.extend({
+let DivergenceObject = Ember.Object.extend({
   data: [],
 
   @computed('data')
@@ -37,9 +37,9 @@ export default Ember.Object.extend({
   ajax: Ember.inject.service(),
 
   find: function(session_id) {
-    var url = config.apiURL + 'sessions/' + session_id + '/divergence';
+    let url = config.apiURL + 'sessions/' + session_id + '/divergence';
     return this.get("ajax").request(url).then(data => {
-      var result = [];
+      let result = [];
       delete data['readCount'];
       for (let k in data) {
         result.push(DivergenceInfo.create({

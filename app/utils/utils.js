@@ -1,29 +1,28 @@
-var getType = function (elem) {
+let getType = function (elem) {
   return Object.prototype.toString.call(elem).slice(8, -1);
 };
 
-export var isDate = function (elem) {
+export let isDate = function (elem) {
   return getType(elem) === 'Object';
 };
 
-export var isString = function (elem) {
+export let isString = function (elem) {
   return getType(elem) === 'String';
 };
 
-export var parse_date = d3.time.format("%Y%m%d").parse;
+export let parse_date = d3.time.format("%Y%m%d").parse;
 
-export var format_date = d3.time.format("%B %Y");
+export let format_date = d3.time.format("%B %Y");
 
-export var htmlTable1D = function(data, header) {
+export let htmlTable1D = function(data, header) {
   return htmlTable(data.map(elt => [elt]), header);
 };
 
-
-export var htmlTable = function(data, header) {
+export let htmlTable = function(data, header) {
   if (data.length === 0) {
     return "<table></table>";
   }
-  var result = '<table class="table-striped table table-hover">';
+  let result = '<table class="table-striped table table-hover">';
   if (header) {
     result += '<thead>';
     result += '<trow>';
@@ -51,23 +50,21 @@ export var htmlTable = function(data, header) {
   return result;
 };
 
-
-export var regexRanges = function(regex, string) {
-  var indices = [];
+export let regexRanges = function(regex, string) {
+  let indices = [];
   if (!regex) {
     return indices;
   }
-  var result;
-  var r = new RegExp(regex, 'g');
+  let result;
+  let r = new RegExp(regex, 'g');
   while ((result = r.exec(string)) !== null) {
     indices.push([result.index, result.index + result[0].length-1]);
   }
   return indices;
 };
 
-
-export var sumArray = function(collection, accessor) {
-  var total = 0;
+export let sumArray = function(collection, accessor) {
+  let total = 0;
   if (!accessor) {
     accessor = function(a) {
       return a;
@@ -79,11 +76,11 @@ export var sumArray = function(collection, accessor) {
   return total;
 };
 
-export var transformIndex = function(idx, map, open) {
+export let transformIndex = function(idx, map, open) {
   // transform idx using map
   // everything is 0-indexed
   // if `open`, this is an open interval
-  var result;
+  let result;
   if (open) {
     idx -= 1;
   }
@@ -98,11 +95,10 @@ export var transformIndex = function(idx, map, open) {
   return result;
 };
 
-
-export var checkRange = function(range, targetRange) {
+export let checkRange = function(range, targetRange) {
   // ensure range [a, b) falls inside [c, d).
-  var [start, stop] = range;
-  var [tstart, tstop] = targetRange;
+  let [start, stop] = range;
+  let [tstart, tstop] = targetRange;
   if (start < tstart || start > tstop) {
     throw "invalid start position";
   }
@@ -114,36 +110,36 @@ export var checkRange = function(range, targetRange) {
   }
 };
 
-
-export var checkRanges = function(ranges, targetRange) {
+export let checkRanges = function(ranges, targetRange) {
   for (let i=0; i<ranges.length; i++) {
     checkRange(ranges[i], targetRange);
   }
 };
 
-export var oneIndex = function(i) {
+export let oneIndex = function(i) {
   if (i < 0) {
     throw "invalid index";
   }
   return i + 1;
 };
 
-export var zeroIndex = function(i) {
+export let zeroIndex = function(i) {
   if (i < 1) {
     throw "invalid index";
   }
   return i - 1;
 };
 
-export var alignmentTicks = function(a2r, r2a, tick) {
+export let alignmentTicks = function(a2r, r2a, tick) {
   // generate reference index tick locations closest to
   // every `tick` possible, including first and last.
 
-  var first = a2r[0];
-  var last = a2r[a2r.length - 1];
+  let first = a2r[0];
+  let last = a2r[a2r.length - 1];
 
   // 1-indexed reference ticks we want
-  var wanted = _.range(Math.ceil(first / tick) * tick, 1 + Math.floor(last / tick) * tick, tick);
+  let wanted = R.map(R.multiply(tick), R.range(Math.ceil(first / tick),
+					       1 + Math.floor(last / tick)));
 
   // need to remove 0 if it is present; will add later if necessary
   if (wanted[0] === 0) {
@@ -163,12 +159,12 @@ export var alignmentTicks = function(a2r, r2a, tick) {
   return wanted.map(t => r2a[t]);
 };
 
-export var refToAlnCoords = function(alnToRef, stop) {
-  var toFirst = new Array(stop);
-  var toLast = new Array(stop);
-  var last_ref_index = -1;
+export let refToAlnCoords = function(alnToRef, stop) {
+  let toFirst = new Array(stop);
+  let toLast = new Array(stop);
+  let last_ref_index = -1;
   for (let aln_index=0; aln_index<alnToRef.length; aln_index++) {
-    var ref_index = alnToRef[aln_index];
+    let ref_index = alnToRef[aln_index];
     toLast[ref_index] = aln_index;
     if (ref_index !== last_ref_index) {
       toFirst[ref_index] = aln_index;
@@ -185,16 +181,16 @@ export var refToAlnCoords = function(alnToRef, stop) {
   return [toFirst, toLast];
 };
 
-export var mapIfPresent = function(map, key) {
+export let mapIfPresent = function(map, key) {
   if (key in map) {
     return map[key];
   }
   return key;
 };
 
-export var insertNested = function(map, keys, val) {
+export let insertNested = function(map, keys, val) {
   for (let i=0; i<keys.length - 1; i++) {
-    var key = keys[i];
+    let key = keys[i];
     if (!(key in map)) {
       map[key] = {};
     }
@@ -203,12 +199,9 @@ export var insertNested = function(map, keys, val) {
   map[keys[keys.length - 1]] = val;
 };
 
-export var seqIdToProperty = function(seqs, property) {
+export let seqIdToProperty = function(seqs, property) {
   if (!seqs) {
     return {};
   }
-  return seqs.reduce(function(acc, s) {
-    acc[s.get('id')] = s.get(property);
-    return acc;
-  }, {});
+  return R.zipObj(R.map(R.prop('id'), seqs), R.map(R.prop(property), seqs));
 };

@@ -545,12 +545,12 @@ path.branch {
 
 #_protein_plots {
     /* need extra space for axis labels */
-    width: 95vw;
+    width: 95%;
 }
 
 #_timeseries_plot {
     height: 40vh;
-    width: 100vw;
+    width: 95%;
     min-height: 200px;
 }
 

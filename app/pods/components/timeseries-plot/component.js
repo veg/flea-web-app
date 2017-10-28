@@ -1,7 +1,9 @@
 import Ember from 'ember';
+import { once } from "@ember/runloop"
 import {mapIfPresent} from "flea-app/utils/utils";
 import D3Plot from "flea-app/mixins/d3-plot-mixin";
 import WidthHeightMixin from 'flea-app/mixins/width-height-mixin';
+import { computed, observes } from 'ember-decorators/object';
 
 /*
 example data:
@@ -31,46 +33,44 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
   userColors: null,
   tickMap: {},
 
-  margin: {
+  margins: {
     top:    20,
     right:  50,
     bottom: 60,
     left:   50
   },
 
-  seriesNames: function() {
-    var data = this.get('data');
-    var data2 = this.get('data2');
-    var names1 = data.map(d => d.name);
-    var names2 = data2.map(d => d.name);
+  @computed('data', 'data2')
+  seriesNames(data1, data2) {
+    let names1 = data1.map(d => d.name);
+    let names2 = data2.map(d => d.name);
     return names1.concat(names2);
-  }.property('data.[].name', 'data2.[].name'),
+  },
 
-  dates: function() {
-    var data = this.get('data');
+  @computed('data.[]')
+  dates(data) {
     // TODO: surely there is a better way?
-    var result = data.map(d => d.values.map(e => e.x));
+    let result = data.map(d => d.values.map(e => e.x));
     result = d3.set(d3.merge(result)).values();
     result = result.map(d => new Date(d));
     return result;
-  }.property('data.[].values.[].x'),
+  },
 
-  xDomain: function() {
-    return d3.extent(this.get('dates'));
-  }.property('dates.[]'),
+  @computed('dates.[]')
+  xDomain(dates) {
+    return d3.extent(dates);
+  },
 
-  xScale: function() {
-    var domain = this.get('xDomain');
+  @computed('xDomain', 'innerWidth')
+  xScale(domain, innerWidth) {
     domain = domain.map(d => new Date(d));
-    var result = d3.time.scale()
-        .domain(domain)
-        .range([0, this.get('innerWidth')]);
-    return result;
-  }.property('innerWidth', 'xDomain'),
+    return d3.time.scale()
+      .domain(domain)
+      .range([0, innerWidth])
+  },
 
-  _yScale: function(data) {
-    var maxValue = d3.max(data, d => d3.max(d.values, v => v.y));
-    var minValue = this.get('ymin');
+  _yScale(data, minValue, innerHeight) {
+    let maxValue = d3.max(data, d => d3.max(d.values, v => v.y));
     if (minValue === null) {
       minValue = d3.min(data, d => d3.min(d.values, v => v.y));
     }
@@ -79,55 +79,50 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
       minValue = Math.max(0, minValue - 1);
     }
     return d3.scale.linear()
-      .range([this.get('innerHeight'), 0])
+      .range([innerHeight, 0])
       .domain([minValue, maxValue]);
   },
 
-  yScale: function () {
-    return this._yScale(this.get('data'));
-  }.property('innerHeight', 'data.[].values.[].y', 'ymin'),
+  @computed('data.[]', 'ymin', 'innerHeight')
+  yScale(data, ymin, innerHeight) {
+    return this._yScale(data, ymin, innerHeight);
+  },
 
-  yScale2: function () {
-    return this._yScale(this.get('data2'));
-  }.property('innerHeight', 'data2.[].values.[].y', 'ymin'),
+  @computed('data2.[]', 'ymin', 'innerHeight')
+  yScale2(data, ymin, innerHeight) {
+    return this._yScale(data, ymin, innerHeight);
+  },
 
-  d3Line: function() {
-    var xScale = this.get('xScale'),
-        yScale = this.get('yScale');
+  @computed('xScale', 'yScale', 'interpolation')
+  d3Line(xScale, yScale, interpolation) {
     return d3.svg.line()
       .x(d => xScale(d.x))
       .y(d => yScale(d.y))
-      .interpolate(this.get('interpolation'));
-  }.property('xScale', 'yScale', 'interpolation'),
+      .interpolate(interpolation);
+  },
 
-  d3Line2: function() {
-    var xScale = this.get('xScale'),
-        yScale = this.get('yScale2');
+  @computed('xScale', 'yScale2', 'interpolation')
+  d3Line2(xScale, yScale, interpolation) {
     return d3.svg.line()
       .x(d => xScale(d.x))
       .y(d => yScale(d.y))
-      .interpolate(this.get('interpolation'));
-  }.property('xScale', 'yScale2', 'interpolation'),
+      .interpolate(interpolation);
+  },
 
-  xAxisFormat: function() {
-    var map = this.get('tickMap');
+  @computed('tickMap')
+  xAxisFormat(map) {
     return (d => mapIfPresent(map, d));
-  }.property('tickMap'),
+  },
 
-  xTickValues: function() {
-    return this.get('dates');
-  }.property('dates'),
+  xTickValues: Ember.computed.alias('dates'),
 
-  yAxisFormat: function() {
-    return d3.format(".00");
-  }.property(),
+  yAxisFormat: d3.format(".00"),
 
-  seriesColors: function() {
-    var colors = this.get('userColors');
+  @computed('userColors', 'seriesNames')
+  seriesColors(colors, names) {
     if (colors !== null) {
       return colors;
     }
-    var names = this.get('seriesNames');
     if (names.length <= 10) {
       colors = d3.scale.category10();
     } else {
@@ -135,13 +130,13 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
     }
     colors.domain(names);
     return colors;
-  }.property('userColors', 'seriesNames'),
+  },
 
-  _updateData: function(data, line, classname) {
-    var svg = d3.select('#' + this.get('elementId')).select('.inner');
-    var colors = this.get('seriesColors');
+  _updateData(data, line, classname) {
+    let svg = d3.select('#' + this.get('elementId')).select('.inner');
+    let colors = this.get('seriesColors');
 
-    var paths = svg.select(classname).selectAll('path')
+    let paths = svg.select(classname).selectAll('path')
         .data(data, d => d.name);
 
     paths.enter()
@@ -154,22 +149,18 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
     paths.exit().remove();
   },
 
-  _updateChart: function() {
+  _updateChart() {
     this._updateData(this.get('data'), this.get('d3Line'), '.lines');
     this._updateData(this.get('data2'), this.get('d3Line2'), '.lines2');
   },
 
-  onChartChange: function() {
+  @observes('data.[]', 'data2.[]',
+            'd3Line', 'd3Line2',
+            'xScale', 'yScale', 'yScale2')
+  onChartChange() {
     if (this._state !== 'inDOM') {
       return;
     }
-    Ember.run.once(this, '_updateChart');
-  }.observes('data.[].name',
-             'data.[].values.[].x',
-             'data.[].values.[].y',
-             'data2.[].name',
-             'data2.[].values.[].x',
-             'data2.[].values.[].y',
-             'd3Line', 'd3Line2',
-             'xScale', 'yScale', 'yScale2'),
+    once(this, '_updateChart');
+  }
 });

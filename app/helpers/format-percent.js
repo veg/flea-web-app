@@ -1,9 +1,9 @@
 import Ember from 'ember';
 
-var percentage = d3.format('>5.2f');
+let percentage = d3.format('>5.2f');
 
 export default Ember.Helper.helper(function(params) {
-  var value = params[0];
-  var escaped = Ember.Handlebars.Utils.escapeExpression(value);
+  let value = params[0];
+  let escaped = Ember.Handlebars.Utils.escapeExpression(value);
   return new Ember.String.htmlSafe(percentage(escaped));
 });

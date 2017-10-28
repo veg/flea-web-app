@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import { once } from "@ember/runloop"
+import { observes } from 'ember-decorators/object';
 
 export default Ember.Component.extend({
   tagName: 'g',
@@ -10,44 +12,45 @@ export default Ember.Component.extend({
   legendLabels: [],
   legendColors: null,
 
-  didInsertElement: function() {
+  didInsertElement() {
     this._super(...arguments);
     this._updateLegend();
   },
 
-  onChartChange: function() {
+  @observes('legendLabels.[]', 'legendColors')
+  onChartChange() {
     if (this._state !== 'inDOM') {
       return;
     }
-    Ember.run.once(this, '_updateLegend');
-  }.observes('legendLabels.[]', 'legendColors'),
+    once(this, '_updateLegend');
+  },
 
-  _updateLegend: function() {
-    var labels = this.get('legendLabels');
-    var colors = this.get('legendColors');
+  _updateLegend() {
+    let labels = this.get('legendLabels');
+    let colors = this.get('legendColors');
 
-    var xval = this.get('xCoord');
-    var yval = this.get('yCoord');
-    var spacer = 25;
-    var font = 10;
-    var legend_dim = {x: xval, y: yval, spacer: spacer, margin: 5, font: font};
-    var svg = d3.select('#' + this.get('elementId'));
+    let xval = this.get('xCoord');
+    let yval = this.get('yCoord');
+    let spacer = 25;
+    let font = 10;
+    let legend_dim = {x: xval, y: yval, spacer: spacer, margin: 5, font: font};
+    let svg = d3.select('#' + this.get('elementId'));
 
     svg.selectAll('g').remove();
 
-    var legend = svg.append("g")
+    let legend = svg.append("g")
         .attr("class", "d3_legend")
         .attr("x", legend_dim.x)
         .attr("y", legend_dim.y)
         .attr("transform", "translate("+legend_dim.x+","+legend_dim.y+")");
 
-    var legend_parts = legend.selectAll('.legend_panel');
+    let legend_parts = legend.selectAll('.legend_panel');
     legend_parts.data(labels, d => d)
       .enter()
       .append('g')
       .attr('class', 'legend_panel')
       .each(function(d, idx) {
-        var g = d3.select(this);
+        let g = d3.select(this);
         g.append("rect")
           .attr("x", legend_dim.spacer)
           .attr("y", idx*(legend_dim.spacer + legend_dim.margin))

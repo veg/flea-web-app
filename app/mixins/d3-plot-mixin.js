@@ -1,5 +1,6 @@
 import Ember from 'ember';
-import { computed } from 'ember-decorators/object';
+import { once } from "@ember/runloop"
+import { computed, observes } from 'ember-decorators/object';
 
 export default Ember.Mixin.create({
   tagName: 'svg',
@@ -9,7 +10,7 @@ export default Ember.Mixin.create({
   width: 100,
   height: 100,
 
-  margin: {
+  margins: {
     top:    5,
     right:  5,
     bottom: 5,
@@ -27,27 +28,28 @@ export default Ember.Mixin.create({
     // override this
   },
 
+  @observes('data.[]')
   onChartChange: function() {
     // override this if need to observe more than just data
     if (this._state !== 'inDOM') {
       return;
     }
-    Ember.run.once(this, '_updateChart');
-  }.observes('data.[]'),
-
-  @computed('width', 'margin')
-  innerWidth(width, margin) {
-    return width - margin.left - margin.right;
+    once(this, '_updateChart');
   },
 
-  @computed('height', 'margin')
-  innerHeight(height, margin) {
-    return height - margin.top - margin.bottom;
+  @computed('width', 'margins')
+  innerWidth(width, margins) {
+    return width - margins.left - margins.right;
   },
 
-  @computed('margin')
-  innerGroupTransform(margin) {
-    return `translate(${margin.left}, ${margin.top})`;
+  @computed('height', 'margins')
+  innerHeight(height, margins) {
+    return height - margins.top - margins.bottom;
+  },
+
+  @computed('margins')
+  innerGroupTransform(margins) {
+    return `translate(${margins.left}, ${margins.top})`;
   },
 
   @computed('innerHeight')

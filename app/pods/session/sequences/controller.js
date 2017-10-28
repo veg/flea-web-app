@@ -2,8 +2,12 @@ import Ember from 'ember';
 import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges, mapIfPresent } from 'flea-app/utils/utils';
 import ColorLabelMixin from 'flea-app/mixins/color-label-mixin';
 import parser from 'flea-app/utils/parser';
+import { computed, action } from 'ember-decorators/object';
+import { string } from 'ember-awesome-macros';
+import raw from 'ember-macro-helpers/raw';
 
-var pngsPattern = 'N[^P][ST]';
+
+let pngsPattern = 'N[^P][ST]';
 
 export default Ember.Controller.extend(ColorLabelMixin, {
 
@@ -27,12 +31,11 @@ export default Ember.Controller.extend(ColorLabelMixin, {
 
   _oldKeys: [],
 
-  reference: function() {
-    var ref = this.get('model.sequences.reference');
+  @computed('model.sequences.reference', 'model.coordinates.alnToRefCoords')
+  reference(ref, map) {
     // replace repeats with '-'
-    var map = this.get('model.coordinates.alnToRefCoords');
-    var newSeq = [ref.sequence[0]];
-    for (var k=1; k<map.length; k++ ) {
+    let newSeq = [ref.sequence[0]];
+    for (let k=1; k<map.length; k++ ) {
       if (map[k] === map[k - 1]) {
         newSeq.push('-');
       } else {
@@ -41,25 +44,25 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     }
     ref.sequence = newSeq.join('');
     return ref;
-  }.property('model.sequences.reference', 'model.coordinates.alnToRefCoords'),
+  },
 
   // parses simple grammar and builds RegExp that takes gaps and pipes
   // into account
-  regex: function() {
+  @computed('pattern')
+  regex(value) {
     this.set('patternClass', 'input-valid');
-    var value = this.get('pattern');
     if (value.length === 0) {
       return ".^";
     }
     try {
-      var result = [];
-      var parsed = parser.parse(value);
+      let result = [];
+      let parsed = parser.parse(value);
       for (let i=0; i<parsed.length; i++) {
-        var part = parsed[i];
+        let part = parsed[i];
         if (part.type === "amino") {
           result.push(part.value + part.postmod);
         } else {
-          var partvalue = part.value;
+          let partvalue = part.value;
           if (part.premod === "^") {
             partvalue += '\\|\\-';
           }
@@ -74,49 +77,44 @@ export default Ember.Controller.extend(ColorLabelMixin, {
       this.set('patternClass', 'input-invalid');
     }
     return this.get('_regex');
-  }.property('pattern'),
+  },
 
-  validAlnRange: function() {
-    return [0, this.get('model.coordinates.alnToRefCoords.length')];
-  }.property('model.coordinates.alnToRefCoords.length'),
+  @computed('model.coordinates.alnToRefCoords.length')
+  validAlnRange(n) {
+    return [0, n];
+  },
 
-  toSlices: function(seq, ranges) {
+  toSlices(seq, ranges) {
     return ranges.map(range => seq.slice(range[0], range[1])).join('|');
   },
 
-  mrcaSlice: function() {
-    var mrca = this.get('model.sequences.mrca');
-    var ranges = this.get('alnRanges');
+  @computed('model.sequences.mrca', 'alnRanges')
+  mrcaSlice(mrca, ranges) {
     return this.toSlices(mrca.sequence, ranges);
-  }.property('model.sequences.mrca', 'alnRanges'),
+  },
 
-  mrcaSplit: function() {
-    return this.get('mrcaSlice').split('');
-  }.property('mrcaSlice'),
-
-  refSlice: function() {
-    var ref = this.get('reference');
+  @computed('model.sequences.reference', 'alnRanges')
+  refSlice(ref, ranges) {
     if (ref.length === 0) {
       return "";
     }
-    var ranges = this.get('alnRanges');
     return this.toSlices(ref.sequence, ranges);
-  }.property('model.sequences.mrca', 'alnRanges'),
+  },
 
-  refSplit: function() {
-    return this.get('refSlice').split('');
-  }.property('refSlice'),
-
-  groupedSequences: function() {
-    var self = this;
-    var sequences = this.get('model.sequences.observed');
-    var copynumbers = this.get('model.copynumbers');
-    var result = [];
-    var ranges = this.get('alnRanges');
-    var grouped = _.groupBy(sequences, s => s.get('date'));
-    var slice = function(s) {
-      var result = self.toSlices(s.sequence, ranges);
-      var cn = 0;
+  mrcaSplit: string.split('mrcaSlice', raw('')),
+  refSplit: string.split('refSlice', raw('')),
+  
+  @computed('model.sequences.observed.[]',
+	    'model.copynumbers', 'model.dates', 'alnRanges',
+	    'mrcaSlice', 'regex', 'threshold')
+  groupedSequences(sequences, copynumbers, datemap, 
+			     alnRanges, mrcaSlice, regex, threshold) {
+    let self = this;
+    let result = [];
+    let grouped = R.groupBy(s => s.get('date'), sequences);
+    let slice = function(s) {
+      let result = self.toSlices(s.sequence, alnRanges);
+      let cn = 0;
       if (s.id in copynumbers) {
         cn = copynumbers[s.id];
       } else {
@@ -126,15 +124,14 @@ export default Ember.Controller.extend(ColorLabelMixin, {
               copyNumber: cn,
               ids: [s.id]};
     };
-    var datemap = this.get('model.dates');
     for (let key in grouped) {
       if (!grouped.hasOwnProperty(key)) {
         continue;
       }
-      var final_seqs = grouped[key].map(slice);
+      let final_seqs = grouped[key].map(slice);
       final_seqs = collapse(final_seqs);
       final_seqs.sort((a, b) => b.copyNumber - a.copyNumber);
-      var d = new Date(key);
+      let d = new Date(key);
 
       result.push({'date': d,
                    'label': mapIfPresent(datemap, d),
@@ -150,47 +147,41 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     // TODO: do not redo everything on update. make DOM updates as
     // small as possible.
     result = addPercent(result);
-    result = filterPercent(result, this.get('threshold'));
+    result = filterPercent(result, threshold);
     result = addHTML(result);
-    result = htmlRows(result, this.get('regex'), this.get('mrcaSlice'));
+    result = htmlRows(result, regex, mrcaSlice);
     return result;
-  }.property('alnRanges', 'mrcaSlice',
-             'model.copynumbers',
-             'model.sequences.observed.[]',
-             'regex', 'threshold'),
+  },
 
-  sortedRanges: function() {
-    var ranges = this.get('ranges');
+  @computed('ranges')
+  sortedRanges(ranges) {
     ranges.sort((a, b) => a[0] - b[0]);
     return ranges;
-  }.property('ranges'),
+  },
 
-  alnRanges: function() {
+  @computed('ranges', 'model.coordinates.refToFirstAlnCoords',
+	    'model.coordinates.refToLastAlnCoords')
+  alnRanges(ranges, mapFirst, mapLast) {
     // convert reference ranges to aligment ranges
-    var ranges = this.get('sortedRanges');
     checkRanges(ranges, this.get('model.coordinates.refRange'));
-    var mapFirst = this.get('model.coordinates.refToFirstAlnCoords');
-    var mapLast = this.get('model.coordinates.refToLastAlnCoords');
-    var result = ranges.map(function(range) {
-      var start = transformIndex(range[0], mapFirst, false);
-      var stop = transformIndex(range[1], mapLast, true);
+    let result = ranges.map(function(range) {
+      let start = transformIndex(range[0], mapFirst, false);
+      let stop = transformIndex(range[1], mapLast, true);
       return [start, stop];
     });
     checkRanges(result, this.get('validAlnRange'));
     return result;
-  }.property('ranges',
-             'model.coordinates.refToFirstAlnCoords',
-             'model.coordinates.refToLastAlnCoords'),
+  },
 
-  aaTrajectories: function() {
-    var sequences = this.get('model.sequences.observed');
-    var copynumbers = this.get('model.copynumbers');
-    var motifs = this.get('model.sequences.idToMotif');
-    var counts = {};
-    var totals = {};
+  @computed('model.sequences.observed.[]',
+	    'model.copynumbers',
+	    'model.sequences.idToMotif.[]')
+  aaTrajectories(sequences, copynumbers, motifs) {
+    let counts = {};
+    let totals = {};
     for (let i=0; i<sequences.length; i++ ) {
-      var seq = sequences[i];
-      var motif = motifs[seq.get('id')];
+      let seq = sequences[i];
+      let motif = motifs[seq.get('id')];
       if (!(counts.hasOwnProperty(motif))) {
         counts[motif] = {};
       }
@@ -207,17 +198,17 @@ export default Ember.Controller.extend(ColorLabelMixin, {
       }
       totals[seq.date] += copynumbers[seq.id];
     }
-    var series = [];
+    let series = [];
     for (let m in counts) {
       if (!(counts.hasOwnProperty(m))) {
         continue;
       }
-      var points = [];
+      let points = [];
       for (let date in totals) {
         if (!(totals.hasOwnProperty(date))) {
           continue;
         }
-        var frac = 0;
+        let frac = 0;
         if (counts[m].hasOwnProperty(date)) {
           frac = counts[m][date] / totals[date];
         }
@@ -226,27 +217,24 @@ export default Ember.Controller.extend(ColorLabelMixin, {
       series.push({name: m, values: points});
     }
     return series;
-  }.property('model.sequences.observed.[]',
-             'model.sequences.idToMotif.[]'),
+  },
 
-  cappedTrajectories: function() {
-    var series = this.get('aaTrajectories');
-    var maxnum = this.get('maxMotifs');
-
+  @computed('aaTrajectories', 'maxMotifs')
+  cappedTrajectories(series, maxnum) {
     for (let j=0; j<series.length; j++) {
-      var trajectory = series[j];
-      var tmax = _.max(trajectory.values.map(v => v.y));
+      let trajectory = series[j];
+      let tmax = R.max(R.map(R.prop('y'), R.values(trajectory)));
       series[j].tmax = tmax;
     }
     series.sort((a, b) => b.tmax - a.tmax);
 
     // take top n-1 and combine others
     if (series.length > maxnum) {
-      var first_series = series.slice(0, maxnum);
-      var rest_series = series.slice(maxnum);
-      var combined = rest_series[0].values;
+      let first_series = series.slice(0, maxnum);
+      let rest_series = series.slice(maxnum);
+      let combined = rest_series[0].values;
       for (let k=1; k<rest_series.length; k++) {
-        var curve = rest_series[k].values;
+        let curve = rest_series[k].values;
         for (let n=0; n<curve.length; n++) {
           combined[n].y += curve[n].y;
         }
@@ -256,38 +244,36 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     }
     // TODO: sort by date each motif became prevalent
     return series;
-  }.property('aaTrajectories', 'maxMotifs'),
+  },
 
-  sortedDates: function() {
-    var datemap = this.get('model.dates');
-    var result = _.keys(datemap).map(k => new Date(k));
+  @computed('model.dates')
+  sortedDates(datemap) {
+    let result = R.map(k => new Date(k), R.keys(datemap));
     result.sort((a, b) => a < b ? -1 : 1);
     return result;
-  }.property('model.dates'),
+  },
 
-  trajectoryData: function() {
-    var data = this.get('cappedTrajectories');
-    var oldKeys = this.get('_oldKeys');
-    var newKeys = data.map(s => s.name);
+  @computed('cappedTrajectories', '_oldKeys',
+	    'motifColorScale', 'sortedDates')
+  trajectoryData(data, oldKeys, colorScale, dates) {
+    let newKeys = data.map(s => s.name);
     this.set('_oldKeys', newKeys);
-    let colorscale = this.get('motifColorScale');
 
     let columns = data.map(s => {
-      var values = s.values;
+      let values = s.values;
       values.sort((a, b) => a.x - b.x);
-      var ys = values.map(v => v.y);
+      let ys = values.map(v => v.y);
       ys.unshift(s.name);
       return ys;
     });
     let colors = {};
     data.forEach(s => {
-      colors[s.name] = colorscale(s.name);
+      colors[s.name] = colorScale(s.name);
     });
 
-    var dates = this.get('sortedDates');
-    var xticks = ['x'].concat(dates);
+    let xticks = ['x'].concat(dates);
     columns.push(xticks);
-    var result = {
+    let result = {
       x: 'x',
       columns: columns,
       unload: oldKeys,
@@ -300,10 +286,10 @@ export default Ember.Controller.extend(ColorLabelMixin, {
       colors: colors,
     };
     return result;
-  }.property('cappedTrajectories', 'sortedDates', 'motifColorScale'),
+  },
 
-  trajectoryAxis: function() {
-    var datemap = this.get('model.dates');
+  @computed('sortedDates')
+  trajectoryAxis(datemap) {
     return {
       x: {
         type: 'timeseries',
@@ -312,7 +298,7 @@ export default Ember.Controller.extend(ColorLabelMixin, {
         }
       }
     };
-  }.property('sortedDates'),
+  },
 
   transition: {
     duration: 0
@@ -324,82 +310,91 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     }
   },
 
-  validPredefinedRegions: function() {
-    var [start, stop] = this.get('model.coordinates.refRange');
-    var regions = this.get('model.predefinedRegions');
+  @computed('model.predefinedRegions', 'model.coordinates.refRange')
+  validPredefinedRegions(regions, refrange) {
+    let [start, stop] = refrange;
     return regions.filter(r => r.start >= start && r.stop <= stop);
-  }.property('model.predefinedRegions', 'model.coordinates.refRange'),
+  },
 
-  actions: {
-    doPattern: function() {
-      this.set('pattern', this.get('_pattern'));
-    },
+  @action
+  doPattern() {
+    this.set('pattern', this.get('_pattern'));
+  },
 
-    doThreshold: function() {
-      var t = this.get('_threshold');
-      if (t === "") {
-        t = 0;
-      }
-      t = +t;
-      if (t >= 0 && t <= 100) {
-        this.set('_threshold', t);
-        this.set('threshold', t);
-      }
-    },
+  @action
+  doThreshold() {
+    let t = this.get('_threshold');
+    if (t === "") {
+      t = 0;
+    }
+    t = +t;
+    if (t >= 0 && t <= 100) {
+      this.set('_threshold', t);
+      this.set('threshold', t);
+    }
+  },
 
-    doMaxMotifs: function() {
-      var t = this.get('_maxMotifs');
-      if (t === "") {
-        t = this.get('defaultMaxMotifs');
-      }
-      t = +t;
-      if (t >= 1 && t <= 100) {
-        this.set('_maxMotifs', t);
-        this.set('maxMotifs', t);
-      }
-    },
+  @action
+  doMaxMotifs() {
+    let t = this.get('_maxMotifs');
+    if (t === "") {
+      t = this.get('defaultMaxMotifs');
+    }
+    t = +t;
+    if (t >= 1 && t <= 100) {
+      this.set('_maxMotifs', t);
+      this.set('maxMotifs', t);
+    }
+  },
 
-    resetPattern: function() {
-      this.set('_pattern', this.get('patternDefault'));
-      this.set('pattern', this.get('patternDefault'));
-    },
+  @action
+  resetPattern() {
+    this.set('_pattern', this.get('patternDefault'));
+    this.set('pattern', this.get('patternDefault'));
+  },
 
-    updateAlnRange: function(idx, range) {
-      checkRange(range, this.get('validAlnRange'));
-      var map = this.get('model.coordinates.alnToRefCoords');
-      var refRanges = this.get('sortedRanges');
+  @action
+  updateAlnRange(idx, range) {
+    console.log(`range ${range}`);
+    checkRange(range, this.get('validAlnRange'));
+    let map = this.get('model.coordinates.alnToRefCoords');
+    let refRanges = this.get('sortedRanges');
 
-      // shallow copy, so we have a different object. Ensures that
-      // calling this.set() triggers computed properties.
-      var result = refRanges.slice(0);
-      result[idx] = [transformIndex(range[0], map, false),
-                     transformIndex(range[1], map, true)];
-      result.sort((a, b) => a[0] - b[0]);
-      this.set('ranges', result);
-    },
+    // shallow copy, so we have a different object. Ensures that
+    // calling this.set() triggers computed properties.
+    let result = refRanges.slice(0);
+    result[idx] = [transformIndex(range[0], map, false),
+                   transformIndex(range[1], map, true)];
+    result.sort((a, b) => a[0] - b[0]);
+    console.log(`result: ${result}`);
+    this.set('ranges', result);
+  },
 
-    setRanges: function(ranges) {
-      checkRanges(ranges, this.get('model.coordinates.refRange'));
-      this.set('ranges', ranges);
-    },
+  @action
+  setRanges(ranges) {
+    checkRanges(ranges, this.get('model.coordinates.refRange'));
+    this.set('ranges', ranges);
+  },
 
-    addRange: function(range) {
-      checkRange(range, this.get('model.coordinates.refRange'));
-      var ranges = this.get('sortedRanges').slice(0);
-      ranges.push(range);
-      this.set('ranges', ranges);
-    },
+  @action
+  addRange(range) {
+    checkRange(range, this.get('model.coordinates.refRange'));
+    let ranges = this.get('sortedRanges').slice(0);
+    ranges.push(range);
+    this.set('ranges', ranges);
+  },
 
-    rmRange: function(idx) {
-      var ranges = this.get('sortedRanges');
-      this.set('ranges', ranges.filter((elt, i) => i !== idx));
-    },
+  @action
+  rmRange(idx) {
+    let ranges = this.get('sortedRanges');
+    this.set('ranges', ranges.filter((elt, i) => i !== idx));
+  },
 
-    setSelectedPositions: function(positions) {
-      var stop = this.get('validAlnRange')[1];
-      if (positions && _.every(positions, p => (p >= 0 && p < stop))) {
-        this.set('model.sequences.selectedPositions', positions);
-      }
+  @action
+  setSelectedPositions(positions) {
+    let stop = this.get('validAlnRange')[1];
+    if (positions && R.all(R.map(p => (p >= 0 && p < stop)), positions)) {
+      this.set('model.sequences.selectedPositions', positions);
     }
   }
 });
@@ -407,8 +402,8 @@ export default Ember.Controller.extend(ColorLabelMixin, {
 
 function addPercent(groups) {
   for (let i=0; i<groups.length; i++) {
-    var seqs = groups[i].sequences;
-    var total = 0;
+    let seqs = groups[i].sequences;
+    let total = 0;
     for (let j=0; j<seqs.length; j++) {
       total += seqs[j].copyNumber;
     }
@@ -421,22 +416,22 @@ function addPercent(groups) {
 
 function filterPercent(groups, threshold) {
   for (let i=0; i<groups.length; i++) {
-    var seqs = groups[i].sequences.filter(s => s.percent >= threshold);
+    let seqs = groups[i].sequences.filter(s => s.percent >= threshold);
     groups[i].sequences = seqs;
   }
   return groups;
 }
 
 function collapse(seqs) {
-  var groups = _.groupBy(seqs, s => s.sequence);
-  var result = [];
+  let groups = R.groupBy(s => s.sequence, seqs);
+  let result = [];
   for (let key in groups) {
     if (!groups.hasOwnProperty(key)) {
       continue;
     }
-    var group = groups[key];
-    var ids = [];
-    var number = 0;
+    let group = groups[key];
+    let ids = [];
+    let number = 0;
     for (let i=0; i<group.length; i++) {
       ids.push(group[i].ids[0]);
       number += group[i].copyNumber;
@@ -453,7 +448,7 @@ function collapse(seqs) {
 // TODO: do this with a helper or a component instead
 function addHTML(groups) {
   for (let i=0; i<groups.length; i++) {
-    var seqs = groups[i].sequences;
+    let seqs = groups[i].sequences;
     for (let j=0; j<seqs.length; j++) {
       seqs[j].html = htmlTable1D(seqs[j].ids, ['Sequence ID']);
     }
@@ -464,7 +459,7 @@ function addHTML(groups) {
 
 function htmlRows(groups, regex, mrca) {
   for (let i=0; i<groups.length; i++) {
-    var seqs = groups[i].sequences;
+    let seqs = groups[i].sequences;
     for (let j=0; j<seqs.length; j++) {
       let seq = seqs[j];
       let highlightRanges = regexRanges(regex, seq.sequence);
@@ -475,7 +470,7 @@ function htmlRows(groups, regex, mrca) {
           highlightPositions.add(n);
         }
       }
-      let htmlElts = _.map(seq.sequence.split(''), (aa, idx) => {
+      let htmlElts = seq.sequence.split('').map((aa, idx) => {
 	let highlight = highlightPositions.has(idx);
         return aaHTML(aa, mrca[idx], highlight);
       });

@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import {seqIdToProperty, mapIfPresent} from 'flea-app/utils/utils';
-import { computed } from 'ember-decorators/object';
+import { computed, action } from 'ember-decorators/object';
 import { getBy } from 'ember-awesome-macros';
 import raw from 'ember-macro-helpers/raw';
 
@@ -26,7 +26,7 @@ export default Ember.Mixin.create({
   seqIdToNodeName(key, obj) {
     return this.get(obj[key]);
   },
-  
+
   @computed('seqs.[]')
   seqIds(seqs) {
     return R.map(R.prop('id'), seqs);
@@ -47,19 +47,19 @@ export default Ember.Mixin.create({
     return R.zipObj(ids, ids);
   },
 
-  @computed('seqIdToDate.[]')
+  @computed('seqIdToDate')
   sortedDates(obj) {
     delete obj["mrca"];
     let dates = R.uniqBy(R.toString, R.values(obj));
     return R.sort((a, b) => a - b, dates);
   },
 
-  @computed('sortedDates', 'model.dates.[]')
+  @computed('sortedDates', 'model.dates')
   sortedVisitCodes(dates, dateMap) {
     return dates.map(d => dateMap[d]);
   },
 
-  @computed('realSeqIds', 'seqIdToDate.[]', 'model.dates.[]')
+  @computed('realSeqIds', 'seqIdToDate', 'model.dates')
   seqIdToVisitCode(ids, idToDate, dateMap) {
     let codes = R.map(id => dateMap[idToDate[id]], ids)
     let result = R.zipObj(ids, codes);
@@ -119,7 +119,7 @@ export default Ember.Mixin.create({
 
   @computed('model.sequences.seqIdToDate', 'colorScale')
   seqIdToNodeColor(seqIdToDate, scale) {
-    return R.map(scale, seqIdToDate)
+    return R.map(scale, seqIdToDate);
   },
 
   @computed('model.sequences.seqIdToDate', 'motifColorScale', 'nodeNameType')
@@ -127,11 +127,10 @@ export default Ember.Mixin.create({
     return R.map(scale, seqIdToDate);
   },
 
-  actions: {
-    selectNodeNameType(value) {
-      if (value != null) {
-        this.set('nodeNameType', value);
-      }
-    },
+  @action
+  selectNodeNameType(value) {
+    if (value != null) {
+      this.set('nodeNameType', value);
+    }
   },
 });

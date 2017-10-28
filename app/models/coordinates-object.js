@@ -1,30 +1,32 @@
 import Ember from 'ember';
 import {zeroIndex, refToAlnCoords} from 'flea-app/utils/utils';
+import { computed, observes } from 'ember-decorators/object';
 
 export default Ember.Object.extend({
   data: [],
 
-  refRange: function() {
+  @computed('alnToRefCoords')
+  refRange: function(alnToRef) {
     // 0-indexed [start, stop) reference coordinates
-    var alnToRef = this.get('alnToRefCoords');
     return [alnToRef[0], alnToRef[alnToRef.length - 1] + 1];
-  }.property('alnToRefCoords'),
+  },
 
-  alnToRefCoords: function () {
+  @computed('data.[]')
+  alnToRefCoords: function (data) {
     // maps from alignment coordinates to reference coordinates
     // both 0-indexed.
-    var data = this.get('data');
     return data.map(c => zeroIndex(c));
-  }.property('data.[]'),
+  },
 
+  @observes('alnToRefCoords')
   refToAlnCoords: function() {
-    var alnToRef = this.get('alnToRefCoords');
-    var stop = this.get('refRange')[1];
-    var toFirst = new Array(stop);
-    var toLast = new Array(stop);
-    var last_ref_index = -1;
+    let alnToRef = this.get('alnToRefCoords');
+    let stop = this.get('refRange')[1];
+    let toFirst = new Array(stop);
+    let toLast = new Array(stop);
+    let last_ref_index = -1;
     for (let aln_index=0; aln_index<alnToRef.length; aln_index++) {
-      var ref_index = alnToRef[aln_index];
+      let ref_index = alnToRef[aln_index];
       toLast[ref_index] = aln_index;
       if (ref_index !== last_ref_index) {
         toFirst[ref_index] = aln_index;
@@ -39,16 +41,18 @@ export default Ember.Object.extend({
       last_ref_index = ref_index;
     }
     return [toFirst, toLast];
-  }.observes('alnToRefCoords'),
+  },
 
-  refToFirstAlnCoords: function () {
+  @computed('alnToRefCoords', 'refRange')
+  refToFirstAlnCoords: function (alnToRefCoords, refRange) {
     // inverse of alnToRefCoords.
     // maps reference coordinates to alignment coordinates
     // both 0-indexed
-    return refToAlnCoords(this.get('alnToRefCoords'), this.get('refRange')[1])[0];
-  }.property('alnToRefCoords'),
+    return refToAlnCoords(alnToRefCoords, refRange[1])[0];
+},
 
-  refToLastAlnCoords: function () {
-    return refToAlnCoords(this.get('alnToRefCoords'), this.get('refRange')[1])[1];
-  }.property('alnToRefCoords')
+  @computed('alnToRefCoords', 'refRange')
+  refToLastAlnCoords: function (alnToRefCoords, refRange) {
+    return refToAlnCoords(alnToRefCoords, refRange[1])[1];
+  }
 });

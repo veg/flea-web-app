@@ -13,7 +13,8 @@ module.exports = {
     'no-console': 'warn'
   },
   globals: {
-    "_": false,
+    "@": false,
+    "R": false,
     "d3": false,
     "pv": false,
     "moment": false,

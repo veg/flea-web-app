@@ -1,11 +1,12 @@
 import Ember from 'ember';
 import ColorLabelMixin from 'flea-app/mixins/color-label-mixin';
+import { computed } from 'ember-decorators/object';
 
 export default Ember.Controller.extend(ColorLabelMixin, {
   pattern: '',
 
-  highlightedNodes: function() {
-    let pattern = this.get('pattern');
+  @computed('pattern')
+  highlightedNodes(pattern) {
     if (!pattern) {
       return [];
     }
@@ -21,5 +22,6 @@ export default Ember.Controller.extend(ColorLabelMixin, {
       }
     }
     return new Set(result);
-  }.property('pattern'),
+  }
+
 });

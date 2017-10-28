@@ -1,6 +1,8 @@
 import Ember from 'ember';
+import { once } from "@ember/runloop"
 import D3Plot from "flea-app/mixins/d3-plot-mixin";
 import WidthHeightMixin from 'flea-app/mixins/width-height-mixin';
+import { computed, observes } from 'ember-decorators/object';
 
 export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
   copynumbers: null,
@@ -12,36 +14,42 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
   legendLabels: [],
   legendColors: null,
 
-  xDomain: function() {
-    return d3.extent(this.get('data').map(d => d.x));
-  }.property('data.[]'),
+  @computed('data.[]')
+  xDomain(data) {
+    return d3.extent(data.map(d => d.x));
+  },
 
-  yDomain: function() {
-    return d3.extent(this.get('data').map(d => d.y));
-  }.property('data.[]'),
+  @computed('data.[]')
+  yDomain(data) {
+    return d3.extent(data.map(d => d.y));
+  },
 
-  scale: function(domain, minval, maxval) {
+  scale(domain, minval, maxval) {
     return d3.scale.linear()
-      .domain(this.get(domain))
+      .domain(domain)
       .range([minval, maxval]);
   },
 
-  xScale: function() {
-    return this.scale('xDomain', 0, this.get('innerWidth'));
-  }.property('innerWidth', 'xDomain'),
+  @computed('innerWidth', 'xDomain')
+  xScale(innerWidth, xDomain) {
+    return this.scale(xDomain, 0, innerWidth);
+  },
 
-  yScale: function() {
-    return this.scale('yDomain', this.get('innerHeight'), 0);
-  }.property('innerHeight', 'yDomain'),
+  @computed('innerHeight', 'yDomain')
+  yScale(innerHeight, yDomain) {
+    return this.scale(yDomain, innerHeight, 0);
+  },
 
-  cnDomain: function() {
-    let cns = this.get('copynumbers');
-    return [0, d3.max(_.values(cns))];
-  }.property('copynumbers.[]'),
+  @computed('copynumbers.[]')
+  cnDomain(copynumbers) {
+    let cns = copynumbers;
+    return [0, d3.max(R.values(cns))];
+  },
 
-  margin: function () {
-    let cn = this.get('cnDomain')[1];
-    let scale = this.get('cnScale');
+  @computed('cnDomain', 'cnScale')
+  margin(cnDomain, cnScale) {
+    let cn = cnDomain[1];
+    let scale = cnScale;
     let radius = Math.sqrt(scale(cn));
     return {
       top:    radius,
@@ -49,25 +57,27 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
       bottom: radius,
       left:   radius,
     };
-  }.property('cnDomain'),
+  },
 
-  cnScale: function() {
+  @computed('cnDomain')
+  cnScale(cnDomain) {
     return d3.scale.linear()
-      .domain(this.get('cnDomain'))
+      .domain(cnDomain)
       .range([1, 500]);
-  }.property('cnDomain'),
+  },
 
-  onChartChange: function() {
+  @observes('data.[]', 'nameToNodeColor', 'nameToMotif', 'nameToMotifColor',
+            'xScale', 'yScale', 'cnScale',
+            'copynumbers.[]', 'highlightedNodes')
+  onChartChange() {
     // override this if need to observe more than just data
     if (this._state !== 'inDOM') {
       return;
     }
-    Ember.run.once(this, '_updateChart');
-  }.observes('data.[]', 'nameToNodeColor', 'nameToMotif', 'nameToMotifColor',
-             'xScale', 'yScale', 'cnScale',
-             'copynumbers.[]', 'highlightedNodes'),
+    once(this, '_updateChart');
+  },
 
-  _updateChart: function() {
+  _updateChart() {
     let svg = d3.select('#' + this.get('elementId')).select('.inner').select('.circles');
     let data = this.get('data');
     let xScale = this.get('xScale');
@@ -79,7 +89,7 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
     let nameToMotifColor = this.get('nameToMotifColor');
     let highlightedNodes = this.get('highlightedNodes');
 
-    let circles = svg.selectAll("circle").data(data, function(d) {return d.name;});
+    let circles = svg.selectAll("circle").data(data, d => d.name);
 
     d3.select("body").select(".tooltip").remove();
     let div = d3.select("body").append("div")
@@ -92,18 +102,11 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
     circles.exit().remove();
 
     circles
-      .attr("cx", function(d) {
-        return xScale(d.x);
-      })
-      .attr("cy", function(d) {
-        return yScale(d.y);
-      })
-      .attr("r", function(d) {
-        return 1.5 * Math.sqrt(cnScale(cns[d.name]));
-      })
-      .style("fill", function(d) {
-        return nameToNodeColor[d.name];
-      }).style("opacity", function(d) {
+      .attr("cx", d => xScale(d.x))
+      .attr("cy", d => yScale(d.y))
+      .attr("r", d => 1.5 * Math.sqrt(cnScale(cns[d.name])))
+      .style("fill", d => nameToNodeColor[d.name])
+      .style("opacity", d => {
         if (highlightedNodes.length === 0) {
           return 1.0;
         }
@@ -113,7 +116,7 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
           return 0.1;
         }
       })
-      .on("mouseover", function(d) {
+      .on("mouseover", d => {
         let html = d.name;
         let color = 'black';
         if (nameToMotif[d.name]) {
@@ -128,7 +131,7 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
           .style("top", (d3.event.pageY - 30) + "px")
           .style('color', color);
       })
-      .on("mouseout", function() {
+      .on("mouseout", () => {
         div.transition()
           .duration(100)
           .style("opacity", 0);

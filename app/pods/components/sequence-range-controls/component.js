@@ -1,5 +1,7 @@
 import Ember from 'ember';
 import {oneIndex} from 'flea-app/utils/utils';
+import { computed, observes, action } from 'ember-decorators/object';
+import { on } from 'ember-decorators/object/evented';
 
 export default Ember.Component.extend({
   tagName: '',
@@ -10,19 +12,21 @@ export default Ember.Component.extend({
 
   rangeText: '',
 
-  computedText: function() {
-    var ranges = this.get('ranges');
+  @computed('ranges', 'ranges.length', 'ranges.[]', 'ranges.[].[]')
+  computedText(ranges) {
     return ranges.map(range => oneIndex(range[0]) + "-" + range[1]).join(';');
-  }.property('ranges', 'ranges.length', 'ranges.[]', 'ranges.[].[]'),
+  },
 
-  updateText: function() {
+  @on('init')
+  @observes('computedText')
+  updateText() {
     this.set('rangeText', this.get('computedText'));
-  }.observes('computedText').on('init'),
+  },
 
-  toController: function(ranges) {
-    var [vstart, vstop] = this.get('validRange');
+  toController(ranges) {
+    let [vstart, vstop] = this.get('validRange');
     ranges = ranges.map(function(range) {
-      var [start, stop] = range;
+      let [start, stop] = range;
       if (start < vstart) {
         start = vstart;
       }
@@ -32,48 +36,49 @@ export default Ember.Component.extend({
       return [start, stop];
     });
 
-    if (_.every(ranges.map(range => range[0] < range[1]))) {
+    if (R.all(R.map(range => range[0] < range[1], ranges))) {
       this.sendAction('setRanges', ranges);
     }
   },
 
-  actions: {
-    moveRanges: function(offset) {
-      // FIXME: why are these sometimes strings???
-      var ranges = this.get('ranges');
-      var [vstart, vstop] = this.get('validRange');
-      for (let r=0; r<ranges.length; r++) {
-        var [start, stop] = ranges[r];
-        if ((vstart <= start + offset) &&
+  @action
+  moveRanges(offset) {
+    // FIXME: why are these sometimes strings???
+    let ranges = this.get('ranges');
+    let [vstart, vstop] = this.get('validRange');
+    for (let r=0; r<ranges.length; r++) {
+      let [start, stop] = ranges[r];
+      if ((vstart <= start + offset) &&
           (start + offset <= stop + offset) &&
           (stop + offset <= vstop)) {
-          ranges[r][0] = start + offset;
-          ranges[r][1] = stop + offset;
+        ranges[r][0] = start + offset;
+        ranges[r][1] = stop + offset;
+      }
+    }
+    this.toController(ranges);
+  },
+
+  @action
+  setRange(start, stop) {
+    let ranges = [[start, stop]];
+    this.toController(ranges);
+  },
+
+  @action
+  handleTextSubmit() {
+    this.set('inputClass', 'input-valid');
+    let text = this.get('rangeText');
+    try {
+      let ranges = text.split(';').map(function(a) {
+        let parts = a.split('-');
+        if (parts.length !== 2) {
+          throw "wrong number of ranges";
         }
-      }
+        return [(+parts[0]) - 1, +parts[1]];
+      });
       this.toController(ranges);
-    },
-
-    setRange: function(start, stop) {
-      var ranges = [[start, stop]];
-      this.toController(ranges);
-    },
-
-    handleTextSubmit: function() {
-      this.set('inputClass', 'input-valid');
-      var text = this.get('rangeText');
-      try {
-        var ranges = text.split(';').map(function(a) {
-          var parts = a.split('-');
-          if (parts.length !== 2) {
-            throw "wrong number of ranges";
-          }
-          return [(+parts[0]) - 1, +parts[1]];
-        });
-        this.toController(ranges);
-      } catch (err) {
-        this.set('inputClass', 'input-invalid');
-      }
+    } catch (err) {
+      this.set('inputClass', 'input-invalid');
     }
   }
 });

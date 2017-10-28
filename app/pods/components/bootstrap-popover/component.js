@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { observes } from 'ember-decorators/object';
 
 
 export default Ember.Component.extend({
@@ -16,11 +17,12 @@ export default Ember.Component.extend({
   html: true,
   placement: 'auto right',
 
+  @observes('dataContent', 'html', 'placement')
   didInsertElement: function () {
     this._super(...arguments);
     this.$().popover({
       html: this.get('html'),
       placement: this.get('placement')
     });
-  }.observes('dataContent', 'html', 'placement')
+  }
 });

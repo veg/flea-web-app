@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import {seqIdToProperty} from 'flea-app/utils/utils';
+import { computed } from 'ember-decorators/object';
 
 export default Ember.Object.extend({
 
@@ -11,25 +12,26 @@ export default Ember.Object.extend({
   // in alignment 0-indexed coordinates
   selectedPositions: [],
 
-  observedAndMrca: function() {
-    let seqs = this.get('observed');
-    let mrca = this.get('mrca');
+  @computed('observed.[]', 'mrca')
+  observedAndMrca: function(seqs, mrca) {
     return [mrca].concat(seqs);
-  }.property('observed.[]', 'mrca'),
+  },
 
+  @computed('observedAndMrca.[]', 'ancestors.[]', 'selectedPositions.[]')
   idToMotif: function() {
     let obs = this.get('observedAndMrca');
     let ancestors = this.get('ancestors');
     let seqs = obs.concat(ancestors);
     let positions = this.get('selectedPositions').sort((a, b) => a - b);
-    return seqs.reduce(function(acc, s) {
+    return seqs.reduce((acc, s) => {
       acc[s.get('id')] = positions.map(idx => s.get('sequence')[idx]).join('');
       return acc;
     }, {});
-  }.property('observedAndMrca.[]', 'ancestors.[]', 'selectedPositions.[]'),
+  },
 
+  @computed('observedAndMrca.[]')
   seqIdToDate: function() {
     return seqIdToProperty(this.get('observedAndMrca'), 'date');
-  }.property('observedAndMrca.[].date'),
+  }
 
 });

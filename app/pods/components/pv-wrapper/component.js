@@ -1,7 +1,8 @@
 import Ember from "ember";
+import { next, once } from "@ember/runloop"
 import Component from '@ember/component';
-import { computed } from '@ember/object';
 import WidthHeightMixin from 'flea-app/mixins/width-height-mixin'
+import { computed, observes } from 'ember-decorators/object';
 
 export default Component.extend(WidthHeightMixin, {
   // options
@@ -21,8 +22,8 @@ export default Component.extend(WidthHeightMixin, {
 
   hoveredResidue: null,
 
-  hoveredLabel: function() {
-    let res = this.get('hoveredResidue');
+  @computed('hoveredResidue')
+  hoveredLabel(res) {
     if (!res) {
       return "";
     }
@@ -30,11 +31,11 @@ export default Component.extend(WidthHeightMixin, {
     let num = res.num();
     // TODO: also print region (like v1, mper, etc)
     return `${name} ${num}`;
-  }.property('hoveredResidue'),
+  },
 
   didInsertElement: function () {
     this._super(...arguments);
-    Ember.run.next(this, this.get('setupView'));
+    next(this, this.get('setupView'));
   },
 
   doResize() {
@@ -59,25 +60,26 @@ export default Component.extend(WidthHeightMixin, {
     this.set('viewer', viewer);
   },
 
-  updateView: function() {
-    this._updateView()
-  }.observes('viewer', 'structure', 'renderMode', 'renderOptions'),
+  @observes('viewer', 'structure', 'renderMode', 'renderOptions')
+  updateView() {
+    once(this, '_updateView')
+  },
 
-  renderMode: computed('selectedPositions.length', function() {
-    let n = this.get('selectedPositions.length');
+  @computed('selectedPositions.length')
+  renderMode(n) {
     if (n > 0) {
       return 'tube';
     }
     return 'tube';
-  }),
+  },
 
-  renderOptions: computed('selectedPositions.length', function() {
-    let n = this.get('selectedPositions.length');
+  @computed('selectedPositions.length')
+  renderOptions(n) {
     if (n > 0) {
       return {'radius': 0.2};
     }
     return {'radius': 1.5};
-  }),
+  },
 
   _updateView() {
     let viewer = this.get('viewer');
@@ -96,13 +98,13 @@ export default Component.extend(WidthHeightMixin, {
   },
 
   // handle this browser event to highlight residue under the mouse
-  mouseMove: function(event) {
+  mouseMove(event) {
     let viewer = this.get('viewer');
     if (!viewer) {
       return;
     }
-    var rect = viewer.boundingClientRect();
-    var picked = viewer.pick({ x : event.clientX - rect.left,
+    let rect = viewer.boundingClientRect();
+    let picked = viewer.pick({ x : event.clientX - rect.left,
                                y : event.clientY - rect.top });
     if (picked === null || picked.target() === null) {
       this.set("hoveredResidue", null);
@@ -115,7 +117,7 @@ export default Component.extend(WidthHeightMixin, {
     }
     let atom = picked.target();
     this.set("hoveredResidue", atom.residue());
-    var sel = picked.node().structure().createEmptyView();
+    let sel = picked.node().structure().createEmptyView();
     if (!sel.removeAtom(picked.target(), true)) {
       sel.addAtom(picked.target());
     }
@@ -123,22 +125,24 @@ export default Component.extend(WidthHeightMixin, {
     viewer.requestRedraw();
   },
 
-  updateRenderMode: function() {
+  @observes('renderMode', 'viewer', 'structure')
+  updateRenderMode() {
     let viewer = this.get('viewer');
-    viewer.clear();
     let structure = this.get('structure');
+    viewer.clear();
     viewer.fitTo(structure);
 
     let geometry = viewer.renderAs('protein', structure, this.get('renderMode'), this.get('renderOptions'));
     this.set('geometry', geometry);
-  }.observes('renderMode', 'viewer', 'structure'),
+  },
 
-  updateColors: function() {
-    Ember.run.once(this, '_updateColors');
-  }.observes('data.[]', 'range.[]', 'structure', 'geometry', 'gradient'),
+  @observes('data.[]', 'range.[]', 'structure', 'geometry', 'gradient')
+  updateColors() {
+    once(this, '_updateColors');
+  },
 
-  gradient: computed('range', function() {
-    let range = this.get('range');
+  @computed('range')
+  gradient(range) {
     let gradient = pv.color.gradient(['white', 'darkred']);
     if (range[0] < 0) {
       // TODO: get gradient stops working, so this is unnecessary
@@ -147,15 +151,14 @@ export default Component.extend(WidthHeightMixin, {
       gradient = pv.color.gradient(['darkblue', 'white', 'darkred']);
     }
     return gradient;
-  }),
+  },
 
   // remap to [0, 1], since pv's stops seems broken
-  normalizedData: computed('data.[]', 'range.[]', function() {
-    let data = this.get('data');
+  @computed('data.[]', 'range.[]')
+  normalizedData(data, range) {
     if (!data) {
       return null;
     }
-    let range = this.get('range');
     let minval = d3.min(data);
     let maxval = d3.max(data);
     if (range[0] > minval) {
@@ -164,8 +167,9 @@ export default Component.extend(WidthHeightMixin, {
     if (range[1] < maxval) {
       throw {name: 'RangeError', message: 'range[1] too small'};
     }
-    return _.map(data, d => (d - range[0]) / (range[1] - range[0]));
-  }),
+    return R.map(d => (d - range[0]) / (range[1] - range[0]),
+		 data);
+  },
 
   _updateColors() {
     let geometry = this.get('geometry');
@@ -192,9 +196,10 @@ export default Component.extend(WidthHeightMixin, {
     this.get('viewer').requestRedraw();
   },
 
-  labelCoordinates: function() {
-    Ember.run.once(this, '_labelCoordinates');
-  }.observes('shouldLabelCoordinates'),
+  @observes('shouldLabelCoordinates')
+  labelCoordinates() {
+    once(this, '_labelCoordinates');
+  },
 
   _labelCoordinates() {
     let viewer = this.get('viewer');
@@ -220,13 +225,14 @@ export default Component.extend(WidthHeightMixin, {
     this.get('viewer').requestRedraw();
   },
 
-  drawSelected: Ember.observer('viewer', 'structure', 'gradient',
-                               'normalizedData.[]',
-                               'selectedPositions.[]', function() {
+  @observes('viewer', 'structure', 'gradient',
+            'normalizedData.[]',
+            'selectedPositions.[]')
+  drawSelected() {
     // ensure colors are available as res.customData() before trying
     // to color spheres
-    Ember.run.once(this, '_drawSelected');
-  }),
+    once(this, '_drawSelected');
+  },
 
   _drawSelected() {
     let viewer = this.get('viewer');

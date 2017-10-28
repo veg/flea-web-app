@@ -1,8 +1,8 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  model: function() {
-    var session_id = this.modelFor('session').session_id;
+  model() {
+    let session_id = this.modelFor('session').session_id;
     return Ember.RSVP.hash({
       tree: this.store.find('trees', session_id),
       copynumbers: this.store.find('copynumbers', session_id),
