@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import config from '../config/environment';
 import {parse_date} from 'flea-app/utils/utils';
+import { computed } from 'ember-decorators/object';
 
 
 var DivergenceInfo = Ember.Object.extend({
@@ -12,8 +13,8 @@ var DivergenceInfo = Ember.Object.extend({
 var DivergenceObject = Ember.Object.extend({
   data: [],
 
-  sortedDivergence: function() {
-    var data = this.get('data');
+  @computed('data')
+  sortedDivergence(data) {
     data.sort((a,b) => a.date - b.date);
     // add combined, which is just max of all time points
     let maxDivergence = new Array(data[0].divergence.length).fill(0);
@@ -29,7 +30,7 @@ var DivergenceObject = Ember.Object.extend({
     });
     data.unshift(combined);
     return data;
-  }.property('data')
+  }
 });
 
 export default Ember.Object.extend({
@@ -37,7 +38,7 @@ export default Ember.Object.extend({
 
   find: function(session_id) {
     var url = config.apiURL + 'sessions/' + session_id + '/divergence';
-    return this.get("ajax").request(url).then(function(data) {
+    return this.get("ajax").request(url).then(data => {
       var result = [];
       delete data['readCount'];
       for (let k in data) {

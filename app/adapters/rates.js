@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import config from '../config/environment';
 import {parse_date} from 'flea-app/utils/utils';
+import { computed } from 'ember-decorators/object';
 
 var RateInfo = Ember.Object.extend({
   date: null,
@@ -11,24 +12,24 @@ var RatesObject = Ember.Object.extend({
   data: [],
   exists: false,
 
-  sortedRates: function () {
-    var rates = this.get('data');
+  @computed('data.[]')
+  sortedRates(rates) {
     var timepoints = rates.filter(d => d.date !== 'Combined');
     var combined = rates.filter(d => d.date === 'Combined');
     timepoints.sort((a,b) => a.date - b.date);
     timepoints.splice(0, 0, combined[0]);
     return timepoints;
-  }.property('data.[]'),
+  },
 
   // _positive_selection
-  positiveSelection: function() {
+  @computed('sortedRates')
+  positiveSelection(sorted) {
     if (!this.get('exists')) {
       // FIXME: actually report that it failed
       return [[]];
     }
-    var sorted = this.get('sortedRates');
     return sorted.map(d => positive_selection_positions(d.rates));
-  }.property('sortedRates'),
+  }
 });
 
 

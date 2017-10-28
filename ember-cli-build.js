@@ -63,6 +63,8 @@ module.exports = function(defaults) {
   app.import('bower_components/phylotree/phylotree.css');
   
   app.import('bower_components/bio-pv/bio-pv.min.js');
+
+  app.import('bower_components/ramda/dist/ramda.min.js');
   
   return app.toTree();
 };

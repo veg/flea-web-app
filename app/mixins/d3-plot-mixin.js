@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { computed } from 'ember-decorators/object';
 
 export default Ember.Mixin.create({
   tagName: 'svg',
@@ -34,31 +35,29 @@ export default Ember.Mixin.create({
     Ember.run.once(this, '_updateChart');
   }.observes('data.[]'),
 
-  innerWidth: function() {
-    let margin = this.get('margin');
-    let width = this.get('width');
+  @computed('width', 'margin')
+  innerWidth(width, margin) {
     return width - margin.left - margin.right;
-  }.property('width', 'margin'),
+  },
 
-  innerHeight: function() {
-    let margin = this.get('margin');
-    let height = this.get('height');
+  @computed('height', 'margin')
+  innerHeight(height, margin) {
     return height - margin.top - margin.bottom;
-  }.property('height', 'margin'),
+  },
 
-  innerGroupTransform: function() {
-    let margin = this.get('margin');
+  @computed('margin')
+  innerGroupTransform(margin) {
     return `translate(${margin.left}, ${margin.top})`;
-  }.property('margin'),
+  },
 
-  xAxisTransform: function() {
-    let height = this.get('innerHeight');
+  @computed('innerHeight')
+  xAxisTransform(height) {
     return `translate(0, ${height})`;
-  }.property('innerHeight'),
+  },
 
-  yAxisTransform: function() {
-    let width = this.get('innerWidth');
+  @computed('innerWidth')
+  yAxisTransform(width) {
     return `translate(${width}, 0)`;
-  }.property('innerWidth'),
+  }
 
 });
