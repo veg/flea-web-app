@@ -1,17 +1,29 @@
 import Ember from 'ember';
-import {oneIndex} from 'flea-app/utils/utils';
+
 import { computed, action } from 'ember-decorators/object';
+import PropTypes from 'prop-types';
+
+import {oneIndex} from 'flea-app/utils/utils';
 
 export default Ember.Component.extend({
 
-  // just for setting colspan of divider rows
-  // TODO: update this dynamically
-  nCols: 1000,
+   propTypes: {
+     groupedSequences: PropTypes.emberArray.isRequired,
+     alnToRef: PropTypes.emberArray.isRequired,
 
-  // bound to controller
-  groupedSequences: {},
-  alnToRef: null,
-  selectedPositions: [],
+     selectedPositions: PropTypes.emberArray,
+
+     // for setting colspan of divider rows
+     // TODO: update this dynamically
+     nCols: PropTypes.number
+   },
+
+  getDefaultProps() {
+    return {
+      selectedPositions: [],
+      nCols: 1000
+    };
+  },
 
   selectDefault: false,
 

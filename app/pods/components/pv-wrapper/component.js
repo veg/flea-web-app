@@ -1,25 +1,37 @@
 import Ember from "ember";
-import { next, once } from "@ember/runloop"
 import Component from '@ember/component';
-import WidthHeightMixin from 'flea-app/mixins/width-height-mixin'
+import EmberObject from '@ember/object';
+import { next, once } from "@ember/runloop"
+
 import { computed, observes } from 'ember-decorators/object';
+import PropTypes from 'prop-types';
+
+import WidthHeightMixin from 'flea-app/mixins/width-height-mixin'
 
 export default Component.extend(WidthHeightMixin, {
-  // options
-  shouldLabelCoordinates: false,
 
-  // where to draw spheres
-  selectedPositions: null,
-
-  // bound
+  // The structure to render.
+  // must be an instance of pv.Mol
   structure: null,
-  data: [],
-  range: [0, 1],
 
-  // created
+   propTypes: {
+     data: PropTypes.emberArray,
+     range: PropTypes.emberArray,
+     selectedPositions: PropTypes.emberArray,
+     shouldLabelCoordinates: PropTypes.bool
+   },
+
+  getDefaultProps() {
+    return {
+      data: [],
+      range: [0, 1],
+      selectedPositions: [],
+      shouldLabelCoordinates: false,
+    };
+  },
+
   viewer: null,
   geometry: null,
-
   hoveredResidue: null,
 
   @computed('hoveredResidue')

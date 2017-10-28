@@ -1,31 +1,44 @@
 import Ember from 'ember';
+
+import { computed, observes } from 'ember-decorators/object';
+import PropTypes from 'prop-types';
+
+
 import {zeroIndex, oneIndex, transformIndex, alignmentTicks} from 'flea-app/utils/utils';
 import WidthMixin from 'flea-app/mixins/width-mixin';
-import { computed, observes } from 'ember-decorators/object';
 
 // FIXME: use an x-axis to scale to div width
 
 export default Ember.Component.extend(WidthMixin, {
+
+   propTypes: {
+     alnRanges: PropTypes.emberArray,
+     validAlnRange: PropTypes.emberArray,
+     selectedPositions: PropTypes.emberArray,
+     predefinedRegions: PropTypes.emberArray,
+     alnToRefCoords: PropTypes.emberArray,
+     refToFirstAlnCoords: PropTypes.emberArray,
+     refToLastAlnCoords: PropTypes.emberArray,
+
+     labelHeight: PropTypes.number,
+     mainHeight: PropTypes.number,
+     axisHeight: PropTypes.number,
+     tick: PropTypes.number,
+   },
+
+  getDefaultProps() {
+    return {
+      labelHeight: 15,
+      mainHeight: 30,
+      axisHeight: 20,
+      margins: {top: 0, right: 5, bottom: 0, left: 5},
+      tick: 100,
+    };
+  },
+
   tagName: 'svg',
   attributeBindings: ['width', 'height'],
   classNames: ['alignment-overview'],
-
-  labelHeight: 15,
-  mainHeight: 30,
-  axisHeight: 20,
-
-  // TODO: make this standard for all d3 components
-  margins: {top: 0, right: 5, bottom: 0, left: 5},
-
-  alnRanges: null,
-  validAlnRange: [0, 1],
-  selectedPositions: null,
-  predefinedRegions: null,
-  alnToRefCoords: null,
-  refToFirstAlnCoords: null,
-  refToLastAlnCoords: null,
-
-  tick: 100,
 
   shiftKey: false,
 

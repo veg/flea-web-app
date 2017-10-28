@@ -73,8 +73,13 @@
 
 <div class="row">
   <div class="col-sm-12" id="_protein_plots">
-    {{protein-plots names=timepointNames data1=data1 data2=data2
-      positions=positions labels=labels url=currentPath
+    {{protein-plots
+      names=timepointNames
+      data1=data1
+      data2=data2
+      positions=positions
+      labels=labels
+      url=currentPath
       alnToRefCoords=model.coordinates.alnToRefCoords
       refToFirstAlnCoords=model.coordinates.refToFirstAlnCoords
     }}

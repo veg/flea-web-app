@@ -1,16 +1,27 @@
 import Ember from 'ember';
-import {oneIndex} from 'flea-app/utils/utils';
+
 import { computed, observes, action } from 'ember-decorators/object';
 import { on } from 'ember-decorators/object/evented';
+import PropTypes from 'prop-types';
+
+import {oneIndex} from 'flea-app/utils/utils';
 
 export default Ember.Component.extend({
+
+   propTypes: {
+      validRange: PropTypes.emberArray,
+      rangeText: PropTypes.string,
+   },
+
+  getDefaultProps() {
+    return {
+      validRange: [],
+      rangeText: '',
+    };
+  },
+
   tagName: '',
   inputClass: "input-valid",
-
-  // updated from template
-  validRange: [0, 1],
-
-  rangeText: '',
 
   @computed('ranges', 'ranges.length', 'ranges.[]', 'ranges.[].[]')
   computedText(ranges) {

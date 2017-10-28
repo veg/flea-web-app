@@ -1,9 +1,13 @@
 import Ember from 'ember';
 import { once } from "@ember/runloop"
-import { oneIndex, alignmentTicks } from 'flea-app/utils/utils';
-import D3Plot from "flea-app/mixins/d3-plot-mixin";
-import WidthMixin from 'flea-app/mixins/width-mixin';
+
 import { computed, observes } from 'ember-decorators/object';
+import PropTypes from 'prop-types';
+
+import D3Plot from "flea-app/mixins/d3-plot-mixin";
+import { oneIndex, alignmentTicks } from 'flea-app/utils/utils';
+import WidthMixin from 'flea-app/mixins/width-mixin';
+
 
 // input: (first is used for brushable navigation)
 // - names ['name1', 'name2', ...]
@@ -16,6 +20,18 @@ import { computed, observes } from 'ember-decorators/object';
 
 
 export default Ember.Component.extend(D3Plot, WidthMixin, {
+
+   propTypes: {
+     names: PropTypes.emberArray.isRequired,
+     data1: PropTypes.emberArray.isRequired,
+     data2: PropTypes.emberArray.isRequired,
+     positions: PropTypes.emberArray.isRequired,
+     labels: PropTypes.emberArray.isRequired,
+     url: PropTypes.string.isRequired,
+     alnToRefCoords: PropTypes.emberArray.isRequired,
+     refToFirstAlnCoords: PropTypes.emberArray.isRequired,
+   },
+
   heightEach: 80,
   labelHeight: 25,
 
