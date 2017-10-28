@@ -23,10 +23,9 @@ export default Ember.Object.extend({
     let ancestors = this.get('ancestors');
     let seqs = obs.concat(ancestors);
     let positions = this.get('selectedPositions').sort((a, b) => a - b);
-    return seqs.reduce((acc, s) => {
-      acc[s.get('id')] = positions.map(idx => s.get('sequence')[idx]).join('');
-      return acc;
-    }, {});
+    let ids = R.map(R.prop('id'), seqs);
+    let motifs = R.map(s => positions.map(idx => s.get('sequence')[idx]).join(''), seqs);
+    return R.zipObj(ids, motifs);
   },
 
   @computed('observedAndMrca.[]')

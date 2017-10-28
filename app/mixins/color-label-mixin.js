@@ -110,7 +110,7 @@ export default Ember.Mixin.create({
     return this.makeColorScale(rankColors, sortedVisitCodes, sortedDates);
   },
 
-  @computed('model.sequences.idToMotif[]')
+  @computed('model.sequences.idToMotif')
   motifColorScale(idToMotif) {
     let motifs = R.uniq(R.values(idToMotif))
     let scale = motifs.length > 10 ? d3.scale.category20() : d3.scale.category10();
@@ -122,9 +122,9 @@ export default Ember.Mixin.create({
     return R.map(scale, seqIdToDate);
   },
 
-  @computed('model.sequences.seqIdToDate', 'motifColorScale', 'nodeNameType')
-  seqIdToMotifColor(seqIdToDate, scale, nodeNameType) {
-    return R.map(scale, seqIdToDate);
+  @computed('model.sequences.idToMotif', 'motifColorScale', 'nodeNameType')
+  seqIdToMotifColor(seqIdToMotif, scale, nodeNameType) {
+    return R.map(scale, seqIdToMotif);
   },
 
   @action
