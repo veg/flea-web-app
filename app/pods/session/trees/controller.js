@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import ColorLabelMixin from 'flea-app/mixins/color-label-mixin';
-import { action } from 'ember-decorators/object';
+import { computed, action } from 'ember-decorators/object';
 
 export default Ember.Controller.extend(ColorLabelMixin, {
 
@@ -12,6 +12,12 @@ export default Ember.Controller.extend(ColorLabelMixin, {
   heightScale: 1.0,
 
   hideCopynumber: Ember.computed.not('showCopynumber'),
+
+  @computed('model.sequences.observed.[]')
+  seqNameToCopynumber(seqs) {
+    return R.zipObj(R.pluck('name', seqs),
+                    R.pluck('copynumber', seqs));
+  },
 
   @action
   setSortState(val) {

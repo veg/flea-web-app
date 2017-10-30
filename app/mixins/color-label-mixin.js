@@ -1,68 +1,56 @@
 import Ember from 'ember';
-import {seqIdToProperty, mapIfPresent} from 'flea-app/utils/utils';
+import {seqNameToProperty, mapIfPresent} from 'flea-app/utils/utils';
 import { computed, action } from 'ember-decorators/object';
 import { getBy } from 'ember-awesome-macros';
 import raw from 'ember-macro-helpers/raw';
 
 export default Ember.Mixin.create({
-  nodeNameTypes: ['none', 'visit_code', 'seq_id', 'motif'],
+  nodeNameTypes: ['none', 'visit_code', 'seq_name', 'motif'],
   nodeNameType: 'none',
   rankColors: false,
 
   seqs: Ember.computed.alias('model.sequences.observedAndMrca'),
-  seqIdToDate: Ember.computed.alias('model.sequences.seqIdToDate'),
+  seqNameToDate: Ember.computed.alias('model.sequences.seqNameToDate'),
 
   nameMapper: {
-    'none': 'seqIdToBlank',
-    'seq_id': 'seqIdToSelf',
-    'visit_code': 'seqIdToVisitCode',
-    'motif': 'model.sequences.idToMotif',
+    'none': 'seqNameToBlank',
+    'seq_name': 'seqNameToSelf',
+    'visit_code': 'seqNameToVisitCode',
+    'motif': 'model.sequences.nameToMotif',
   },
 
   @computed('nodeNameType', 'nameMapper',
-	    'idToBlank', 'seqIdToSelf',
-	    'seqIdToVisitCode',
-	    'model.sequences.idToMotif')
-  seqIdToNodeName(key, obj) {
+	    'nameToBlank', 'seqNameToSelf',
+	    'seqNameToVisitCode',
+	    'model.sequences.nameToMotif')
+  seqNameToNodeName(key, obj) {
     return this.get(obj[key]);
   },
 
   @computed('seqs.[]')
-  seqIds(seqs) {
-    return R.map(R.prop('id'), seqs);
+  seqNames(seqs) {
+    return R.pluck('name', seqs);
   },
 
-  @computed('seqIds')
-  realSeqIds(seqIds) {
-    return R.filter(id => id.toLowerCase() !== 'mrca', seqIds);
+  @computed('seqNames')
+  realSeqNames(seqNames) {
+    return R.filter(id => id.toLowerCase() !== 'mrca', seqNames);
   },
 
-  @computed('seqIds')
-  seqIdToBlank(ids) {
-    return R.zipObj(ids, R.repeat("", ids.length))
+  @computed('seqNames')
+  seqNameToBlank(names) {
+    return R.zipObj(names, R.repeat("", names.length))
   },
 
-  @computed('seqIds')
-  seqIdToSelf(ids) {
-    return R.zipObj(ids, ids);
+  @computed('seqNames')
+  seqNameToSelf(names) {
+    return R.zipObj(names, names);
   },
 
-  @computed('seqIdToDate')
-  sortedDates(obj) {
-    delete obj["mrca"];
-    let dates = R.uniqBy(R.toString, R.values(obj));
-    return R.sort((a, b) => a - b, dates);
-  },
-
-  @computed('sortedDates', 'model.dates')
-  sortedVisitCodes(dates, dateMap) {
-    return dates.map(d => dateMap[d]);
-  },
-
-  @computed('realSeqIds', 'seqIdToDate', 'model.dates')
-  seqIdToVisitCode(ids, idToDate, dateMap) {
-    let codes = R.map(id => dateMap[idToDate[id]], ids)
-    let result = R.zipObj(ids, codes);
+  @computed('realSeqNames', 'seqNameToDate', 'model.dates.dateToName')
+  seqNameToVisitCode(names, nameToDate, dateMap) {
+    let codes = R.map(name => dateMap[nameToDate[name]], names)
+    let result = R.zipObj(names, codes);
     result['mrca'] = 'mrca';
     return result;
   },
@@ -100,31 +88,34 @@ export default Ember.Mixin.create({
     return label => s2(s1(labelToDate[label]));
   },
 
-  @computed('rankColors', 'sortedDates', 'rankColors')
-  colorScale(rankColors, sortedDates) {
-    return this.makeColorScale(rankColors, sortedDates);
+  @computed('rankColors', 'model.dates.sortedDateObjs')
+  colorScale(rankColors, sdos) {
+    let d = R.pluck('date', sdos);
+    return this.makeColorScale(rankColors, d);
   },
 
-  @computed('rankColors', 'sortedVisitCodes', 'sortedDates')
-  colorScaleVisitCode(rankColors, sortedVisitCodes, sortedDates) {
-    return this.makeColorScale(rankColors, sortedVisitCodes, sortedDates);
+  @computed('rankColors', 'model.dates.sortedVisitCodes',
+	    'model.dates.sortedDateObjs')
+  colorScaleVisitCode(rankColors, sortedVisitCodes, sdos) {
+    let d = R.pluck('date', sdos);
+    return this.makeColorScale(rankColors, sortedVisitCodes, d);
   },
 
-  @computed('model.sequences.idToMotif')
-  motifColorScale(idToMotif) {
-    let motifs = R.uniq(R.values(idToMotif))
+  @computed('model.sequences.nameToMotif')
+  motifColorScale(nameToMotif) {
+    let motifs = R.uniq(R.values(nameToMotif))
     let scale = motifs.length > 10 ? d3.scale.category20() : d3.scale.category10();
     return scale.domain(motifs);
   },
 
-  @computed('model.sequences.seqIdToDate', 'colorScale')
-  seqIdToNodeColor(seqIdToDate, scale) {
-    return R.map(scale, seqIdToDate);
+  @computed('model.sequences.seqNameToDate', 'colorScale')
+  seqNameToNodeColor(seqNameToDate, scale) {
+    return R.map(scale, seqNameToDate);
   },
 
-  @computed('model.sequences.idToMotif', 'motifColorScale', 'nodeNameType')
-  seqIdToMotifColor(seqIdToMotif, scale, nodeNameType) {
-    return R.map(scale, seqIdToMotif);
+  @computed('model.sequences.nameToMotif', 'motifColorScale', 'nodeNameType')
+  seqNameToMotifColor(seqNameToMotif, scale, nodeNameType) {
+    return R.map(scale, seqNameToMotif);
   },
 
   @action

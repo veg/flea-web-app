@@ -1,4 +1,7 @@
 module.exports = {
+  globals: {
+    server: true,
+  },
   root: true,
   parserOptions: {
     ecmaVersion: 2017,
@@ -13,6 +16,7 @@ module.exports = {
     'no-console': 'warn'
   },
   globals: {
+    server: true,
     "@": false,
     "R": false,
     "d3": false,

@@ -1,8 +1,8 @@
 <div class="row">
   <div class="col-sm-12">
     <div class="pv-viewer">
-      {{#if selectedName}}
-	<span class="pv-title">{{selectedName}}</span>
+      {{#if selectedTimepointName}}
+	<span class="pv-title">{{selectedTimepointName}}</span>
       {{/if}}
       {{pv-wrapper
 	structure=model.structure
@@ -48,10 +48,10 @@
       <span class="input-group-addon">
         <label for="protein_regions">Metric to plot</label>
 	{{#power-select
-	   options=metrics
-	   selected=selectedMetric
+	   options=metricNames
+	   selected=selectedMetricName
 	   placeholder="Select metric"
-	   onchange=(action (mut selectedMetric))
+	   onchange=(action (mut selectedMetricName))
 	   as |metric|
 	}}
 	  {{metric}}
@@ -77,8 +77,8 @@
       names=timepointNames
       data1=data1
       data2=data2
-      positions=positions
-      labels=labels
+      selectedPositions=positiveSelectionPositions
+      labels=plotLabels
       url=currentPath
       alnToRefCoords=model.coordinates.alnToRefCoords
       refToFirstAlnCoords=model.coordinates.refToFirstAlnCoords

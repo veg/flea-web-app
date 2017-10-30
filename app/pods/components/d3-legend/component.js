@@ -2,15 +2,25 @@ import Ember from 'ember';
 import { once } from "@ember/runloop"
 import { observes } from 'ember-decorators/object';
 
+import { PropTypes } from 'ember-prop-types';
+
 export default Ember.Component.extend({
+   propTypes: {
+     legendLabels: PropTypes.EmberObject.isRequired,
+     legendColors: PropTypes.EmberObject.isRequired,
+     xCoord: PropTypes.number,
+     yCoord: PropTypes.number
+   },
+
+  getDefaultProps() {
+    return {
+      xCoord: 0,
+      yCoord: 0
+    };
+  },
+
   tagName: 'g',
   classNames: ['legend'],
-
-  xCoord: 0,
-  yCoord: 0,
-
-  legendLabels: [],
-  legendColors: null,
 
   didInsertElement() {
     this._super(...arguments);

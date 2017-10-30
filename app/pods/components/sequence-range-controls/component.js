@@ -2,14 +2,14 @@ import Ember from 'ember';
 
 import { computed, observes, action } from 'ember-decorators/object';
 import { on } from 'ember-decorators/object/evented';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'ember-prop-types';
 
 import {oneIndex} from 'flea-app/utils/utils';
 
 export default Ember.Component.extend({
 
    propTypes: {
-      validRange: PropTypes.emberArray,
+      validRange: PropTypes.EmberObject,
       rangeText: PropTypes.string,
    },
 

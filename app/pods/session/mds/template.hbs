@@ -1,11 +1,16 @@
 <div class="row">
   <div class="col-md-12 pull-right">
     <div class="input-group input-group-sm">
-      {{input type="text" class="form-control" value=pattern
+      {{input type="text"
+	class="form-control mds-input"
+	id="mds-input"
+	value=pattern
 	classNameBindings="patternClass"
-	placeholder="Names to highlight" autofocus="autofocus"
+	placeholder="Names to highlight"
+	autofocus="autofocus"
       }}
       <span class="input-group-addon"
+            id="mds-interpolate"
             title="Interpolate colors by date">
         Interpolate colors
         {{input type="checkbox" checked=rankColors}}
@@ -17,12 +22,11 @@
 <div class="row">
   <div class='col-md-12' id='_mds_viewer'>
     {{mds-viewer
-      data=model.mds
-      copynumbers=model.copynumbers
-      nameToNodeLabel=seqIdToNodeName
-      nameToNodeColor=seqIdToNodeColor
-      nameToMotifColor=seqIdToMotifColor
-      nameToMotif=model.sequences.idToMotif
+      data=model.sequences.observed
+      nameToNodeLabel=seqNameToNodeName
+      nameToNodeColor=seqNameToNodeColor
+      nameToMotifColor=seqNameToMotifColor
+      nameToMotif=model.sequences.nameToMotif
       legendLabels=sortedVisitCodes
       legendColors=colorScaleVisitCode
       highlightedNodes=highlightedNodes

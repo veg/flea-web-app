@@ -1,156 +1,188 @@
 import Ember from 'ember';
 import { computed } from 'ember-decorators/object';
 
+import { parse_date, filterWithKeys } from 'flea-app/utils/utils';
+
 export default Ember.Controller.extend({
 
-  // TODO: populate these on the fly
-  regions: [{name: 'gp160'},
-            {name: 'signal'},
-            {name: 'c1'},
-            {name: 'v1'},
-            {name: 'v2'},
-            {name: 'c2'},
-            {name: 'v3'},
-            {name: 'c3'},
-            {name: 'v4'},
-            {name: 'c4'},
-            {name: 'v5'},
-            {name: 'c5'},
-            {name: 'fusion'},
-            {name: 'gp41ecto'},
-            {name: 'mper'},
-            {name: 'gp41endo'}],
-  selectedRegions: [{name: 'gp160'}],
+  // TODO: do not hardcode defaults
+  selectedRegionNames: ['gp160'],
+  selectedEvoNames: ['dS divergence', 'dN divergence', 'Total divergence', 'Total diversity'],
+  selectedPhenoNames: ['Length', 'PNGS'],
 
-  evoMetrics: [{name: 'ds_divergence'},
-               {name: 'dn_divergence'},
-               {name: 'total_divergence'},
-               {name: 'ds_diversity'},
-               {name: 'dn_diversity'},
-               {name: 'total_diversity'}],
+  initialized: false,
 
-  selectedEvoMetrics: [{name: 'ds_divergence'},
-                       {name: 'dn_divergence'},
-                       {name: 'total_divergence'},
-                       {name: 'total_diversity'}],
+  @computed('model.regionMetrics')
+  regionNames(regions) {
+    return R.uniq(R.pluck('name', regions));
+  },
 
-  phenoMetrics: [{name: 'Length'},
-                 {name: 'PNGS'},
-                 {name: 'IsoelectricPoint'}],
+  @computed('model.regionMetrics')
+  evoNames(regions) {
+    // assumes all have the same metrics
+    return R.pluck('name', regions[0]['evo_metrics']);
+  },
 
-  selectedPhenoMetrics: [{name: 'Length'},
-                         {name: 'PNGS'}],
+  @computed('model.regionMetrics')
+  phenoNames(regions) {
+    // assumes all have the same metrics
+    return R.pluck('name', regions[0]['pheno_metrics']);
 
-  @computed("selectedRegions.[]", "selectedEvoMetrics.length")
-  firstEvoRegion(selectedRegions, n_evo) {
-    if (n_evo > 1 && selectedRegions.length > 1) {
-      return selectedRegions[0].name;
+  },
+
+  selectedMetrics(regions, regionNames, metricNames, metricKey) {
+    let selectedRegions = R.filter(r => R.contains(r['name'], regionNames), regions);
+    // filter out all unselected metrics
+    // TODO: do this with a lens
+    let selected = R.map(
+      region => {
+	let result = {
+	  'name': region['name'],
+	  'date': region['date']
+	};
+	result[metricKey] = R.filter(m => R.contains(m['name'], metricNames), region[metricKey]);
+	return result;
+      },
+      selectedRegions
+    );
+    if (R.any(r => r[metricKey].length === 0, selected)) {
+      return [];
+    }
+    return selected;
+  },
+
+  @computed('selectedRegionNames.[]',
+	    'selectedEvoNames.[]')
+  selectedRegionNamesForEvo(regionNames, evoNames) {
+    if (evoNames.length > 1 && regionNames.length > 1) {
+      return R.take(1, regionNames);
+    }
+    return regionNames;
+  },
+
+  @computed('selectedRegionNames.[]',
+	    'selectedPhenoNames.[]')
+  selectedRegionNamesForPheno(regionNames, phenoNames) {
+    if (phenoNames.length > 1 && regionNames.length > 1) {
+      return R.take(1, regionNames);
+    }
+    return regionNames;
+  },
+
+  @computed('model.regionMetrics.[]',
+	    'selectedRegionNamesForEvo.[]',
+	    'selectedEvoNames.[]')
+  selectedEvoMetrics(regions, regionNames, evoNames) {
+    return this.selectedMetrics(regions, regionNames,
+				evoNames, 'evo_metrics');
+  },
+
+  @computed('model.regionMetrics.[]',
+	    'selectedRegionNamesForPheno.[]',
+	    'selectedPhenoNames.[]')
+  selectedPhenoMetric1(regions, regionNames, phenoNames) {
+    if (phenoNames.length === 0) {
+      return [];
+    }
+    return this.selectedMetrics(regions, regionNames,
+				[phenoNames[0]], 'pheno_metrics');
+  },
+
+  @computed('model.regionMetrics.[]',
+	    'selectedRegionNamesForPheno.[]',
+	    'selectedPhenoNames.[]')
+  selectedPhenoMetric2(regions, regionNames, phenoNames) {
+    if (phenoNames.length < 2) {
+      return []
+    }
+    return this.selectedMetrics(regions, regionNames,
+				[phenoNames[1]], 'pheno_metrics');
+  },
+
+  @computed("selectedRegionNames.[]", "selectedEvoNames.length")
+  firstEvoRegion(regionNames, n_evo) {
+    if (n_evo > 1 && regionNames.length > 1) {
+      return regionNames[0];
     }
     return "";
   },
 
-  @computed("selectedRegions.[]", "selectedPhenoMetrics.length")
-  firstPhenoRegion(selectedRegions, n_pheno) {
-    if (n_pheno > 1 && selectedRegions.length > 1) {
-      return selectedRegions[0].name;
+  @computed("selectedRegionNames.[]", "selectedPhenoNames.length")
+  firstPhenoRegion(regionNames, n_pheno) {
+    if (n_pheno > 1 && regionNames.length > 1) {
+      return regionNames[0];
     }
     return "";
   },
 
-  @computed("selectedPhenoMetrics.length")
-  excludedPhenoMetric(n_pheno) {
-    if (n_pheno > 2) {
-      return "extra metrics";
+  @computed("selectedPhenoNames.[]")
+  excludedPhenoMetricNames(names) {
+    return R.drop(2, names);
+  },
+
+  getData(metrics, metricKey, forceOverMetrics) {
+    if (metrics.length === 0) {
+      return [];
     }
-    return "";
+
+    // flatten to {region, metric, date, value}
+    let points = R.flatten(
+      R.map(
+	region => R.map(
+	  metric => {
+	    return {
+	      'region': region['name'],
+	      'date': region['date'],
+	      'metric': metric['name'],
+	      'value': metric['value'],
+	    };
+	  },
+	  region[metricKey]
+	),
+	metrics
+      )
+    );
+    let regionNames = R.uniq(R.pluck('name', metrics));
+    let getNames = R.pipe(R.view(R.lensIndex(0)),
+			  R.prop(metricKey),
+			  R.pluck('name'));
+    let metricNames = R.uniq(getNames(metrics));
+    // use metric names if there is more than one metric
+    let isOverMetrics = metricNames.length > 1 || forceOverMetrics
+    let namer = isOverMetrics ? R.prop('metric') : R.prop('region')
+    let groupKey = isOverMetrics ? 'metric' : 'region'
+    let groupedPoints = R.groupBy(R.prop(groupKey), points);
+    // make a line for each group
+    let result = R.mapObjIndexed(
+      (gpoints, key) => {
+	return {
+	  'name': namer(gpoints[0]),
+	  'values': R.map(p => {
+	    return {
+	      x: parse_date(p['date']),
+	      y: p['value']
+	    };
+	  }, gpoints)
+	}
+      },
+      groupedPoints);
+    return R.values(result);
   },
 
-  @computed('model.trajectory', 'selectedRegions.[]', 'selectedEvoMetrics.[]')
-  evoData(all_data, regions, metrics) {
-    return prepData(all_data, regions, metrics);
+  @computed('selectedEvoMetrics.[]')
+  evoData(metrics) {
+    return this.getData(metrics, 'evo_metrics', false);
   },
 
-
-  _phenoData(all_data, regions, metrics) {
-    if (metrics.length > 2) {
-      metrics = metrics.slice(0, 2);
-    }
-    return prepData(all_data, regions, metrics);
+  @computed('selectedPhenoMetric1.[]', 'selectedPhenoMetric2.length')
+  phenoData1(metrics, n_metrics) {
+    let forceOverMetrics = n_metrics > 1
+    return this.getData(metrics, 'pheno_metrics', forceOverMetrics);
   },
 
-  @computed('model.trajectory', 'selectedRegions.[]', 'selectedPhenoMetrics.[]')
-  phenoData(all_data, regions, metrics) {
-    return this._phenoData(all_data, regions, metrics);
-  },
+  @computed('selectedPhenoMetric2.[]')
+  phenoData2(metrics) {
+    return this.getData(metrics, 'pheno_metrics', true);
+  }
 
-  @computed('model.trajectory', 'selectedRegions.[]', 'selectedPhenoMetrics.[]')
-  phenoData2(all_data, regions, metrics) {
-    let result = [];
-    if (this.get('selectedPhenoMetrics.length') > 1) {
-      result = this._phenoData(all_data, regions, metrics);
-    }
-    return result;
-  },
 });
-
-
-function prepData(all_data, regions, metrics) {
-  if (regions.length === 0 || metrics.length === 0) {
-    return [];
-  }
-  else if (regions.length > 1) {
-    if (metrics.length > 1) {
-      // just use first region
-      return singleRegion(all_data, regions[0], metrics);
-    } else {
-      return singleMetric(all_data, regions, metrics[0]);
-    }
-  } else {
-    return singleRegion(all_data, regions[0], metrics);
-  }
-}
-
-
-function singleMetric(all_data, regions, metric) {
-  let result = [];
-  // TODO: do this more functionally
-  // possible with d3.nest?
-  for (let i=0; i<regions.length; i++) {
-    let region = regions[i];
-    let series = {'name': region.name};
-    let values = [];
-    for (let k=0; k<all_data.length; k++) {
-      if (region.name === all_data[k]["Segment"]) {
-        let datum = {'x': all_data[k].Date,
-                     'y': all_data[k][metric.name]};
-        values.push(datum);
-      }
-    }
-    values.sort((a, b) => a.x - b.x);
-    series['values'] = values;
-    result.push(series);
-  }
-  return result;
-}
-
-
-// TODO: code duplication
-function singleRegion(all_data, region, metrics) {
-  let result = [];
-  for (let i=0; i<metrics.length; i++) {
-    let metric = metrics[i];
-    let series = {'name': metric.name};
-    let values = [];
-    for (let k=0; k<all_data.length; k++) {
-      if (region.name === all_data[k]["Segment"]) {
-        let datum = {'x': all_data[k].Date,
-                     'y': all_data[k][metric.name]};
-        values.push(datum);
-      }
-    }
-    values.sort((a, b) => a.x - b.x);
-    series['values'] = values;
-    result.push(series);
-  }
-  return result;
-}

@@ -14,14 +14,15 @@
     </div>
     <div class="form-group">
       {{#power-select-multiple
-	 options=regions
-	 selected=selectedRegions
+	 options=regionNames
+	 selected=selectedRegionNames
 	 searchPlaceholder="Select region(s)"
 	 searchField='name'
-	 onchange=(action (mut selectedRegions))
+	 onchange=(action (mut selectedRegionNames))
+	 closeOnSelect=false
 	 as |region|
       }}
-	{{region.name}}
+	{{region}}
       {{/power-select-multiple}}
     </div>
 
@@ -30,14 +31,15 @@
     </div>
     <div class="form-group">
       {{#power-select-multiple
-	 options=evoMetrics
-	 selected=selectedEvoMetrics
+	 options=evoNames
+	 selected=selectedEvoNames
 	 searchPlaceholder="Select metric(s)"
 	 searchField='name'
-	 onchange=(action (mut selectedEvoMetrics))
+	 onchange=(action (mut selectedEvoNames))
+	 closeOnSelect=false
 	 as |evoMetric|
       }}
-	{{evoMetric.name}}
+	{{evoMetric}}
       {{/power-select-multiple}}
     </div>
 
@@ -51,7 +53,7 @@
 
   <div class = 'row'>
     <div class = 'col-md-12' id="_timeseries_plot">
-      {{timeseries-plot data=evoData ymin=0 tickMap=model.dates}}
+      {{timeseries-plot data=evoData ymin=0 tickMap=model.dates.dateToName}}
     </div>
   </div>
 
@@ -61,14 +63,15 @@
     </div>
     <div class="form-group">
       {{#power-select-multiple
-	 options=phenoMetrics
-	 selected=selectedPhenoMetrics
+	 options=phenoNames
+	 selected=selectedPhenoNames
 	 searchPlaceholder="Select metric(s)"
 	 searchField='name'
-	 onchange=(action (mut selectedPhenoMetrics))
+	 onchange=(action (mut selectedPhenoNames))
+	 closeOnSelect=false
 	 as |phenoMetric|
       }}
-	{{phenoMetric.name}}
+	{{phenoMetric}}
       {{/power-select-multiple}}
     </div>
     {{#if firstPhenoRegion}}
@@ -76,16 +79,16 @@
 	<label class="text-error">(Only showing {{firstPhenoRegion}})</label>
       </div>
     {{/if}}
-    {{#if excludedPhenoMetric}}
+    {{#if excludedPhenoMetricNames}}
       <div class="form-group">
-	<label class="text-error">(Not showing {{excludedPhenoMetric}})</label>
+	<label class="text-error">(Not showing {{excludedPhenoMetricNames}})</label>
       </div>
     {{/if}}
   </div>
 
   <div class = 'row'>
     <div class = 'col-md-12' id="_timeseries_plot">
-      {{timeseries-plot data=phenoData data2=phenoData2 tickMap=model.dates}}
+      {{timeseries-plot data=phenoData1 data2=phenoData2 tickMap=model.dates.dateToName}}
     </div>
   </div>
 {{/if}}

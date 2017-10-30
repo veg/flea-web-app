@@ -1,10 +1,9 @@
 import Ember from "ember";
 import Component from '@ember/component';
-import EmberObject from '@ember/object';
 import { next, once } from "@ember/runloop"
 
 import { computed, observes } from 'ember-decorators/object';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'ember-prop-types';
 
 import WidthHeightMixin from 'flea-app/mixins/width-height-mixin'
 
@@ -15,9 +14,9 @@ export default Component.extend(WidthHeightMixin, {
   structure: null,
 
    propTypes: {
-     data: PropTypes.emberArray,
-     range: PropTypes.emberArray,
-     selectedPositions: PropTypes.emberArray,
+     data: PropTypes.EmberObject,
+     range: PropTypes.EmberObject,
+     selectedPositions: PropTypes.EmberObject,
      shouldLabelCoordinates: PropTypes.bool
    },
 

@@ -2,7 +2,7 @@ import Ember from 'ember';
 import { once } from "@ember/runloop"
 
 import { computed, observes } from 'ember-decorators/object';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'ember-prop-types';
 
 import D3Plot from "flea-app/mixins/d3-plot-mixin";
 import { oneIndex, alignmentTicks } from 'flea-app/utils/utils';
@@ -22,15 +22,21 @@ import WidthMixin from 'flea-app/mixins/width-mixin';
 export default Ember.Component.extend(D3Plot, WidthMixin, {
 
    propTypes: {
-     names: PropTypes.emberArray.isRequired,
-     data1: PropTypes.emberArray.isRequired,
-     data2: PropTypes.emberArray.isRequired,
-     positions: PropTypes.emberArray.isRequired,
-     labels: PropTypes.emberArray.isRequired,
+     names: PropTypes.EmberObject.isRequired,
+     data1: PropTypes.EmberObject.isRequired,
+     data2: PropTypes.EmberObject.isRequired,
+     selectedPostions: PropTypes.array,
+     labels: PropTypes.EmberObject.isRequired,
      url: PropTypes.string.isRequired,
-     alnToRefCoords: PropTypes.emberArray.isRequired,
-     refToFirstAlnCoords: PropTypes.emberArray.isRequired,
+     alnToRefCoords: PropTypes.EmberObject.isRequired,
+     refToFirstAlnCoords: PropTypes.EmberObject.isRequired,
    },
+
+  getDefaultProps() {
+    return {
+      selectedPostions: [],
+    };
+  },
 
   heightEach: 80,
   labelHeight: 25,
@@ -50,7 +56,7 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
     return margins.top + margins.bottom + nPlots * heightEach + labelHeight;
   },
 
-  @observes('names.[]', 'data1', 'data2', 'positions',
+  @observes('names.[]', 'data1', 'data2', 'selectedPositions',
 	    'labels.[]', 'width', 'height', 'heightEach',
 	    'margins', 'yMax', 'labelHeight')
   onChartChange() {
@@ -93,7 +99,7 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
     let names = this.get('names');
     let data1 = this.get('data1');
     let data2 = this.get('data2');
-    let positions = this.get('positions');
+    let positions = this.get('selectedPositions');
     let labels = this.get('labels');
 
     // assume all arrays have same length

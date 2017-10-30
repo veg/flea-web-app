@@ -71,13 +71,13 @@
   <div class='col-md-12' id='_tree_enclosure'>
     {{phylotree-widget
       tree=model.tree
-      copynumbers=model.copynumbers
+      copynumbers=seqNameToCopynumber
       sortState=sortState
       do_copy_number=true
-      seqIdToNodeName=seqIdToNodeName
-      seqIdToNodeColor=seqIdToNodeColor
-      seqIdToMotifColor=seqIdToMotifColor
-      seqIdToMotif=model.sequences.idToMotif
+      seqNameToNodeName=seqNameToNodeName
+      seqNameToNodeColor=seqNameToNodeColor
+      seqNameToMotifColor=seqNameToMotifColor
+      seqNameToMotif=model.sequences.nameToMotif
       radialLayout=radialLayout
       showCopynumber=showCopynumber
       overlapNodes=overlapNodes

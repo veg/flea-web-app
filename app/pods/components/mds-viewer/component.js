@@ -1,16 +1,33 @@
 import Ember from 'ember';
+import EmberObject from '@ember/object';
 import { once } from "@ember/runloop"
+
+import { computed, observes } from 'ember-decorators/object';
+import { PropTypes } from 'ember-prop-types';
+
 import D3Plot from "flea-app/mixins/d3-plot-mixin";
 import WidthHeightMixin from 'flea-app/mixins/width-height-mixin';
-import { computed, observes } from 'ember-decorators/object';
+
 
 export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
-  copynumbers: null,
-  nameToNodeLabel: null,
-  nameToNodeColor: null,
-  nameToMotifColor: null,
-  nameToMotif: null,
 
+   propTypes: {
+     data: PropTypes.EmberObject.isRequired,
+     nameToNodeLabel: PropTypes.EmberObject.isRequired,
+     nameToNodeColor: PropTypes.EmberObject.isRequired,
+     nameToMotifColor: PropTypes.EmberObject.isRequired,
+     nameToMotif: PropTypes.EmberObject.isRequired,
+     legendLabels: PropTypes.EmberObject.isRequired,
+     legendColors: PropTypes.EmberObject.isRequired,
+     highlightedNodes: PropTypes.EmberObject,
+   },
+
+  getDefaultProps() {
+    return {
+      highlightedNodes: [],
+    };
+  },
+  
   legendLabels: [],
   legendColors: null,
 
@@ -40,10 +57,9 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
     return this.scale(yDomain, innerHeight, 0);
   },
 
-  @computed('copynumbers.[]')
-  cnDomain(copynumbers) {
-    let cns = copynumbers;
-    return [0, d3.max(R.values(cns))];
+  @computed('data.[]')
+  cnDomain(data) {
+    return [0, d3.max(R.pluck('copynumber', data))];
   },
 
   @computed('cnDomain', 'cnScale')
@@ -68,7 +84,7 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
 
   @observes('data.[]', 'nameToNodeColor', 'nameToMotif', 'nameToMotifColor',
             'xScale', 'yScale', 'cnScale',
-            'copynumbers.[]', 'highlightedNodes')
+            'highlightedNodes')
   onChartChange() {
     // override this if need to observe more than just data
     if (this._state !== 'inDOM') {
@@ -83,7 +99,6 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
     let xScale = this.get('xScale');
     let yScale = this.get('yScale');
     let cnScale = this.get('cnScale');
-    let cns = this.get('copynumbers');
     let nameToNodeColor = this.get('nameToNodeColor');
     let nameToMotif = this.get('nameToMotif');
     let nameToMotifColor = this.get('nameToMotifColor');
@@ -104,7 +119,7 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
     circles
       .attr("cx", d => xScale(d.x))
       .attr("cy", d => yScale(d.y))
-      .attr("r", d => 1.5 * Math.sqrt(cnScale(cns[d.name])))
+      .attr("r", d => 1.5 * Math.sqrt(cnScale(d.copynumber)))
       .style("fill", d => nameToNodeColor[d.name])
       .style("opacity", d => {
         if (highlightedNodes.length === 0) {

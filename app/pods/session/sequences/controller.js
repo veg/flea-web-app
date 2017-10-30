@@ -103,26 +103,21 @@ export default Ember.Controller.extend(ColorLabelMixin, {
 
   mrcaSplit: string.split('mrcaSlice', raw('')),
   refSplit: string.split('refSlice', raw('')),
-  
+
   @computed('model.sequences.observed.[]',
-	    'model.copynumbers', 'model.dates', 'alnRanges',
+	    'model.dates.dateToName', 'alnRanges',
 	    'mrcaSlice', 'regex', 'threshold')
-  groupedSequences(sequences, copynumbers, datemap, 
-			     alnRanges, mrcaSlice, regex, threshold) {
+  groupedSequences(sequences, datemap,
+		   alnRanges, mrcaSlice, regex, threshold) {
     let self = this;
     let result = [];
     let grouped = R.groupBy(s => s.get('date'), sequences);
     let slice = function(s) {
       let result = self.toSlices(s.sequence, alnRanges);
       let cn = 0;
-      if (s.id in copynumbers) {
-        cn = copynumbers[s.id];
-      } else {
-        throw "copynumbers for sequence " + s.id + " not found";
-      }
       return {sequence: result,
-              copyNumber: cn,
-              ids: [s.id]};
+              copyNumber: s.copynumber,
+              names: [s.name]};
     };
     for (let key in grouped) {
       if (!grouped.hasOwnProperty(key)) {
@@ -174,29 +169,26 @@ export default Ember.Controller.extend(ColorLabelMixin, {
   },
 
   @computed('model.sequences.observed.[]',
-	    'model.copynumbers',
-	    'model.sequences.idToMotif.[]')
-  aaTrajectories(sequences, copynumbers, motifs) {
+	    'model.sequences.nameToMotif.[]')
+  aaTrajectories(sequences, motifs) {
     let counts = {};
     let totals = {};
     for (let i=0; i<sequences.length; i++ ) {
       let seq = sequences[i];
-      let motif = motifs[seq.get('id')];
+      let motif = motifs[seq.get('name')];
+      let date = seq.get('date');
+      let copynumber = seq.get('copynumber');
       if (!(counts.hasOwnProperty(motif))) {
         counts[motif] = {};
       }
-      if (!(counts[motif].hasOwnProperty(seq.date))) {
-        counts[motif][seq.date] = 0;
+      if (!(counts[motif].hasOwnProperty(date))) {
+        counts[motif][date] = 0;
       }
-      if (seq.id in copynumbers) {
-        counts[motif][seq.date] += copynumbers[seq.id];
-      } else {
-        throw "copynumbers for sequence " + seq.id + " not found";
+      counts[motif][date] += copynumber;
+      if (!(totals.hasOwnProperty(date))) {
+        totals[date] = 0;
       }
-      if (!(totals.hasOwnProperty(seq.date))) {
-        totals[seq.date] = 0;
-      }
-      totals[seq.date] += copynumbers[seq.id];
+      totals[date] += copynumber;
     }
     let series = [];
     for (let m in counts) {
@@ -223,7 +215,7 @@ export default Ember.Controller.extend(ColorLabelMixin, {
   cappedTrajectories(series, maxnum) {
     for (let j=0; j<series.length; j++) {
       let trajectory = series[j];
-      let tmax = R.max(R.map(R.prop('y'), R.values(trajectory)));
+      let tmax = R.max(R.pluck('y', R.values(trajectory)));
       series[j].tmax = tmax;
     }
     series.sort((a, b) => b.tmax - a.tmax);
@@ -246,15 +238,8 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     return series;
   },
 
-  @computed('model.dates')
-  sortedDates(datemap) {
-    let result = R.map(k => new Date(k), R.keys(datemap));
-    result.sort((a, b) => a < b ? -1 : 1);
-    return result;
-  },
-
   @computed('cappedTrajectories', '_oldKeys',
-	    'motifColorScale', 'sortedDates')
+	    'motifColorScale', 'model.dates.sortedDates')
   trajectoryData(data, oldKeys, colorScale, dates) {
     let newKeys = data.map(s => s.name);
     this.set('_oldKeys', newKeys);
@@ -288,7 +273,7 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     return result;
   },
 
-  @computed('sortedDates')
+  @computed('model.dates.dateToName')
   trajectoryAxis(datemap) {
     return {
       x: {
@@ -355,7 +340,6 @@ export default Ember.Controller.extend(ColorLabelMixin, {
 
   @action
   updateAlnRange(idx, range) {
-    console.log(`range ${range}`);
     checkRange(range, this.get('validAlnRange'));
     let map = this.get('model.coordinates.alnToRefCoords');
     let refRanges = this.get('sortedRanges');
@@ -366,7 +350,6 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     result[idx] = [transformIndex(range[0], map, false),
                    transformIndex(range[1], map, true)];
     result.sort((a, b) => a[0] - b[0]);
-    console.log(`result: ${result}`);
     this.set('ranges', result);
   },
 
@@ -430,15 +413,15 @@ function collapse(seqs) {
       continue;
     }
     let group = groups[key];
-    let ids = [];
+    let names = [];
     let number = 0;
     for (let i=0; i<group.length; i++) {
-      ids.push(group[i].ids[0]);
+      names.push(group[i].names[0]);
       number += group[i].copyNumber;
     }
     result.push({
       sequence: group[0].sequence,
-      ids: ids,
+      names: names,
       copyNumber: number
     });
   }
@@ -450,7 +433,7 @@ function addHTML(groups) {
   for (let i=0; i<groups.length; i++) {
     let seqs = groups[i].sequences;
     for (let j=0; j<seqs.length; j++) {
-      seqs[j].html = htmlTable1D(seqs[j].ids, ['Sequence ID']);
+      seqs[j].html = htmlTable1D(seqs[j].names, ['Sequence ID']);
     }
   }
   return groups;

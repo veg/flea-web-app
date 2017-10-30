@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 import { computed, observes } from 'ember-decorators/object';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'ember-prop-types';
 
 
 import {zeroIndex, oneIndex, transformIndex, alignmentTicks} from 'flea-app/utils/utils';
@@ -12,13 +12,13 @@ import WidthMixin from 'flea-app/mixins/width-mixin';
 export default Ember.Component.extend(WidthMixin, {
 
    propTypes: {
-     alnRanges: PropTypes.emberArray,
-     validAlnRange: PropTypes.emberArray,
-     selectedPositions: PropTypes.emberArray,
-     predefinedRegions: PropTypes.emberArray,
-     alnToRefCoords: PropTypes.emberArray,
-     refToFirstAlnCoords: PropTypes.emberArray,
-     refToLastAlnCoords: PropTypes.emberArray,
+     alnRanges: PropTypes.EmberObject,
+     validAlnRange: PropTypes.EmberObject,
+     selectedPositions: PropTypes.EmberObject,
+     predefinedRegions: PropTypes.EmberObject,
+     alnToRefCoords: PropTypes.EmberObject,
+     refToFirstAlnCoords: PropTypes.EmberObject,
+     refToLastAlnCoords: PropTypes.EmberObject,
 
      labelHeight: PropTypes.number,
      mainHeight: PropTypes.number,
@@ -305,7 +305,7 @@ export default Ember.Component.extend(WidthMixin, {
 
     let posns = [];
     if (markPositive) {
-      posns = positiveSelection[0];
+      posns = positiveSelection;
     }
     let h = mainHeight;
     let svg = d3.select('#' + this.get('elementId')).select('.overview').select('.main').select('.positive');

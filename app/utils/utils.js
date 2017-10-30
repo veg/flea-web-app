@@ -14,6 +14,11 @@ export let parse_date = d3.time.format("%Y%m%d").parse;
 
 export let format_date = d3.time.format("%B %Y");
 
+export let maybe_parse_date = function(x) {
+  let result = parse_date(x);
+  return result || x;
+}
+
 export let htmlTable1D = function(data, header) {
   return htmlTable(data.map(elt => [elt]), header);
 };
@@ -199,9 +204,9 @@ export let insertNested = function(map, keys, val) {
   map[keys[keys.length - 1]] = val;
 };
 
-export let seqIdToProperty = function(seqs, property) {
+export let seqNameToProperty = function(seqs, property) {
   if (!seqs) {
     return {};
   }
-  return R.zipObj(R.map(R.prop('id'), seqs), R.map(R.prop(property), seqs));
+  return R.zipObj(R.pluck('name', seqs), R.pluck(property, seqs));
 };

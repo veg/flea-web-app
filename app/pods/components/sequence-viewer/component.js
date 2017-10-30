@@ -1,17 +1,17 @@
 import Ember from 'ember';
 
 import { computed, action } from 'ember-decorators/object';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'ember-prop-types';
 
 import {oneIndex} from 'flea-app/utils/utils';
 
 export default Ember.Component.extend({
 
    propTypes: {
-     groupedSequences: PropTypes.emberArray.isRequired,
-     alnToRef: PropTypes.emberArray.isRequired,
+     groupedSequences: PropTypes.EmberObject.isRequired,
+     alnToRef: PropTypes.EmberObject.isRequired,
 
-     selectedPositions: PropTypes.emberArray,
+     selectedPositions: PropTypes.EmberObject,
 
      // for setting colspan of divider rows
      // TODO: update this dynamically
@@ -79,37 +79,19 @@ export default Ember.Component.extend({
     return result;
   },
 
-  @computed('positiveSelection.[]', 'alnRanges.[]')
-  visiblePositiveSites(all_positions, ranges) {
-    let all_results = [];
-    for (let k=0; k<all_positions.length; k++) {
-      let result = [];
-      let positions = all_positions[k];
-      for (let r=0; r<ranges.length; r++) {
-        let start = ranges[r][0];
-        let stop = ranges[r][1];
-        for (let i = 0; i < positions.length; i++) {
-          // could do binary search to speed this up
-          let pos = positions[i];
-          if (start <= pos && pos <= stop) {
-            result.push(pos);
-          }
-          if (pos > stop) {
-            break;
-          }
-        }
-      }
-      all_results.push(result);
-    }
-    return all_results;
-  },
-
-  selectAllPositive() {
-    let visibleCombined = this.get('visiblePositiveSites')[0];
-    this.sendSelected(visibleCombined);
+  @computed('positiveSelection', 'alnRanges.[]')
+  visiblePositiveSites(positiveSelection, ranges) {
+    let inRangeFunc = range => (i => range[0] <= i && i < range[1])
+    let isVisible = R.anyPass(R.map(inRangeFunc, ranges));
+    // use R.values() instead of R.prop() if you want all positive
+    // sites from all time points
+    let sites = R.compose(R.uniq, R.flatten, R.prop('Combined'))(positiveSelection);
+    return R.filter(isVisible, sites);
   },
 
   sendSelected(positions) {
+    // RESUME HERE: getting buttons to select/delete selection
+    // of positive selection sites
     this.sendAction('setSelectedPositions', positions);
   },
 
@@ -134,7 +116,8 @@ export default Ember.Component.extend({
 
   @action
   selectPositiveClicked() {
-    this.selectAllPositive();
+    let visibleCombined = this.get('visiblePositiveSites');
+    this.sendSelected(visibleCombined);
   }
 
 });

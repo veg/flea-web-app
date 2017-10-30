@@ -18,10 +18,10 @@ export default Ember.Component.extend({
   overlapNodes: true,
 
   // parameters
-  seqIdToNodeName: null,
-  seqIdToNodeColor: null,
-  seqIdToMotifColor: null,
-  seqIdToMotif: null,
+  seqNameToNodeName: null,
+  seqNameToNodeColor: null,
+  seqNameToMotifColor: null,
+  seqNameToMotif: null,
   radialLayout: false,
 
   minRadius: 0.1,
@@ -29,15 +29,15 @@ export default Ember.Component.extend({
   heightScale: 1.0,
 
   @computed('copynumbers', 'minRadius', 'maxRadius')
-  nodeSpan(idToCn, minRadius, maxRadius) {
-    let max = d3.max(R.values(idToCn));
+  nodeSpan(nameToCn, minRadius, maxRadius) {
+    let max = d3.max(R.values(nameToCn));
     let scale = d3.scale.sqrt()
         .domain([0, max])
         .range([minRadius, maxRadius]);
-    return node => (node.name in idToCn) ? scale(idToCn[node.name]) : scale(1);
+    return node => (node.name in nameToCn) ? scale(nameToCn[node.name]) : scale(1);
   },
 
-  @computed('seqIdToNodeName')
+  @computed('seqNameToNodeName')
   nodeNamer(map) {
     if (!map) {
       return x => x.name;
@@ -47,7 +47,7 @@ export default Ember.Component.extend({
     };
   },
 
-  @computed('seqIdToNodeColor', 'seqIdToMotifColor')
+  @computed('seqNameToNodeColor', 'seqNameToMotifColor')
   nodeColorizer(nodeMap, textMap) {
     return (element, node) => {
       if (Ember.isPresent(nodeMap)) {
@@ -93,10 +93,10 @@ export default Ember.Component.extend({
     once(this, 'newTree');
   },
 
-  @observes('tree', 'seqIdToMotif')
+  @observes('tree', 'seqNameToMotif')
   newTree() {
     let tree = this.get('tree');
-    let toMotif = this.get('seqIdToMotif');
+    let toMotif = this.get('seqNameToMotif');
     let treeWidget = this.get('treeWidget');
     // do not call layout(), since it will be done in sort()
     treeWidget(tree);
@@ -191,9 +191,9 @@ export default Ember.Component.extend({
   updateOverlap() {
     let overlapNodes = this.get('overlapNodes');
     let widget = this.get('treeWidget');
-    treeWidget.options({'overlap-bubbles': overlapNodes}, false);
-    treeWidget.placenodes();  // TODO: this is not always necessary
-    treeWidget.update(true);
+    widget.options({'overlap-bubbles': overlapNodes}, false);
+    widget.placenodes();  // TODO: this is not always necessary
+    widget.update(true);
   },
 
   @observes('radialLayout')
