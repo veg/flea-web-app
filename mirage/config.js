@@ -14,7 +14,7 @@ export default function() {
   // // delay for each request, automatically set to 0 during testing
   // this.timing = 400;
 
-  this.get('/sessions/:id', (schema, request) => {
+  this.get('/sessions/:id', (schema) => {
     // TODO: why can't we do schema.coordinates.first(), like in the
     // docs?
     return schema.db.sessions[0];

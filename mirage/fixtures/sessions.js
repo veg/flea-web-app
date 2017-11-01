@@ -20,7 +20,7 @@ export default [{
     {"name": "TM", "start": 682, "stop": 707},
     {"name": "CT", "start": 708, "stop": 856}
   ],
-  "structure": [
+  "pdb": [
     "HEADER    VIRAL PROTEIN                           29-JAN-16   5FUU",
     "TITLE     ECTODOMAIN OF CLEAVED WILD TYPE JR-FL ENVDCT TRIMER IN",
     "TITLE    2 COMPLEX WITH PGT151 FAB",

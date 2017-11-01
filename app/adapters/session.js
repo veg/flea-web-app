@@ -43,7 +43,7 @@ export default Ember.Object.extend({
       json['regionMetrics'] = json['region_metrics'];
       delete json['region_metrics'];
 
-      json['structure'] = pv.io.pdb(json['structure'].join('\n'));
+      json['pdb'] = pv.io.pdb(json['pdb'].join('\n'));
       return json;
     });
   }
