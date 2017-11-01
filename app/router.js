@@ -8,9 +8,11 @@ const Router = EmberRouter.extend({
 
 Router.map(function() {
   this.route("session", { path: "/results/:session_id" }, function() {
-    this.route('trajectory', {path: '/trajectory'});
-    this.route('mds', {path: '/mds'});
-    this.route('trees', {path: '/trees'});
+    if (config['enableOtherRoutes']) {
+      this.route('mds', {path: '/mds'});
+      this.route('trajectory', {path: '/trajectory'});
+      this.route('trees', {path: '/trees'});
+    }
     this.route('protein', {path: '/protein'});
     this.route('sequences', {path: '/sequences'});
   });
