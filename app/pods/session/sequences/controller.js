@@ -122,10 +122,7 @@ export default Ember.Controller.extend(ColorLabelMixin, {
               copyNumber: s.copynumber,
               names: [s.name]};
     };
-    for (let key in grouped) {
-      if (!grouped.hasOwnProperty(key)) {
-        continue;
-      }
+    for (const key of Object.keys(grouped)) {
       let final_seqs = grouped[key].map(slice);
       final_seqs = collapse(final_seqs);
       final_seqs.sort((a, b) => b.copyNumber - a.copyNumber);
@@ -194,15 +191,9 @@ export default Ember.Controller.extend(ColorLabelMixin, {
       totals[date] += copynumber;
     }
     let series = [];
-    for (let m in counts) {
-      if (!(counts.hasOwnProperty(m))) {
-        continue;
-      }
+    for (const m of Object.keys(counts)) {
       let points = [];
-      for (let date in totals) {
-        if (!(totals.hasOwnProperty(date))) {
-          continue;
-        }
+      for (const date of Object.keys(totals)) {
         let frac = 0;
         if (counts[m].hasOwnProperty(date)) {
           frac = counts[m][date] / totals[date];
@@ -216,29 +207,26 @@ export default Ember.Controller.extend(ColorLabelMixin, {
 
   @computed('aaTrajectories', 'maxMotifs')
   cappedTrajectories(series, maxnum) {
-    for (let j=0; j<series.length; j++) {
-      let trajectory = series[j];
-      let tmax = R.max(R.pluck('y', R.values(trajectory)));
-      series[j].tmax = tmax;
-    }
-    series.sort((a, b) => b.tmax - a.tmax);
+    let sorted = R.reverse(R.sortBy(
+      s => R.sum(R.pluck('y', R.values(s['values']))),
+      series
+    ))
 
-    // take top n-1 and combine others
-    if (series.length > maxnum) {
-      let first_series = series.slice(0, maxnum);
-      let rest_series = series.slice(maxnum);
-      let combined = rest_series[0].values;
-      for (let k=1; k<rest_series.length; k++) {
-        let curve = rest_series[k].values;
-        for (let n=0; n<curve.length; n++) {
-          combined[n].y += curve[n].y;
-        }
-      }
-      first_series.push({name: 'Other', values: combined});
-      series = first_series;
+    if (sorted.length > maxnum) {
+      let firstSorted = sorted.slice(0, maxnum);
+      let restValues = R.map(s => ({x: s.x, y: 0}), sorted[maxnum].values);
+      sorted.slice(maxnum).forEach(s => {
+	s.values.forEach(v => {
+	  R.find(r => r.x.getTime() === v.x.getTime(), restValues).y += v.y;
+	});
+      });
+      firstSorted.push({
+	name: 'Others',
+	values: restValues,
+      });
+      sorted = firstSorted;
     }
-    // TODO: sort by date each motif became prevalent
-    return series;
+    return sorted;
   },
 
   @computed('cappedTrajectories', '_oldKeys',
@@ -406,10 +394,7 @@ function filterPercent(groups, threshold) {
 function collapse(seqs) {
   let groups = R.groupBy(s => s.sequence, seqs);
   let result = [];
-  for (let key in groups) {
-    if (!groups.hasOwnProperty(key)) {
-      continue;
-    }
+  for (const key of Object.keys(groups)) {
     let group = groups[key];
     let names = [];
     let number = 0;
