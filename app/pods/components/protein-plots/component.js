@@ -286,7 +286,7 @@ export default Ember.Component.extend(D3Plot, WidthMixin, {
       } else {
         focus_plots.push (plot_svg);
       }
-      if (plot_id < positions.length) {
+      if (!R.isEmpty(positions) && plot_id < positions.length) {
         plot_svg.selectAll (".selected_site")
           .data(positions[plot_id])
           .enter()

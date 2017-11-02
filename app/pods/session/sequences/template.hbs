@@ -24,10 +24,12 @@
 	focus-out="doThreshold" insert-newline="doThreshold"
 	size="1"
       }}
-      <span class="input-group-addon">
-        Mark selected sites
-        {{input type="checkbox" name="markPositive" checked=markPositive}}
-      </span>
+      {{#if showMarkPositive}}
+	<span class="input-group-addon">
+          Mark selected sites
+          {{input type="checkbox" name="markPositive" checked=markPositive}}
+	</span>
+      {{/if}}
       <span class="input-group-addon">
         Bar chart
         {{input type="checkbox" name="barChart" checked=barChart}}

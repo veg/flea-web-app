@@ -4,10 +4,12 @@ import { computed, observes, action } from 'ember-decorators/object';
 import { conditional, eq, array } from 'ember-awesome-macros';
 import raw from 'ember-macro-helpers/raw';
 
+import config from '../../../config/environment';
 import {maybe_parse_date, isString, mapIfPresent} from 'flea-app/utils/utils';
 
 export default Ember.Controller.extend({
 
+  showMarkPositive: config.fleaMode,
   markPositive: true,
   labelCoordinates: false,
 
@@ -145,7 +147,7 @@ export default Ember.Controller.extend({
 
   @computed('model.proteinMetrics.positiveSelection', 'timepoints', 'markPositive')
   positiveSelectionPositions(dateToPosns, timepoints, markPositive) {
-    if (!markPositive) {
+    if (!markPositive || R.isEmpty(dateToPosns)) {
       return R.map(_ => [], timepoints);
     }
     return R.map(t => dateToPosns[t], timepoints);

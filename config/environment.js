@@ -10,7 +10,7 @@ module.exports = function(environment) {
     resultsURL: '/results/',
     apiURL: '/api/',
     locationType: 'auto',
-    enableOtherRoutes: true,
+    fleaMode: true,
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

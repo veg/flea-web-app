@@ -303,6 +303,10 @@ export default Ember.Component.extend(WidthMixin, {
     let positiveSelection = this.get('positiveSelection');
     let mainHeight = this.get('mainHeight');
 
+    if (!positiveSelection) {
+      return;
+    }
+
     let posns = [];
     if (markPositive) {
       posns = positiveSelection;

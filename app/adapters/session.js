@@ -25,6 +25,13 @@ export default Ember.Object.extend({
       
       json['sequences'] = parseSequences(json),
 
+      json['proteinMetrics'] = ProteinMetricsObject.create({
+	data: json['protein_metrics'],
+      });
+      delete json['protein_metrics'];
+
+      json['pdb'] = pv.io.pdb(json['pdb'].join('\n'));
+
       json['predefinedRegions'] = R.map(x => {
 	// convert to 0-indexed [start, stop)
 	return {
@@ -35,15 +42,10 @@ export default Ember.Object.extend({
       }, json['predefined_regions']),
       delete json['predefined_regions'];
 
-      json['proteinMetrics'] = ProteinMetricsObject.create({
-	data: json['protein_metrics'],
-      });
-      delete json['protein_metrics'];
-
-      json['regionMetrics'] = json['region_metrics'];
-      delete json['region_metrics'];
-
-      json['pdb'] = pv.io.pdb(json['pdb'].join('\n'));
+      if (config.fleaMode) {
+	json['regionMetrics'] = json['region_metrics'];
+	delete json['region_metrics'];
+      }
       return json;
     });
   }
@@ -82,6 +84,9 @@ let ProteinMetricsObject = Ember.Object.extend({
   @computed('data.[]', 'selectionThreshold')
   positiveSelection(data, threshold) {
     let dnds = R.find(R.propEq('name', 'dNdS'), data['paired']);
+    if (!dnds) {
+      return {};
+    }
     let dN = R.find(R.propEq('name', 'Mean dN'), dnds['data']);
     let result = {};
     R.forEach(timepoint => {

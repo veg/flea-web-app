@@ -1,11 +1,13 @@
 import Ember from 'ember';
-import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges, mapIfPresent } from 'flea-app/utils/utils';
-import ColorLabelMixin from 'flea-app/mixins/color-label-mixin';
-import parser from 'flea-app/utils/parser';
+
 import { computed, action } from 'ember-decorators/object';
 import { string, conditional } from 'ember-awesome-macros';
 import raw from 'ember-macro-helpers/raw';
 
+import config from '../../../config/environment';
+import ColorLabelMixin from 'flea-app/mixins/color-label-mixin';
+import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges, mapIfPresent } from 'flea-app/utils/utils';
+import parser from 'flea-app/utils/parser';
 
 let pngsPattern = 'N[^P][ST]';
 
@@ -23,6 +25,7 @@ export default Ember.Controller.extend(ColorLabelMixin, {
   _threshold: 1,
   threshold: 1,
 
+  showMarkPositive: config.fleaMode,
   markPositive: true,
 
   defaultMaxMotifs: 10,

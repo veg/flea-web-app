@@ -61,10 +61,12 @@
 	<label>Label coordinates</label>
 	{{input type="checkbox" name="labelCoordinates" checked=labelCoordinates}}
       </span>
-      <span class="input-group-addon">
-        <label>Mark positively selected sites</label>
-        {{input type="checkbox" name="markPositive" checked=markPositive}}
-      </span>
+      {{#if showMarkPositive}}
+	<span class="input-group-addon">
+          <label>Mark positively selected sites</label>
+          {{input type="checkbox" name="markPositive" checked=markPositive}}
+	</span>
+      {{/if}}
     </div>
   </div>
   <div class="col-sm-1">

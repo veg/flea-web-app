@@ -3,6 +3,6 @@ import config from '../../config/environment';
 
 export default Ember.Controller.extend({
 
-  enableOtherRoutes: config['enableOtherRoutes']
+  fleaMode: config['fleaMode']
 
 });
