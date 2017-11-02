@@ -3,7 +3,7 @@ import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, check
 import ColorLabelMixin from 'flea-app/mixins/color-label-mixin';
 import parser from 'flea-app/utils/parser';
 import { computed, action } from 'ember-decorators/object';
-import { string } from 'ember-awesome-macros';
+import { string, conditional } from 'ember-awesome-macros';
 import raw from 'ember-macro-helpers/raw';
 
 
@@ -28,6 +28,9 @@ export default Ember.Controller.extend(ColorLabelMixin, {
   defaultMaxMotifs: 10,
   _maxMotifs: 10,
   maxMotifs: 10,
+
+  barChart: false,
+  chartType: conditional('barChart', raw('bar'), raw('spline')),
 
   _oldKeys: [],
 
@@ -239,10 +242,11 @@ export default Ember.Controller.extend(ColorLabelMixin, {
   },
 
   @computed('cappedTrajectories', '_oldKeys',
-	    'motifColorScale', 'model.dates.sortedDates')
-  trajectoryData(data, oldKeys, colorScale, dates) {
-    let newKeys = data.map(s => s.name);
-    this.set('_oldKeys', newKeys);
+	    'motifColorScale', 'model.dates.sortedVisitCodes',
+	    'chartType')
+  trajectoryData(data, oldKeys, colorScale, visitCodes, chartType) {
+    let names = R.pluck('name', data)
+    this.set('_oldKeys', names);
 
     let columns = data.map(s => {
       let values = s.values;
@@ -251,36 +255,30 @@ export default Ember.Controller.extend(ColorLabelMixin, {
       ys.unshift(s.name);
       return ys;
     });
-    let colors = {};
-    data.forEach(s => {
-      colors[s.name] = colorScale(s.name);
-    });
 
-    let xticks = ['x'].concat(dates);
+    let colors = R.zipObj(name, R.map(colorScale, name))
+
+    let xticks = ['x'].concat(visitCodes);
     columns.push(xticks);
     let result = {
       x: 'x',
       columns: columns,
       unload: oldKeys,
-      type: "spline",
-      spline: {
-        interpolation: {
-          type: 'monotone'
-        }
-      },
+      type: chartType,
       colors: colors,
     };
+    if (chartType === 'bar') {
+      result['groups'] = [names];
+    }
     return result;
   },
 
-  @computed('model.dates.dateToName')
-  trajectoryAxis(datemap) {
+  @computed('model.dates.sortedVisitCodes')
+  trajectoryAxis(dates) {
     return {
       x: {
-        type: 'timeseries',
-        tick: {
-          format: x => x in datemap ? datemap[x] : moment(x).format('YYYY-MM-DD')
-        }
+        type: 'category',
+	categories: dates,
       }
     };
   },
