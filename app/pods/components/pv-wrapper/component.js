@@ -100,7 +100,29 @@ export default Component.extend(WidthHeightMixin, {
     }
     viewer.clear();
     viewer.fitTo(structure);
-    let geometry = viewer.renderAs('protein', structure, this.get('renderMode'), this.get('renderOptions'));
+    let geometry = viewer.renderAs('protein', structure,
+				   this.get('renderMode'),
+				   this.get('renderOptions'));
+
+    // draw missing residues
+    let mesh = viewer.customMesh('missing');
+    for (const chain of structure.chains()) {
+      let residues = chain.residues();
+      let nums = residues.map(r => r.num());
+      let indices = R.filter(
+	i => nums[i] + 1 !== nums[i + 1],
+	R.range(0, nums.length - 1)
+      );
+      for (const i of indices) {
+	let coordStart = residues[i].atom(0).pos();
+	let coordStop = residues[i + 1].atom(0).pos();
+	let n = nums[i + 1] - nums[i] - 1;
+	let step = [(coordStop[0] - coordStart[0]) / n,
+		    (coordStop[1] - coordStart[1]) / n,
+		    (coordStop[2] - coordStart[2]) / n];
+	mesh.addTube(coordStart, coordStop, 3.0, {color: 'yellow', cap: true});
+      }
+    }
 
     this.set('geometry', geometry);
     this.labelCoordinates();
@@ -258,8 +280,6 @@ export default Component.extend(WidthHeightMixin, {
     }
     viewer.rm('selectedPositions');
     let cm = viewer.customMesh('selectedPositions');
-    // TODO: don't we need to use this?
-    // let newrange = [0, 1];
     structure.eachResidue(function(res) {
       let ref_num = res.num();
       // positions are 0-indexed, and reference numbers are 1-indexed.
