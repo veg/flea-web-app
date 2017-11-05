@@ -101,8 +101,8 @@ export default Component.extend(WidthHeightMixin, {
     viewer.clear();
     viewer.fitTo(structure);
     let geometry = viewer.renderAs('protein', structure,
-				   this.get('renderMode'),
-				   this.get('renderOptions'));
+                                   this.get('renderMode'),
+                                   this.get('renderOptions'));
 
     // draw missing residues
     let mesh = viewer.customMesh('missing');
@@ -110,17 +110,41 @@ export default Component.extend(WidthHeightMixin, {
       let residues = chain.residues();
       let nums = residues.map(r => r.num());
       let indices = R.filter(
-	i => nums[i] + 1 !== nums[i + 1],
-	R.range(0, nums.length - 1)
+        i => nums[i] + 1 < nums[i + 1],
+        R.range(0, nums.length - 1)
       );
       for (const i of indices) {
-	let coordStart = residues[i].atom(0).pos();
-	let coordStop = residues[i + 1].atom(0).pos();
-	let n = nums[i + 1] - nums[i] - 1;
-	let step = [(coordStop[0] - coordStart[0]) / n,
-		    (coordStop[1] - coordStart[1]) / n,
-		    (coordStop[2] - coordStart[2]) / n];
-	mesh.addTube(coordStart, coordStop, 3.0, {color: 'yellow', cap: true});
+        let coordStart = residues[i].atom(0).pos();
+        let coordStop = residues[i + 1].atom(0).pos();
+        let dist = Math.sqrt(Math.pow(coordStop[0] - coordStart[0], 2) +
+                             Math.pow(coordStop[1] - coordStart[1], 2) +
+                             Math.pow(coordStop[2] - coordStart[2], 2));
+        let n = nums[i + 1] - nums[i] - 1;
+        if (dist < 4) {
+          // TODO: do not hardcode
+
+          // TODO: need to deal with this another way. Residue needs
+          // to be visualized between two connected residues in
+          // structure.
+
+          // TODO: more generally, how to deal with case when there is
+          // not enough linear space between endpoints?
+
+          continue;
+        }
+        let step = [(coordStop[0] - coordStart[0]) / n,
+                    (coordStop[1] - coordStart[1]) / n,
+                    (coordStop[2] - coordStart[2]) / n];
+        for (let j=0; j<n; j++) {
+          let coord = R.map(
+            i => coordStart[i] + (j + 1) * step[i],
+            R.range(0, 3)
+          );
+          let gradient = pv.color.gradient(['yellow', 'green']);
+          let color = [1, 1, 1, 1];
+          gradient.colorAt(color, j/n);
+          mesh.addSphere(coord, 2.0, {color: color});
+        }
       }
     }
 
@@ -201,7 +225,7 @@ export default Component.extend(WidthHeightMixin, {
       throw {name: 'RangeError', message: 'range[1] too small'};
     }
     return R.map(d => (d - range[0]) / (range[1] - range[0]),
-		 data);
+                 data);
   },
 
   _updateColors() {
