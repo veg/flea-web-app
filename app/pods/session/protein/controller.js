@@ -133,12 +133,14 @@ export default Ember.Controller.extend({
   
   @computed('model.dates.sortedDates')
   timepoints(dates) {
+    dates = R.map(R.identity, dates);
     dates.unshift('Combined');
     return dates;
   },
 
   @computed('model.dates.sortedVisitCodes')
   timepointNames(labels) {
+    labels = R.map(R.identity, labels);
     labels.unshift('Combined');
     return labels;
   },
