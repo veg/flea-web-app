@@ -247,7 +247,7 @@ export default Ember.Controller.extend(ColorLabelMixin, {
       return ys;
     });
 
-    let colors = R.zipObj(name, R.map(colorScale, name))
+    let colors = R.zipObj(names, R.map(colorScale, names))
 
     let xticks = ['x'].concat(visitCodes);
     columns.push(xticks);
