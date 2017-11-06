@@ -15,6 +15,13 @@
         Interpolate colors
         {{input type="checkbox" checked=rankColors}}
       </span>
+      <span class="input-group-addon"
+            id="mds-motif"
+            title="Color by motif">
+        Color by motif
+        {{input type="checkbox" checked=colorByMotif}}
+      </span>
+
     </div>
   </div>
 </div>
@@ -24,7 +31,7 @@
     {{mds-viewer
       data=model.sequences.observed
       nameToNodeLabel=seqNameToNodeName
-      nameToNodeColor=seqNameToNodeColor
+      nameToNodeColor=selectedColorMap
       nameToMotifColor=seqNameToMotifColor
       nameToMotif=model.sequences.nameToMotif
       legendLabels=sortedVisitCodes

@@ -233,7 +233,7 @@ export default Ember.Controller.extend(ColorLabelMixin, {
   },
 
   @computed('cappedTrajectories', '_oldKeys',
-	    'motifColorScale', 'model.dates.sortedVisitCodes',
+	    'colorScaleMotif', 'model.dates.sortedVisitCodes',
 	    'chartType')
   trajectoryData(data, oldKeys, colorScale, visitCodes, chartType) {
     let names = R.pluck('name', data)

@@ -54,6 +54,7 @@
       <span class="input-group-addon">
         Node names
       </span>
+      <span class="input-group-addon">
 	{{#power-select
 	   options=nodeNameTypes
 	   selected=nodeNameType
@@ -63,6 +64,7 @@
 	}}
 	  {{nodeNameType}}
 	{{/power-select}}
+      </span>
     </div>
   </div>
 </div>
@@ -75,7 +77,7 @@
       sortState=sortState
       do_copy_number=true
       seqNameToNodeName=seqNameToNodeName
-      seqNameToNodeColor=seqNameToNodeColor
+      seqNameToTimePointColor=seqNameToTimePointColor
       seqNameToMotifColor=seqNameToMotifColor
       seqNameToMotif=model.sequences.nameToMotif
       radialLayout=radialLayout

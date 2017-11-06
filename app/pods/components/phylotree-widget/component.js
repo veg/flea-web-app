@@ -19,7 +19,7 @@ export default Ember.Component.extend({
 
   // parameters
   seqNameToNodeName: null,
-  seqNameToNodeColor: null,
+  seqNameToTimePointColor: null,
   seqNameToMotifColor: null,
   seqNameToMotif: null,
   radialLayout: false,
@@ -47,7 +47,7 @@ export default Ember.Component.extend({
     };
   },
 
-  @computed('seqNameToNodeColor', 'seqNameToMotifColor')
+  @computed('seqNameToTimePointColor', 'seqNameToMotifColor')
   nodeColorizer(nodeMap, textMap) {
     return (element, node) => {
       if (Ember.isPresent(nodeMap)) {

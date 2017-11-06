@@ -89,31 +89,31 @@ export default Ember.Mixin.create({
   },
 
   @computed('rankColors', 'model.dates.sortedDateObjs')
-  colorScale(rankColors, sdos) {
-    let d = R.pluck('date', sdos);
+  colorScaleTimePoint(rankColors, sortedDateObjs) {
+    let d = R.pluck('date', sortedDateObjs);
     return this.makeColorScale(rankColors, d);
   },
 
   @computed('rankColors', 'model.dates.sortedVisitCodes',
 	    'model.dates.sortedDateObjs')
-  colorScaleVisitCode(rankColors, sortedVisitCodes, sdos) {
-    let d = R.pluck('date', sdos);
+  colorScaleVisitCode(rankColors, sortedVisitCodes, sortedDateObjs) {
+    let d = R.pluck('date', sortedDateObjs);
     return this.makeColorScale(rankColors, sortedVisitCodes, d);
   },
 
   @computed('model.sequences.nameToMotif')
-  motifColorScale(nameToMotif) {
+  colorScaleMotif(nameToMotif) {
     let motifs = R.uniq(R.values(nameToMotif))
     let scale = motifs.length > 10 ? d3.scale.category20() : d3.scale.category10();
     return scale.domain(motifs);
   },
 
-  @computed('model.sequences.seqNameToDate', 'colorScale')
-  seqNameToNodeColor(seqNameToDate, scale) {
+  @computed('model.sequences.seqNameToDate', 'colorScaleTimePoint')
+  seqNameToTimePointColor(seqNameToDate, scale) {
     return R.map(scale, seqNameToDate);
   },
 
-  @computed('model.sequences.nameToMotif', 'motifColorScale', 'nodeNameType')
+  @computed('model.sequences.nameToMotif', 'colorScaleMotif', 'nodeNameType')
   seqNameToMotifColor(seqNameToMotif, scale, nodeNameType) {
     return R.map(scale, seqNameToMotif);
   },

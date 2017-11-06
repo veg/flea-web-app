@@ -1,9 +1,16 @@
 import Ember from 'ember';
-import ColorLabelMixin from 'flea-app/mixins/color-label-mixin';
+
 import { computed } from 'ember-decorators/object';
+import { conditional } from 'ember-awesome-macros';
+
+import ColorLabelMixin from 'flea-app/mixins/color-label-mixin';
 
 export default Ember.Controller.extend(ColorLabelMixin, {
   pattern: '',
+
+  colorByMotif: false,
+
+  selectedColorMap: conditional('colorByMotif', 'seqNameToMotifColor', 'seqNameToTimePointColor'),
 
   @computed('pattern')
   highlightedNodes(pattern) {
