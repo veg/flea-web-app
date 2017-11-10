@@ -37,21 +37,6 @@ export default Ember.Controller.extend(ColorLabelMixin, {
 
   _oldKeys: [],
 
-  @computed('model.sequences.reference', 'model.coordinates.alnToRefCoords')
-  reference(ref, map) {
-    // replace repeats with '-'
-    let newSeq = [ref.sequence[0]];
-    for (let k=1; k<map.length; k++ ) {
-      if (map[k] === map[k - 1]) {
-        newSeq.push('-');
-      } else {
-        newSeq.push(ref.sequence[k]);
-      }
-    }
-    ref.sequence = newSeq.join('');
-    return ref;
-  },
-
   // parses simple grammar and builds RegExp that takes gaps and pipes
   // into account
   @computed('pattern')
@@ -99,12 +84,28 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     return this.toSlices(mrca.sequence, ranges);
   },
 
-  @computed('model.sequences.reference', 'alnRanges')
+  @computed('model.sequences.reference', 'model.coordinates.alnToRefCoords')
+  alignedReference(ref, map) {
+    // replace repeats with '-'
+    let rseq = ref.get('sequence');
+    let newSeq = [];
+    for (let k=0; k<map.length; k++ ) {
+      if (map[k] && map[k] === map[k - 1]) {
+        newSeq.push('-');
+      } else {
+        newSeq.push(rseq[k]);
+      }
+    }
+    return newSeq.join('');
+  },
+
+
+  @computed('alignedReference', 'alnRanges')
   refSlice(ref, ranges) {
     if (ref.length === 0) {
       return "";
     }
-    return this.toSlices(ref.sequence, ranges);
+    return this.toSlices(ref, ranges);
   },
 
   mrcaSplit: string.split('mrcaSlice', raw('')),
