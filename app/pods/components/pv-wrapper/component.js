@@ -44,7 +44,8 @@ export default Component.extend(WidthHeightMixin, {
      data: PropTypes.EmberObject,
      range: PropTypes.EmberObject,
      selectedPositions: PropTypes.EmberObject,
-     shouldLabelCoordinates: PropTypes.bool
+     shouldLabelCoordinates: PropTypes.bool,
+     highlightMissing: PropTypes.bool,
    },
 
   getDefaultProps() {
@@ -53,6 +54,7 @@ export default Component.extend(WidthHeightMixin, {
       range: [0, 1],
       selectedPositions: [],
       shouldLabelCoordinates: false,
+      highlightMissing: false,
     };
   },
 
@@ -142,9 +144,31 @@ export default Component.extend(WidthHeightMixin, {
     let geometry = viewer.renderAs('protein', structure,
                                    this.get('renderMode'),
                                    this.get('renderOptions'));
+    this.set('geometry', geometry);
+    this._drawMissing();
+    this.labelCoordinates();
+    this.updateColors();
+    this.drawSelected();
+  },
 
+  @observes('structure', 'viewer', 'highlightMissing',
+	    'gradient',
+            'normalizedData.[]',
+            'selectedPositions.[]')
+  _drawMissing() {
+    let structure = this.get('structure');
+    let viewer = this.get('viewer');
+    let highlightMissing = this.get('highlightMissing');
+    let gradient = this.get('gradient');
+    let data = this.get('normalizedData');
+    let positions = this.get('selectedPositions');
+    if (!structure || !viewer) {
+      return;
+    }
+    viewer.rm('missingResidues');
+    let missingGradient = pv.color.gradient(['yellow', 'green']);
     // draw missing residues
-    let mesh = viewer.customMesh('missing');
+    let mesh = viewer.customMesh('missingResidues');
     for (const chain of structure.chains()) {
       let residues = chain.residues();
       let nums = residues.map(r => r.num());
@@ -173,18 +197,26 @@ export default Component.extend(WidthHeightMixin, {
         for (let j=0; j<n; j++) {
 	  let t = (j+1) / (n+1);
 	  let coord = interpolate(p0, p1, p2, p3, t).toArray();
-          let gradient = pv.color.gradient(['yellow', 'green']);
+
+	  let ref_num = nums[i + 1] + j;
+
           let color = [1, 1, 1, 1];
-          gradient.colorAt(color, j/n);
-          mesh.addSphere(coord, 2.0, {color: color});
-        }
+	  if (highlightMissing) {
+            missingGradient.colorAt(color, n > 1 ? j/(n-1) : 0);
+	  } else {
+            let val = data[ref_num - 1];
+	    val = (val === undefined ? 0 : val);
+            gradient.colorAt(color, val);
+	  }
+
+	  let radius = 0.5;
+	  if (positions.length == 0 || positions.includes(ref_num - 1)) {
+	    radius = 2.0
+	  }
+          mesh.addSphere(coord, radius, {color: color});
+	}
       }
     }
-
-    this.set('geometry', geometry);
-    this.labelCoordinates();
-    this.updateColors();
-    this.drawSelected();
   },
 
   // handle this browser event to highlight residue under the mouse
@@ -315,7 +347,8 @@ export default Component.extend(WidthHeightMixin, {
     this.get('viewer').requestRedraw();
   },
 
-  @observes('viewer', 'structure', 'gradient',
+  @observes('viewer', 'structure',
+	    'gradient',
             'normalizedData.[]',
             'selectedPositions.[]')
   drawSelected() {

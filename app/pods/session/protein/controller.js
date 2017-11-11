@@ -11,6 +11,7 @@ export default Ember.Controller.extend({
 
   showMarkPositive: config.fleaMode,
   markPositive: true,
+  highlightMissing: false,
   labelCoordinates: false,
 
   // TODO: do not use two-way binding with slider.

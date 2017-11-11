@@ -10,6 +10,7 @@
 	range=structureDataRange
 	selectedPositions=selectedReferencePositions
 	shouldLabelCoordinates=labelCoordinates
+	highlightMissing=highlightMissing
       }}
     </div>
   </div>
@@ -61,9 +62,13 @@
 	<label>Label coordinates</label>
 	{{input type="checkbox" name="labelCoordinates" checked=labelCoordinates}}
       </span>
+      <span class="input-group-addon">
+	<label>Highlight missing</label>
+	{{input type="checkbox" name="labelCoordinates" checked=highlightMissing}}
+      </span>
       {{#if showMarkPositive}}
 	<span class="input-group-addon">
-          <label>Mark positively selected sites</label>
+          <label>Mark positively selected</label>
           {{input type="checkbox" name="markPositive" checked=markPositive}}
 	</span>
       {{/if}}
