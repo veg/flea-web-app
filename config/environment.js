@@ -6,11 +6,10 @@ module.exports = function(environment) {
     modulePrefix: 'flea-app',
     podModulePrefix: 'flea-app/pods',
     environment: environment,
-    rootURL: '/',
-    resultsURL: '/results/',
+    rootURL: process.env.rootURL || '/',
     apiURL: '/api/',
     locationType: 'auto',
-    fleaMode: true,
+    fleaMode: process.env.fleaMode || true,
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
