@@ -5,7 +5,34 @@ import { next, once } from "@ember/runloop"
 import { computed, observes } from 'ember-decorators/object';
 import { PropTypes } from 'ember-prop-types';
 
-import WidthHeightMixin from 'flea-app/mixins/width-height-mixin'
+import WidthHeightMixin from 'flea-app/mixins/width-height-mixin';
+import Vector from 'flea-app/utils/vector';
+
+
+function vectorMean(vecs) {
+  let result = new Vector(0, 0, 0);
+  R.forEach(v => Vector.add(v, result, result), vecs);
+  return result.divide(vecs.length);
+}
+
+
+function residueCenter(aa) {
+  let vecs = R.map(a => new Vector(...a.pos()), aa.atoms());
+  return vectorMean(vecs);
+}
+
+function bezierCurve(p0, p1, p2, p3, t) {
+  let c0 = p0.multiply(Math.pow(1-t, 3));
+  let c1 = p1.multiply(3 * Math.pow(1 - t, 2) * t);
+  let c2 = p2.multiply(3 * (1 - t) * Math.pow(t, 2));
+  let c3 = p3.multiply(Math.pow(t, 3));
+  return c0.add(c1).add(c2).add(c3);
+}
+
+function linearCurve(p0, p1, p2, p3, t) {
+  return Vector.lerp(p0, p3, t);
+}
+
 
 export default Component.extend(WidthHeightMixin, {
 
@@ -92,9 +119,21 @@ export default Component.extend(WidthHeightMixin, {
     return {'radius': 1.5};
   },
 
+  @computed('structure')
+  centerOfMass(structure) {
+    let result = new Vector(0, 0, 0);
+    if (!structure) {
+      return result;
+    }
+    let residues = R.flatten(R.map(c => c.residues(), structure.chains()));
+    let vectors = R.map(r => residueCenter(r), residues);
+    return vectorMean(vectors);
+  },
+
   _updateView() {
     let viewer = this.get('viewer');
     let structure = this.get('structure');
+    let center = this.get('centerOfMass');
     if (!viewer || !structure) {
       return;
     }
@@ -114,32 +153,26 @@ export default Component.extend(WidthHeightMixin, {
         R.range(0, nums.length - 1)
       );
       for (const i of indices) {
-        let coordStart = residues[i].atom(0).pos();
-        let coordStop = residues[i + 1].atom(0).pos();
-        let dist = Math.sqrt(Math.pow(coordStop[0] - coordStart[0], 2) +
-                             Math.pow(coordStop[1] - coordStart[1], 2) +
-                             Math.pow(coordStop[2] - coordStart[2], 2));
+	let prev = residueCenter(residues[i-1]);
+        let vstart = residueCenter(residues[i]);
+        let vstop = residueCenter(residues[i + 1]);
+        let next = residueCenter(residues[i + 2]);
+	let dist = vstop.subtract(vstart).length();
+
+	prev = prev || vstart;
+	next = next || vstop;
+
+	let p0 = vstart;
+	let p1 = vstart.add(vstart.subtract(prev).multiply(1.5));
+	let p2 = vstop.add(vstop.subtract(next).multiply(1.5));
+	let p3 = vstop;
+
         let n = nums[i + 1] - nums[i] - 1;
-        if (dist < 4) {
-          // TODO: do not hardcode
+	let interpolate = (n < 5) ? linearCurve : bezierCurve;
 
-          // TODO: need to deal with this another way. Residue needs
-          // to be visualized between two connected residues in
-          // structure.
-
-          // TODO: more generally, how to deal with case when there is
-          // not enough linear space between endpoints?
-
-          continue;
-        }
-        let step = [(coordStop[0] - coordStart[0]) / n,
-                    (coordStop[1] - coordStart[1]) / n,
-                    (coordStop[2] - coordStart[2]) / n];
         for (let j=0; j<n; j++) {
-          let coord = R.map(
-            i => coordStart[i] + (j + 1) * step[i],
-            R.range(0, 3)
-          );
+	  let t = (j+1) / (n+1);
+	  let coord = interpolate(p0, p1, p2, p3, t).toArray();
           let gradient = pv.color.gradient(['yellow', 'green']);
           let color = [1, 1, 1, 1];
           gradient.colorAt(color, j/n);
