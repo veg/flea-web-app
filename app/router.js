@@ -7,7 +7,7 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route("session", { path: "/:session_id" }, function() {
+  this.route("session", { path: "/view/:session_id" }, function() {
     if (config['fleaMode']) {
       this.route('mds', {path: '/mds'});
       this.route('trajectory', {path: '/trajectory'});
