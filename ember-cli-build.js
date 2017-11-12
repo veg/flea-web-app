@@ -9,9 +9,9 @@ module.exports = function(defaults) {
     outputPaths: {
         app: {
             css: {
-                  app: "/assets/flea-app.css",
+                  app: "/assets/flea-web-app.css",
             },
-            js: "/assets/flea-app.js",
+            js: "/assets/flea-web-app.js",
         },
 
         vendor: {

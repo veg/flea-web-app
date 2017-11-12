@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {seqNameToProperty} from 'flea-app/utils/utils';
+import {seqNameToProperty} from 'flea-web-app/utils/utils';
 import { computed } from 'ember-decorators/object';
 
 export default Ember.Object.extend({

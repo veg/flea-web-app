@@ -5,8 +5,8 @@ import { next, once } from "@ember/runloop"
 import { computed, observes } from 'ember-decorators/object';
 import { PropTypes } from 'ember-prop-types';
 
-import WidthHeightMixin from 'flea-app/mixins/width-height-mixin';
-import Vector from 'flea-app/utils/vector';
+import WidthHeightMixin from 'flea-web-app/mixins/width-height-mixin';
+import Vector from 'flea-web-app/utils/vector';
 
 
 function vectorMean(vecs) {

@@ -3,8 +3,8 @@
 
 module.exports = function(environment) {
   let ENV = {
-    modulePrefix: 'flea-app',
-    podModulePrefix: 'flea-app/pods',
+    modulePrefix: 'flea-web-app',
+    podModulePrefix: 'flea-web-app/pods',
     environment: environment,
     rootURL: process.env.rootURL || '/',
     apiURL: '/api/',

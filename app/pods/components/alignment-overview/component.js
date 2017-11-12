@@ -4,8 +4,8 @@ import { computed, observes } from 'ember-decorators/object';
 import { PropTypes } from 'ember-prop-types';
 
 
-import {zeroIndex, oneIndex, transformIndex, alignmentTicks} from 'flea-app/utils/utils';
-import WidthMixin from 'flea-app/mixins/width-mixin';
+import {zeroIndex, oneIndex, transformIndex, alignmentTicks} from 'flea-web-app/utils/utils';
+import WidthMixin from 'flea-web-app/mixins/width-mixin';
 
 // FIXME: use an x-axis to scale to div width
 

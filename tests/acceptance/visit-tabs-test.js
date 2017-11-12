@@ -1,5 +1,5 @@
 import { test } from 'qunit';
-import moduleForAcceptance from 'flea-app/tests/helpers/module-for-acceptance';
+import moduleForAcceptance from 'flea-web-app/tests/helpers/module-for-acceptance';
 
 moduleForAcceptance('Acceptance | visit tabs');
 

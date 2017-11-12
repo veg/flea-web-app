@@ -3,7 +3,7 @@ import Ember from 'ember';
 import { computed, action } from 'ember-decorators/object';
 import { PropTypes } from 'ember-prop-types';
 
-import {oneIndex} from 'flea-app/utils/utils';
+import {oneIndex} from 'flea-web-app/utils/utils';
 
 export default Ember.Component.extend({
 

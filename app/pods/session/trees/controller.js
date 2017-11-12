@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import ColorLabelMixin from 'flea-app/mixins/color-label-mixin';
+import ColorLabelMixin from 'flea-web-app/mixins/color-label-mixin';
 import { computed, action } from 'ember-decorators/object';
 
 export default Ember.Controller.extend(ColorLabelMixin, {

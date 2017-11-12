@@ -1,5 +1,5 @@
 import { test } from 'ember-qunit';
-import { refToAlnCoords, alignmentTicks, zeroIndex } from 'flea-app/utils/utils';
+import { refToAlnCoords, alignmentTicks, zeroIndex } from 'flea-web-app/utils/utils';
 
 
 test("it computes alignmentTicks", function(assert){

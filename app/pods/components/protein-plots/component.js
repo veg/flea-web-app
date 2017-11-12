@@ -4,9 +4,9 @@ import { once } from "@ember/runloop"
 import { computed, observes } from 'ember-decorators/object';
 import { PropTypes } from 'ember-prop-types';
 
-import D3Plot from "flea-app/mixins/d3-plot-mixin";
-import { oneIndex, alignmentTicks } from 'flea-app/utils/utils';
-import WidthMixin from 'flea-app/mixins/width-mixin';
+import D3Plot from "flea-web-app/mixins/d3-plot-mixin";
+import { oneIndex, alignmentTicks } from 'flea-web-app/utils/utils';
+import WidthMixin from 'flea-web-app/mixins/width-mixin';
 
 
 // input: (first is used for brushable navigation)

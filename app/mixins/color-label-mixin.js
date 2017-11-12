@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {seqNameToProperty, mapIfPresent} from 'flea-app/utils/utils';
+import {seqNameToProperty, mapIfPresent} from 'flea-web-app/utils/utils';
 import { computed, action } from 'ember-decorators/object';
 import { getBy } from 'ember-awesome-macros';
 import raw from 'ember-macro-helpers/raw';

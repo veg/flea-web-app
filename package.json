@@ -1,10 +1,10 @@
 {
-  "name": "flea-app",
+  "name": "flea-web-app",
   "version": "0.0.0",
   "private": true,
-  "description": "Small description for flea-app goes here",
+  "description": "A client-side web app for visualizing FLEA pipeline analysis results.",
   "license": "MIT",
-  "author": "",
+  "author": "Kemal Eren",
   "directories": {
     "doc": "doc",
     "test": "tests"

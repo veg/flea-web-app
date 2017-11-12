@@ -1,8 +1,8 @@
 import Ember from 'ember';
 import { once } from "@ember/runloop"
-import {mapIfPresent} from "flea-app/utils/utils";
-import D3Plot from "flea-app/mixins/d3-plot-mixin";
-import WidthHeightMixin from 'flea-app/mixins/width-height-mixin';
+import {mapIfPresent} from "flea-web-app/utils/utils";
+import D3Plot from "flea-web-app/mixins/d3-plot-mixin";
+import WidthHeightMixin from 'flea-web-app/mixins/width-height-mixin';
 import { computed, observes } from 'ember-decorators/object';
 
 /*

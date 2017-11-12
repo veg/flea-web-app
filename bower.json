@@ -1,5 +1,5 @@
 {
-  "name": "flea-app",
+  "name": "flea-web-app",
   "dependencies": {
     "bootstrap": "~3.3.7",
     "bootstrap-multiselect": "~0.9.13",

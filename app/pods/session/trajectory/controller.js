@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import { computed } from 'ember-decorators/object';
 
-import { parse_date, filterWithKeys } from 'flea-app/utils/utils';
+import { parse_date, filterWithKeys } from 'flea-web-app/utils/utils';
 
 export default Ember.Controller.extend({
 

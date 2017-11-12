@@ -3,11 +3,11 @@ import config from '../config/environment';
 
 import { computed, observes, action } from 'ember-decorators/object';
 
-import CoordinatesObject from 'flea-app/models/coordinates-object';
-import SequenceObject from 'flea-app/models/sequence-object';
-import SequencesObject from 'flea-app/models/sequences-object';
-import DatesObject from 'flea-app/models/dates-object';
-import { parse_date, maybe_parse_date } from 'flea-app/utils/utils';
+import CoordinatesObject from 'flea-web-app/models/coordinates-object';
+import SequenceObject from 'flea-web-app/models/sequence-object';
+import SequencesObject from 'flea-web-app/models/sequences-object';
+import DatesObject from 'flea-web-app/models/dates-object';
+import { parse_date, maybe_parse_date } from 'flea-web-app/utils/utils';
 
 export default Ember.Object.extend({
   ajax: Ember.inject.service(),

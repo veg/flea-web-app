@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {zeroIndex, refToAlnCoords} from 'flea-app/utils/utils';
+import {zeroIndex, refToAlnCoords} from 'flea-web-app/utils/utils';
 import { computed, observes } from 'ember-decorators/object';
 
 export default Ember.Object.extend({

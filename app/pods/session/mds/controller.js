@@ -3,7 +3,7 @@ import Ember from 'ember';
 import { computed } from 'ember-decorators/object';
 import { conditional } from 'ember-awesome-macros';
 
-import ColorLabelMixin from 'flea-app/mixins/color-label-mixin';
+import ColorLabelMixin from 'flea-web-app/mixins/color-label-mixin';
 
 export default Ember.Controller.extend(ColorLabelMixin, {
   pattern: '',

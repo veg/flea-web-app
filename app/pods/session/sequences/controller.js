@@ -5,9 +5,9 @@ import { string, conditional } from 'ember-awesome-macros';
 import raw from 'ember-macro-helpers/raw';
 
 import config from '../../../config/environment';
-import ColorLabelMixin from 'flea-app/mixins/color-label-mixin';
-import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges, mapIfPresent } from 'flea-app/utils/utils';
-import parser from 'flea-app/utils/parser';
+import ColorLabelMixin from 'flea-web-app/mixins/color-label-mixin';
+import {format_date, htmlTable1D, regexRanges, transformIndex, checkRange, checkRanges, mapIfPresent } from 'flea-web-app/utils/utils';
+import parser from 'flea-web-app/utils/parser';
 
 let pngsPattern = 'N[^P][ST]';
 

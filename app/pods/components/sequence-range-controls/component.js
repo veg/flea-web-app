@@ -4,7 +4,7 @@ import { computed, observes, action } from 'ember-decorators/object';
 import { on } from 'ember-decorators/object/evented';
 import { PropTypes } from 'ember-prop-types';
 
-import {oneIndex} from 'flea-app/utils/utils';
+import {oneIndex} from 'flea-web-app/utils/utils';
 
 export default Ember.Component.extend({
 

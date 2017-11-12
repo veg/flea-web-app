@@ -5,7 +5,7 @@ import { conditional, eq, array } from 'ember-awesome-macros';
 import raw from 'ember-macro-helpers/raw';
 
 import config from '../../../config/environment';
-import {maybe_parse_date, isString, mapIfPresent} from 'flea-app/utils/utils';
+import {maybe_parse_date, isString, mapIfPresent} from 'flea-web-app/utils/utils';
 
 export default Ember.Controller.extend({
 
