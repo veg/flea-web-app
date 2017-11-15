@@ -88,6 +88,12 @@ export default Component.extend(WidthHeightMixin, {
   },
 
   setupView() {
+    let elt = this.$();
+    if (!elt) {
+      // this seems to happen if user navigates away from this page
+      // too fast
+      return;
+    }
     let options = {
       width: this.get('width'),
       height: this.get('height'),
@@ -96,7 +102,7 @@ export default Component.extend(WidthHeightMixin, {
       fog: true,
       background: 'black'
     };
-    let viewer = pv.Viewer(this.$()[0], options);
+    let viewer = pv.Viewer(elt[0], options);
     this.set('viewer', viewer);
   },
 
