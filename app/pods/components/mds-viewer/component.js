@@ -17,19 +17,18 @@ export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
      nameToNodeColor: PropTypes.object.isRequired,
      nameToMotifColor: PropTypes.object.isRequired,
      nameToMotif: PropTypes.object.isRequired,
-     legendLabels: PropTypes.array.isRequired,
-     legendColors: PropTypes.func.isRequired,
+     legendLabels: PropTypes.array,
+     legendColors: PropTypes.func,
      highlightedNodes: PropTypes.array,
    },
 
   getDefaultProps() {
     return {
+      legendLabels: [],
+      legendColors: function() {},
       highlightedNodes: [],
     };
   },
-  
-  legendLabels: [],
-  legendColors: null,
 
   @computed('data.[]')
   xDomain(data) {
