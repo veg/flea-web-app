@@ -234,9 +234,11 @@ export default Ember.Controller.extend(ColorLabelMixin, {
   },
 
   @computed('cappedTrajectories', '_oldKeys',
-	    'colorScaleMotif', 'model.dates.sortedVisitCodes',
-	    'chartType')
-  trajectoryData(data, oldKeys, colorScale, visitCodes, chartType) {
+	    'colorScaleMotif',
+	    'model.dates.sortedVisitCodes',
+	    'model.dates.sortedDates',
+	    'chartType', 'barChart')
+  trajectoryData(data, oldKeys, colorScale, visitCodes, dates, chartType, barChart) {
     let names = R.pluck('name', data)
     this.set('_oldKeys', names);
 
@@ -250,7 +252,7 @@ export default Ember.Controller.extend(ColorLabelMixin, {
 
     let colors = R.zipObj(names, R.map(colorScale, names))
 
-    let xticks = ['x'].concat(visitCodes);
+    let xticks = barChart ? ['x'].concat(visitCodes) : ['x'].concat(dates);
     columns.push(xticks);
     let result = {
       x: 'x',
@@ -265,12 +267,22 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     return result;
   },
 
-  @computed('model.dates.sortedVisitCodes')
-  trajectoryAxis(dates) {
+  @computed('barChart', 'model.dates.sortedVisitCodes', 'model.dates.dateToName')
+  trajectoryAxis(barChart, dates, datemap) {
+    if (barChart) {
+      return {
+	x: {
+          type: 'category',
+	  categories: dates,
+	}
+      };
+    }
     return {
       x: {
-        type: 'category',
-	categories: dates,
+	type: 'timeseries',
+	tick: {
+	  format: x => x in datemap ? datemap[x] : moment(x).format('YYYY-MM-DD')
+	}
       }
     };
   },
