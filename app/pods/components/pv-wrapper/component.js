@@ -41,9 +41,9 @@ export default Component.extend(WidthHeightMixin, {
   structure: null,
 
    propTypes: {
-     data: PropTypes.EmberObject,
-     range: PropTypes.EmberObject,
-     selectedPositions: PropTypes.EmberObject,
+     data: PropTypes.array,
+     range: PropTypes.array,
+     selectedPositions: PropTypes.array,
      shouldLabelCoordinates: PropTypes.bool,
      highlightMissing: PropTypes.bool,
    },

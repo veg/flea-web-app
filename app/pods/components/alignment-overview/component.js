@@ -12,13 +12,13 @@ import WidthMixin from 'flea-web-app/mixins/width-mixin';
 export default Ember.Component.extend(WidthMixin, {
 
    propTypes: {
-     alnRanges: PropTypes.EmberObject,
-     validAlnRange: PropTypes.EmberObject,
-     selectedPositions: PropTypes.EmberObject,
-     predefinedRegions: PropTypes.EmberObject,
-     alnToRefCoords: PropTypes.EmberObject,
-     refToFirstAlnCoords: PropTypes.EmberObject,
-     refToLastAlnCoords: PropTypes.EmberObject,
+     alnRanges: PropTypes.array,
+     validAlnRange: PropTypes.array,
+     selectedPositions: PropTypes.array,
+     predefinedRegions: PropTypes.array,
+     alnToRefCoords: PropTypes.array,
+     refToFirstAlnCoords: PropTypes.array,
+     refToLastAlnCoords: PropTypes.array,
 
      labelHeight: PropTypes.number,
      mainHeight: PropTypes.number,

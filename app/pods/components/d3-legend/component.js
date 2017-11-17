@@ -6,8 +6,8 @@ import { PropTypes } from 'ember-prop-types';
 
 export default Ember.Component.extend({
    propTypes: {
-     legendLabels: PropTypes.EmberObject.isRequired,
-     legendColors: PropTypes.EmberObject.isRequired,
+     legendLabels: PropTypes.array.isRequired,
+     legendColors: PropTypes.func.isRequired,
      xCoord: PropTypes.number,
      yCoord: PropTypes.number
    },

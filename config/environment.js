@@ -28,7 +28,7 @@ module.exports = function(environment) {
 
     'ember-prop-types': {
       // When true components will throw an error if they are missing propTypes. (Default is false)
-      requireComponentPropTypes: true,
+      requireComponentPropTypes: false,
 
       // Validate properties coming from a spread property (default is undefined)
       spreadProperty: 'options',

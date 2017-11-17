@@ -12,14 +12,14 @@ import WidthHeightMixin from 'flea-web-app/mixins/width-height-mixin';
 export default Ember.Component.extend(D3Plot, WidthHeightMixin, {
 
    propTypes: {
-     data: PropTypes.EmberObject.isRequired,
-     nameToNodeLabel: PropTypes.EmberObject.isRequired,
-     nameToNodeColor: PropTypes.EmberObject.isRequired,
-     nameToMotifColor: PropTypes.EmberObject.isRequired,
-     nameToMotif: PropTypes.EmberObject.isRequired,
-     legendLabels: PropTypes.EmberObject.isRequired,
-     legendColors: PropTypes.EmberObject.isRequired,
-     highlightedNodes: PropTypes.EmberObject,
+     data: PropTypes.array.isRequired,
+     nameToNodeLabel: PropTypes.object.isRequired,
+     nameToNodeColor: PropTypes.object.isRequired,
+     nameToMotifColor: PropTypes.object.isRequired,
+     nameToMotif: PropTypes.object.isRequired,
+     legendLabels: PropTypes.array.isRequired,
+     legendColors: PropTypes.func.isRequired,
+     highlightedNodes: PropTypes.array,
    },
 
   getDefaultProps() {

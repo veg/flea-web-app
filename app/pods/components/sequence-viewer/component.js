@@ -8,10 +8,10 @@ import {oneIndex} from 'flea-web-app/utils/utils';
 export default Ember.Component.extend({
 
    propTypes: {
-     groupedSequences: PropTypes.EmberObject.isRequired,
-     alnToRef: PropTypes.EmberObject.isRequired,
+     groupedSequences: PropTypes.array.isRequired,
+     alnToRef: PropTypes.array.isRequired,
 
-     selectedPositions: PropTypes.EmberObject,
+     selectedPositions: PropTypes.array,
 
      // for setting colspan of divider rows
      // TODO: update this dynamically

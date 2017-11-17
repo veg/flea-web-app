@@ -22,14 +22,14 @@ import WidthMixin from 'flea-web-app/mixins/width-mixin';
 export default Ember.Component.extend(D3Plot, WidthMixin, {
 
    propTypes: {
-     names: PropTypes.EmberObject.isRequired,
-     data1: PropTypes.EmberObject.isRequired,
-     data2: PropTypes.EmberObject.isRequired,
+     names: PropTypes.array.isRequired,
+     data1: PropTypes.array.isRequired,
+     data2: PropTypes.array.isRequired,
      selectedPostions: PropTypes.array,
-     labels: PropTypes.EmberObject.isRequired,
+     labels: PropTypes.array.isRequired,
      url: PropTypes.string.isRequired,
-     alnToRefCoords: PropTypes.EmberObject.isRequired,
-     refToFirstAlnCoords: PropTypes.EmberObject.isRequired,
+     alnToRefCoords: PropTypes.array.isRequired,
+     refToFirstAlnCoords: PropTypes.array.isRequired,
    },
 
   getDefaultProps() {
