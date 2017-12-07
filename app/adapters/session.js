@@ -54,7 +54,7 @@ export default Ember.Object.extend({
 function parseSequences(json) {
   let reference = make_seq("mrca", json['reference']);
   let mrca = make_seq("mrca", json['mrca']);
-  let ancestors = R.map(s => make_seq(s.name, s.sequence), json['sequences'])
+  let ancestors = R.map(s => make_seq(s.name, s.sequence), json['ancestors'])
   let observed = R.map(s => make_seq(s.name, s.sequence, parse_date(s.date),
 				     s.copynumber, s.x, s.y),
 		       json['sequences'])
