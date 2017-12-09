@@ -155,8 +155,11 @@ export default Ember.Controller.extend(ColorLabelMixin, {
   @computed('ranges', 'model.coordinates.refRange')
   clippedRanges(ranges, refRange) {
     let [start, stop] = refRange;
-    let result = R.map(r => [R.min(R.max(r[0], start), stop-1),
-                             R.max(R.min(r[1], stop), start)], ranges);
+    for (let [a, b] in ranges) {
+      if (a < start || a >= stop || b < start || b > stop || a > b) {
+	return [[start, R.min(start + 100, stop)]];
+      }
+    }
     return result;
   },
 
