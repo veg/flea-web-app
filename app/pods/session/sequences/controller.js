@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-import { computed, action } from 'ember-decorators/object';
+import { computed, action, observes } from 'ember-decorators/object';
 import { string, conditional } from 'ember-awesome-macros';
 import raw from 'ember-macro-helpers/raw';
 
@@ -152,17 +152,25 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     return result;
   },
 
-  @computed('ranges')
+  @computed('ranges', 'model.coordinates.refRange')
+  clippedRanges(ranges, refRange) {
+    let [start, stop] = refRange;
+    let result = R.map(r => [R.max(R.min(r[0], stop-r[0]), 0), R.min(r[1], stop)], ranges);
+    return result;
+  },
+
+  @computed('clippedRanges')
   sortedRanges(ranges) {
     ranges.sort((a, b) => a[0] - b[0]);
     return ranges;
   },
 
-  @computed('ranges', 'model.coordinates.refToFirstAlnCoords',
-	    'model.coordinates.refToLastAlnCoords')
-  alnRanges(ranges, mapFirst, mapLast) {
+  @computed('clippedRanges', 'model.coordinates.refToFirstAlnCoords',
+	    'model.coordinates.refToLastAlnCoords',
+	    'model.coordinates.refRange')
+  alnRanges(ranges, mapFirst, mapLast, refRange) {
     // convert reference ranges to aligment ranges
-    checkRanges(ranges, this.get('model.coordinates.refRange'));
+    checkRanges(ranges, refRange);
     let result = ranges.map(function(range) {
       let start = transformIndex(range[0], mapFirst, false);
       let stop = transformIndex(range[1], mapLast, true);

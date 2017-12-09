@@ -49,13 +49,13 @@
       <span class="input-group-addon">
         <label for="protein_regions">Metric to plot</label>
 	{{#power-select
-	   options=metricNames
-	   selected=selectedMetricName
+	   options=orderedMetrics
+	   selected=(object-at selectedMetricIdx orderedMetrics)
+	   onchange=(action (mut selectedIdx) value="index")
 	   placeholder="Select metric"
-	   onchange=(action (mut selectedMetricName))
 	   as |metric|
 	}}
-	  {{metric}}
+	  {{metric.name}}
 	{{/power-select}}
       </span>
       <span class="input-group-addon">

@@ -83,6 +83,10 @@ let ProteinMetricsObject = Ember.Object.extend({
 
   @computed('data.[]', 'selectionThreshold')
   positiveSelection(data, threshold) {
+    let paired = data['paired'];
+    if (!paired) {
+      return {};
+    }
     let dnds = R.find(R.propEq('name', 'dNdS'), data['paired']);
     if (!dnds) {
       return {};

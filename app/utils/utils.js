@@ -144,7 +144,7 @@ export let alignmentTicks = function(a2r, r2a, tick) {
 
   // 1-indexed reference ticks we want
   let wanted = R.map(R.multiply(tick), R.range(Math.ceil(first / tick),
-					       1 + Math.floor(last / tick)));
+                                               1 + Math.floor(last / tick)));
 
   // need to remove 0 if it is present; will add later if necessary
   if (wanted[0] === 0) {

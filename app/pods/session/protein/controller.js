@@ -17,7 +17,7 @@ export default Ember.Controller.extend({
   // TODO: do not use two-way binding with slider.
   // TODO: when metric changes, this index might be invalid
   selectedTimepointIdx: 0,
-  selectedMetricName: "JS divergence",
+  selectedMetricIdx: 0,
 
   application: Ember.inject.controller(),
   session: Ember.inject.controller(),
@@ -31,26 +31,25 @@ export default Ember.Controller.extend({
   },
 
   @computed('model.proteinMetrics.data.[]')
-  metricNames(metrics) {
-    let single = R.pluck('name', metrics['single']);
-    let paired = R.pluck('name', metrics['paired']);
-    return R.concat(single, paired);
+  orderedMetrics(metrics) {
+    let single = metrics['single'];
+    let paired = metrics['paired'] || [];
+    let result = R.concat(single, paired);
+    for (let i=0; i<result.length; i++) {
+      result[i]["index"] = i;
+    }
+    return result
   },
 
-  @computed('model.proteinMetrics.data.[]',
-	    'selectedMetricName')
-  selectedMetric(metrics, name) {
-    let single = metrics['single'];
-    let paired = metrics['paired'];
-    let cand = R.find(m => m.name === name, single);
-    if (cand) {
-      return cand;
-    }
-    cand = R.find(m => m.name === name, paired);
-    if (cand) {
-      return cand;
-    }
-    return {};
+  @computed('orderedMetrics')
+  metricNames(metrics) {
+    return R.pluck('name', metrics);
+  },
+
+  @computed('orderedMetrics',
+	    'selectedMetricIdx')
+  selectedMetric(metrics, idx) {
+    return metrics[idx] || {};
   },
 
   @computed('selectedMetric')
@@ -63,7 +62,7 @@ export default Ember.Controller.extend({
   },
 
   @computed('selectedMetric', 'timepoints')
-  data1(metric, keys) {
+  data1(metric, timepoints) {
     // stack into array of arrays, which is what time component expects
     let data = [];
     if (metric['paired']) {
@@ -71,18 +70,18 @@ export default Ember.Controller.extend({
     } else {
       data = metric['data'];
     }
-    let sorted = R.map(k => R.find(x => maybe_parse_date(x.date).toString() === k.toString(), data), keys);
+    let sorted = R.map(k => R.find(x => maybe_parse_date(x.date).toString() === k.toString(), data), timepoints);
     return R.pluck('values', sorted);
   },
 
   @computed('selectedMetric', 'timepoints')
-  data2(metric, keys) {
+  data2(metric, timepoints) {
     if (metric['paired']) {
       let data = metric['data'][1]['data'];
-      let sorted = R.map(k => R.find(x => maybe_parse_date(x.date).toString() === k.toString(), data), keys)
+      let sorted = R.map(k => R.find(x => maybe_parse_date(x.date).toString() === k.toString(), data), timepoints)
       return R.pluck('values', sorted);
     } else {
-      return {};
+      return [];
     }
   },
 

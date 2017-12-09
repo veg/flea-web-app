@@ -9,7 +9,7 @@ import {oneIndex} from 'flea-web-app/utils/utils';
 export default Ember.Component.extend({
 
    propTypes: {
-      validRange: PropTypes.EmberObject,
+      validRange: PropTypes.array,
       rangeText: PropTypes.string,
    },
 

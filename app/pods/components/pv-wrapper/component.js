@@ -295,6 +295,9 @@ export default Component.extend(WidthHeightMixin, {
     if (range[1] < maxval) {
       throw {name: 'RangeError', message: 'range[1] too small'};
     }
+    if (range[0] === range[1]) {
+      return R.map(d => 0, data);
+    }
     return R.map(d => (d - range[0]) / (range[1] - range[0]),
                  data);
   },
