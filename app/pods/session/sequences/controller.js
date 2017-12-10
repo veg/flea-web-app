@@ -152,24 +152,25 @@ export default Ember.Controller.extend(ColorLabelMixin, {
     return result;
   },
 
-  @computed('ranges', 'model.coordinates.refRange')
+  @computed('ranges.[]', 'model.coordinates.refRange')
   clippedRanges(ranges, refRange) {
     let [start, stop] = refRange;
-    for (let [a, b] in ranges) {
+    for (let i=0; i<ranges.length; i++) {
+      let [a, b] = ranges[i];
       if (a < start || a >= stop || b < start || b > stop || a > b) {
 	return [[start, R.min(start + 100, stop)]];
       }
     }
-    return result;
+    return ranges;
   },
 
-  @computed('clippedRanges')
+  @computed('clippedRanges.[]')
   sortedRanges(ranges) {
     ranges.sort((a, b) => a[0] - b[0]);
     return ranges;
   },
 
-  @computed('clippedRanges', 'model.coordinates.refToFirstAlnCoords',
+  @computed('clippedRanges.[]', 'model.coordinates.refToFirstAlnCoords',
 	    'model.coordinates.refToLastAlnCoords',
 	    'model.coordinates.refRange')
   alnRanges(ranges, mapFirst, mapLast, refRange) {
