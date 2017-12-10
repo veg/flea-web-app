@@ -51,7 +51,7 @@
 	{{#power-select
 	   options=orderedMetrics
 	   selected=(object-at selectedMetricIdx orderedMetrics)
-	   onchange=(action (mut selectedIdx) value="index")
+	   onchange=(action (mut selectedMetricIdx) value="index")
 	   placeholder="Select metric"
 	   as |metric|
 	}}
