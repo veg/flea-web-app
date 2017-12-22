@@ -11,4 +11,21 @@ export default Ember.Controller.extend({
     return config.apiURL + 'zips/' + sessionId + ".zip";
   },
 
+  @computed('model.session.visualizations', 'fleaMode')
+  shouldShow(viz, fleaMode) {
+    viz = viz || {};
+    let result = {
+      "mds": true,
+      "evolutionary_trajectory": true,
+      "protein": true,
+      "sequences": true,
+      "trees": true
+    };
+    if (!fleaMode) {
+      result['mds'] = false;
+      result['evolutionary_trajectory'] = false;
+      result['trees'] = false;
+    }
+    return R.merge(result, viz);
+  },
 });

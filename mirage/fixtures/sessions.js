@@ -1,5 +1,12 @@
 export default [{
   "session_id": "P018",
+  "visualizations": {
+    "mds": true,
+    "evolutionary_trajectory": true,
+    "protein": true,
+    "sequences": true,
+    "trees": true
+  },
   "predefined_regions": [
     {"name": "SP", "start": 1, "stop": 34},
     {"name": "C1", "start": 35, "stop": 126},
